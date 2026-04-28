@@ -81,7 +81,7 @@ export function ProfileModal({
               每日热量、三大营养素、饮水和睡眠目标已保存。
             </p>
             <Button type="button" onClick={onDone}>
-              进入首页
+              {mode === "forced" ? "进入首页" : "返回仪表盘"}
             </Button>
           </div>
         ) : (
@@ -94,7 +94,9 @@ export function ProfileModal({
                 生成我的健康计划
               </h2>
               <p className="mt-2 text-sm text-muted">
-                注册后的首次计划不可跳过，完成后才能进入系统。
+                {mode === "forced"
+                  ? "注册后的首次计划不可跳过，完成后才能进入系统。"
+                  : "更新后仪表盘会重新计算 BMI、BMR、TDEE 与每日营养目标。"}
               </p>
             </div>
 
