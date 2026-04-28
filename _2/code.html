@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#005228",
+                        "surface-dim": "#c9dcf3",
+                        "secondary-fixed": "#cce5ff",
+                        "on-secondary-fixed-variant": "#004b73",
+                        "primary": "#006d37",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#3d4a3e",
+                        "tertiary-fixed": "#ffddb9",
+                        "surface-container-low": "#edf4ff",
+                        "on-surface": "#091d2e",
+                        "background": "#f7f9ff",
+                        "on-background": "#091d2e",
+                        "tertiary-fixed-dim": "#ffb961",
+                        "primary-fixed-dim": "#4ae183",
+                        "on-tertiary-container": "#633c00",
+                        "surface-variant": "#d1e4fb",
+                        "surface-container-highest": "#d1e4fb",
+                        "surface": "#f7f9ff",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#2ecc71",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#001d31",
+                        "on-tertiary-fixed-variant": "#663e00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#2b1700",
+                        "primary-fixed": "#6bfe9c",
+                        "on-secondary-container": "#00476e",
+                        "surface-container": "#e3efff",
+                        "outline": "#6c7b6d",
+                        "surface-container-high": "#d9eaff",
+                        "secondary-container": "#5cb8fd",
+                        "on-primary-fixed": "#00210c",
+                        "tertiary": "#865300",
+                        "secondary-fixed-dim": "#92ccff",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary": "#006397",
+                        "on-primary-container": "#005027",
+                        "inverse-surface": "#203243",
+                        "tertiary-container": "#f8a018",
+                        "surface-tint": "#006d37",
+                        "surface-bright": "#f7f9ff",
+                        "inverse-primary": "#4ae183",
+                        "outline-variant": "#bbcbbb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "margin-container": "32px",
+                        "lg": "40px",
+                        "xl": "64px",
+                        "sm": "12px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "data-metric": ["Inter"],
+                        "headline-md": ["Manrope"],
+                        "display-lg": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "data-metric": ["36px", {"lineHeight": "44px", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .health-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .health-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-8 max-w-7xl mx-auto w-full">
+<span class="text-xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 font-headline-md">VitalityHub</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-emerald-500 transition-colors font-body-md" href="#">主页</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-emerald-500 transition-colors font-body-md" href="#">饮食与营养</a>
+<a class="text-emerald-600 dark:text-emerald-400 font-bold border-b-2 border-emerald-500 pb-1 font-body-md" href="#">每日训练</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-emerald-500 transition-colors font-body-md" href="#">系统设置</a>
+</nav>
+<div class="flex items-center gap-4 ml-auto">
+<button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-all active:scale-95 duration-150">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-all active:scale-95 duration-150">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile" data-alt="professional portrait of a confident health enthusiast with soft studio lighting and clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMFzomKCKdo4107jFQ1B1HA2jzfWC30YAKenw6NtqU3jQdil_LV9k7wMKBUgieuTys2vdGi4eTVyOzNRjTWS6jwlO350kmGRTxzDkBxPQ15Q2VsAe1Kis46ipNTAp34ToPkicdwkHE0ptd_O1m7BytDN3aNbVMlfWbKugJr-b_F0HK7KTohZq8W54Gnwxvuc9oqzAvpn-WfhL7tWr89wdARP_-lFMIAyl07qi3Cyej-SJ4LHEaFR5aE2JYRH7C1kyX2o6QPsMn9vls"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-16 px-6 max-w-7xl mx-auto">
+<!-- Overview Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-xl">
+<!-- Today's Target -->
+<div class="health-card flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+<span class="font-label-md text-outline">今日目标部位</span>
+</div>
+<h2 class="font-headline-lg text-on-surface mb-2">胸部 + 三头肌</h2>
+<p class="font-body-md text-on-surface-variant">计划包含 6 个动作，预计耗时 65 分钟</p>
+</div>
+<div class="mt-6 flex items-center gap-2">
+<div class="h-2 flex-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-1/3"></div>
+</div>
+<span class="font-label-md text-primary">33%</span>
+</div>
+</div>
+<!-- Yesterday's Review -->
+<div class="health-card">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="font-label-md text-outline">昨日训练回顾</span>
+</div>
+<ul class="space-y-3">
+<li class="flex justify-between items-center border-b border-surface-container pb-2">
+<span class="font-body-md text-on-surface">引体向上</span>
+<span class="font-label-md text-on-surface-variant">4 组 × 12 次</span>
+</li>
+<li class="flex justify-between items-center border-b border-surface-container pb-2">
+<span class="font-body-md text-on-surface">杠铃划船</span>
+<span class="font-label-md text-on-surface-variant">4 组 × 10 次</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-body-md text-on-surface">杠铃硬拉</span>
+<span class="font-label-md text-on-surface-variant">3 组 × 8 次</span>
+</li>
+</ul>
+</div>
+<!-- Stats -->
+<div class="health-card bg-primary-container text-on-primary-container">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-md">本周统计</span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="font-data-metric">5</span>
+<span class="font-headline-md">次训练</span>
+</div>
+<p class="font-body-md opacity-90 mb-4">总时长: 342 分钟</p>
+<div class="flex items-center gap-1 text-on-primary-fixed">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span class="font-label-md">+12% 同比上周</span>
+</div>
+</div>
+</section>
+<!-- Training Area Title -->
+<div class="flex items-center justify-between mb-gutter">
+<h3 class="font-headline-lg text-on-surface">动作库</h3>
+<div class="flex gap-2">
+<span class="px-4 py-1.5 rounded-full bg-white border border-outline-variant text-on-surface-variant font-label-md">全部动作</span>
+<span class="px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-label-md shadow-sm">自定义添加</span>
+</div>
+</div>
+<!-- Training Action Sections (Bento-style Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Chest Training -->
+<div class="health-card lg:col-span-1">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-emerald-100 rounded-lg text-emerald-700">
+<span class="material-symbols-outlined">layers</span>
+</div>
+<h4 class="font-headline-md">胸部训练</h4>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Action Item -->
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">卧推</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+<!-- Action Item -->
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">上斜卧推</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+<!-- Action Item -->
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">双杠臂屈伸</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Back Training -->
+<div class="health-card lg:col-span-1">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-emerald-100 rounded-lg text-emerald-700">
+<span class="material-symbols-outlined">expand</span>
+</div>
+<h4 class="font-headline-md">背部训练</h4>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">引体向上</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="负重 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">高位下拉</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">坐姿划船</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Shoulder Training -->
+<div class="health-card">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-emerald-100 rounded-lg text-emerald-700">
+<span class="material-symbols-outlined">circle</span>
+</div>
+<h4 class="font-headline-md">肩部训练</h4>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">侧平举</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">绳索侧平举</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Leg Training -->
+<div class="health-card">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-emerald-100 rounded-lg text-emerald-700">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<h4 class="font-headline-md">腿部训练</h4>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">深蹲</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">保加利亚深蹲</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">哈克深蹲</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="重量 kg" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="组数" type="number"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Cardio Training -->
+<div class="health-card">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-emerald-100 rounded-lg text-emerald-700">
+<span class="material-symbols-outlined">directions_run</span>
+</div>
+<h4 class="font-headline-md">有氧训练</h4>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">跑步机</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="时长 min" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="坡度" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">椭圆机</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="时长 min" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="阻力" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="flex justify-between items-center">
+<span class="font-body-md font-semibold">动感单车</span>
+<button class="w-8 h-8 flex items-center justify-center bg-primary-container rounded-full text-white shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="时长 min" type="number"/>
+<input class="w-full bg-white border-outline-variant rounded-lg text-sm px-3 py-2 focus:ring-primary focus:border-primary" placeholder="负荷" type="number"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Focus CTA Card -->
+<div class="health-card relative overflow-hidden flex flex-col justify-center items-center text-center bg-slate-900 text-white min-h-[300px]">
+<div class="absolute inset-0 opacity-40">
+<img alt="Training focus" class="w-full h-full object-cover" data-alt="dramatic wide shot of a person lifting weights in a high-end modern gym with atmospheric lighting and shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn4hLUD48bOzl-TOA3d1WE9TPS4viTYZ_SgSh8djD6AN5m5QVG01athGqVwzPiHJCv6eYvJBYGwbMyjoAUIoN-meZPjC_phsyphRWBlabyQ1XHFFNBTjeVLPI1omoikYPPe4ncs_Y1eIxjHRh3Cpfyy70rKfKezgYdf72TmVUNs604k6DOd2EeOKGXe2Zl-QanJ9gt_13l7Wu9c6FShmAjMn7qLgZEWGHa7lN40C99OUYw_n9UhRxLyTZWA3FifiPLMkt-YTGHuu2y"/>
+</div>
+<div class="relative z-10 p-6">
+<h5 class="font-headline-md mb-4">保持动力，见证改变</h5>
+<p class="font-body-md mb-6 text-slate-300">每一组动作都是通往更好的自己的基石。</p>
+<button class="bg-primary-container text-on-primary-container font-bold px-8 py-3 rounded-xl shadow-lg active:scale-95 transition-all">
+                    开始今日训练
+                </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-slate-50 dark:bg-slate-950 mt-auto border-t border-slate-200 dark:border-slate-800 py-8">
+<div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<span class="font-bold text-emerald-700 text-lg">VitalityHub</span>
+<div class="flex gap-6">
+<a class="text-slate-500 dark:text-slate-400 hover:text-emerald-500 transition-colors font-body-md" href="#">隐私政策</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-emerald-500 transition-colors font-body-md" href="#">服务条款</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-emerald-500 transition-colors font-body-md" href="#">支持</a>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">© 2024 VitalityHub Clinical Health. 版权所有。</p>
+</div>
+</footer>
+<!-- FAB for quick log -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary-container text-white rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-90 transition-all z-40">
+<span class="material-symbols-outlined text-3xl">add_task</span>
+</button>
+</body></html>

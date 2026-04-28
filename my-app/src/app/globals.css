@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f7f9ff;
+  --foreground: #091d2e;
+  --surface: #ffffff;
+  --surface-muted: #edf4ff;
+  --surface-strong: #d9eaff;
+  --primary: #006d37;
+  --primary-bright: #2ecc71;
+  --secondary: #006397;
+  --secondary-bright: #5cb8fd;
+  --warning: #f8a018;
+  --danger: #ba1a1a;
+  --border: #d6e4f2;
+  --muted: #526170;
+  --shadow-card: 0 16px 40px rgb(32 50 67 / 10%);
+  --font-display-family: Manrope, "Avenir Next", "Segoe UI", sans-serif;
+  --font-body-family: Inter, "SF Pro Text", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--background);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(135deg, rgb(46 204 113 / 10%), transparent 28rem),
+    linear-gradient(225deg, rgb(92 184 253 / 16%), transparent 30rem),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body-family);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
