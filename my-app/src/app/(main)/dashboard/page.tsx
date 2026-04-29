@@ -38,7 +38,7 @@ export default async function DashboardPage() {
     <ModuleShell
       eyebrow="Dashboard"
       title={`${dashboard.greeting}，今天保持节奏。`}
-      description={`${dashboard.dateLabel} · 今日完成率 ${dashboard.completionRate}% · 数据来自本地 PostgreSQL 聚合。`}
+      description={`${dashboard.dateLabel} · 今日完成率 ${dashboard.completionRate}% · 数据来自本地 SQLite 聚合。`}
     >
       <section className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
         <Card className="relative overflow-hidden bg-[#0b2a1d] text-white">

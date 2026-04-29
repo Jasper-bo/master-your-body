@@ -3,7 +3,7 @@
 > 版本：v2.0
 > 日期：2026-04-28
 > 产品名：VitalPulse 健康管理系统
-> 技术栈：Next.js 全栈（App Router + API Routes）、PostgreSQL + Prisma ORM、DeepSeek API
+> 技术栈：Next.js 全栈（App Router + API Routes）、SQLite + Prisma ORM、DeepSeek API
 > 部署方式：纯本地部署，仅 DeepSeek API 外调
 > 目标用户：个人健康管理用户
 

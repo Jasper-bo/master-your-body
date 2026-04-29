@@ -1,7 +1,7 @@
 # VitalPulse 环境变量配置清单
 
 > 本文档定义 VitalPulse 健康管理系统运行所需的全部环境变量。
-> 技术栈：Next.js 全栈（App Router + API Routes）、PostgreSQL + Prisma ORM、DeepSeek API
+> 技术栈：Next.js 全栈（App Router + API Routes）、SQLite + Prisma ORM、DeepSeek API
 > 部署方式：纯本地部署，仅 DeepSeek API 外调
 
 ---
@@ -10,12 +10,9 @@
 
 | 变量名 | 是否必填 | 默认值 | 说明 | 示例值 | 安全等级 |
 |--------|----------|--------|------|--------|----------|
-| `DATABASE_URL` | 是 | - | PostgreSQL 连接字符串，包含主机、端口、数据库名、用户名及密码。Prisma 通过此字符串连接数据库。 | `postgresql://vitalpulse:VP_db_2026@localhost:5432/vitalpulse?schema=public` | 服务端机密 |
-| `DATABASE_POOL_SIZE` | 否 | `10` | 数据库连接池最大连接数。并发量较高的场景可适当调高。 | `20` | 服务端机密 |
-| `DATABASE_SSL_MODE` | 否 | `prefer` | PostgreSQL SSL 模式。本地开发可设为 `disable`，生产环境建议 `require`。 | `disable` / `require` | 服务端机密 |
-| `DATABASE_SHADOW_URL` | 否 | - | Prisma Migrate 在开发环境使用的 shadow database URL。仅在开发/测试环境需要。 | `postgresql://vitalpulse:VP_db_2026@localhost:5432/vitalpulse_shadow` | 服务端机密 |
+| `DATABASE_URL` | 是 | - | SQLite 数据库文件路径。Prisma 通过此字符串连接本地数据库文件，路径相对 `prisma/schema.prisma` 所在目录解析。 | `file:./dev.db` | 服务端机密 |
 
-> **配置建议**：本地开发时 PostgreSQL 建议安装在本地或同一局域网容器内，不对外暴露端口。密码长度不低于 16 位，包含大小写字母、数字及特殊符号。
+> **配置建议**：本地开发和桌面打包均使用 SQLite 文件，不需要数据库端口、用户名或密码。后续打包时应将数据库文件放到系统用户数据目录，避免应用升级覆盖数据。
 
 ---
 
@@ -153,10 +150,7 @@
 # --------------------------------------------
 # 1. 数据库配置（必填）
 # --------------------------------------------
-DATABASE_URL="postgresql://用户名:密码@localhost:5432/vitalpulse?schema=public"
-# DATABASE_POOL_SIZE=10
-# DATABASE_SSL_MODE=disable
-# DATABASE_SHADOW_URL="postgresql://用户名:密码@localhost:5432/vitalpulse_shadow?schema=public"
+DATABASE_URL="file:./dev.db"
 
 # --------------------------------------------
 # 2. JWT 认证配置（必填）
@@ -276,16 +270,13 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ### 第三步：配置数据库
 
-确保本地 PostgreSQL 已运行，并创建数据库：
+SQLite 不需要预先安装或创建数据库服务。将 `DATABASE_URL` 设置为本地文件路径即可：
 
 ```bash
-# 使用 psql 创建数据库和用户
-CREATE DATABASE vitalpulse;
-CREATE USER vitalpulse WITH ENCRYPTED PASSWORD '你的强密码';
-GRANT ALL PRIVILEGES ON DATABASE vitalpulse TO vitalpulse;
+DATABASE_URL="file:./dev.db"
 ```
 
-将连接字符串填入 `DATABASE_URL`。
+首次运行 `prisma db push` 时会自动创建 `my-app/prisma/dev.db`。
 
 ### 第四步：申请 DeepSeek API Key
 
@@ -303,8 +294,8 @@ pnpm install
 # 生成 Prisma Client
 pnpm prisma generate
 
-# 执行数据库迁移
-pnpm prisma migrate dev --name init
+# 同步 SQLite 表结构
+pnpm prisma db push
 
 # 可选：导入种子数据（系统预设食物、动作库）
 pnpm prisma db seed
@@ -329,7 +320,7 @@ PORT=8080 pnpm dev
 - [ ] `NODE_ENV=production` 已设置
 - [ ] `JWT_SECRET` 和 `JWT_REFRESH_SECRET` 已更换为全新随机值
 - [ ] `SESSION_COOKIE_SECURE=true` 已启用（需 HTTPS）
-- [ ] `DATABASE_SSL_MODE=require` 已设置
+- [ ] SQLite 数据库文件已放在稳定的用户数据目录，避免应用升级覆盖
 - [ ] `DEEPSEEK_API_KEY` 已替换为生产环境专用 Key
 - [ ] `DEBUG=false` 和 `MOCK_AI_RESPONSE=false` 已关闭
 - [ ] `RATE_LIMIT_ENABLED=true` 已启用
@@ -351,6 +342,6 @@ PORT=8080 pnpm dev
 
 ---
 
-*文档版本：v1.0.0*
-*更新日期：2026-04-28*
+*文档版本：v1.1.0*
+*更新日期：2026-04-29*
 *关联文档：`prd.md`、`function.md`、`interface.md`、`data-schema.md`*

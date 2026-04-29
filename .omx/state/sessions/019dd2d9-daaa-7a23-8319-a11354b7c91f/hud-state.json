@@ -1,6 +1,6 @@
 {
-  "last_turn_at": "2026-04-28T16:34:22.302Z",
-  "turn_count": 15,
-  "last_progress_at": "2026-04-28T16:34:22.302Z",
-  "last_agent_output": "每日训练模块已完成本地闭环，可以验收。\n\n**完成内容**\n- 新增训练服务层：[training.ts](/Users/junbohe/Downloads/stitch_body_health_in"
+  "last_turn_at": "2026-04-29T04:26:17.930Z",
+  "turn_count": 18,
+  "last_progress_at": "2026-04-29T04:26:17.930Z",
+  "last_agent_output": "已完成第一步：后端数据库已从 PostgreSQL 切到 SQLite，本地 dev 服务也已重启并运行在 `http://localhost:3000`。\n\n**完成内容**\n- 文档已统一 SQL"
 }

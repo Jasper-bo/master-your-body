@@ -5,10 +5,12 @@
 | 项目 | 内容 |
 |------|------|
 | 产品名称 | Stitch Body Health Insight Tracker |
-| 技术栈 | Next.js 全栈（App Router + API Routes）、PostgreSQL 15+、Prisma ORM |
+| 技术栈 | Next.js 全栈（App Router + API Routes）、SQLite、Prisma ORM |
 | 编码规范 | 表名/字段名 snake_case，全小写 |
-| 时区处理 | 所有时间戳使用 `timestamp with time zone`（UTC 存储，应用层转换） |
-| ID 策略 | 主键使用 `uuid`（`gen_random_uuid()`） |
+| 时区处理 | 所有时间戳由 Prisma `DateTime` 写入，UTC 存储，应用层按 `Asia/Shanghai` 展示 |
+| ID 策略 | 主键使用 Prisma `String @default(uuid())`，SQLite 中以文本形式保存 |
+
+> SQLite 实现说明：下方表结构保留业务字段、索引和约束语义。实际 `prisma/schema.prisma` 不再使用 PostgreSQL native type、`gen_random_uuid()` 或 `timestamptz`；日期和时间统一用 Prisma `DateTime` 映射到 SQLite。
 
 ---
 
@@ -773,5 +775,5 @@ function calculateWorkoutCompletion(workout_record_id):
 
 1. **聚合表机制**：`daily_nutrition` 和 `health_scores` 作为汇总表，避免仪表盘实时 JOIN 大量明细数据。通过应用层事件在 `meal_records`、`workout_records`、`health_checklist` 变更时自动更新。
 2. **分区策略**：当 `meal_records`、`workout_records` 数据量超过千万级时，可按 `record_date` / `workout_date` 进行按月分区。
-3. **定时清理**：配置 PostgreSQL 定时任务（pg_cron）或应用层定时器，自动删除 90 天前的 `meal_records`、`workout_records` 及其关联明细。
+3. **定时清理**：配置应用层定时器，自动删除 90 天前的 `meal_records`、`workout_records` 及其关联明细。
 4. **验证码/令牌 TTL**：`captchas` 和 `refresh_tokens` 设置较短过期时间（验证码 5 分钟，Refresh Token 7 天），并配合定时清理任务。

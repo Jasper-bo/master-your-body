@@ -378,7 +378,6 @@ export async function getExerciseLibrary(input: {
       ? {
           name: {
             contains: search,
-            mode: "insensitive",
           },
         }
       : {}),
