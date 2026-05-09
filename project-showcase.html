@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VitalPulse 项目模块展示</title>
+    <style>
+      :root {
+        --bg: #f5f8fb;
+        --surface: #ffffff;
+        --surface-soft: #edf5f1;
+        --ink: #071525;
+        --muted: #62708a;
+        --line: #dbe5ef;
+        --green: #00a86b;
+        --green-dark: #047a4f;
+        --cyan: #21a9e8;
+        --amber: #f49a12;
+        --red: #d94848;
+        --shadow: 0 18px 60px rgba(12, 29, 50, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.65;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(219, 229, 239, 0.8);
+        background: rgba(255, 255, 255, 0.86);
+        backdrop-filter: blur(18px);
+      }
+
+      .nav {
+        align-items: center;
+        display: flex;
+        gap: 28px;
+        justify-content: space-between;
+        margin: 0 auto;
+        max-width: 1180px;
+        padding: 16px 22px;
+      }
+
+      .brand {
+        color: var(--green-dark);
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: 0;
+        white-space: nowrap;
+      }
+
+      .navlinks {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .navlinks a {
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+        padding: 8px 12px;
+      }
+
+      .navlinks a:hover {
+        background: var(--surface-soft);
+        color: var(--green-dark);
+      }
+
+      main {
+        margin: 0 auto;
+        max-width: 1180px;
+        padding: 28px 22px 70px;
+      }
+
+      .hero {
+        display: grid;
+        gap: 28px;
+        grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1.08fr);
+        min-height: calc(100vh - 94px);
+        padding: 44px 0 34px;
+      }
+
+      .hero-copy {
+        align-self: center;
+      }
+
+      .kicker {
+        color: var(--green-dark);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        margin: 0 0 12px;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.16;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(42px, 7vw, 76px);
+        letter-spacing: 0;
+      }
+
+      h2 {
+        font-size: clamp(28px, 4vw, 44px);
+      }
+
+      h3 {
+        font-size: 22px;
+      }
+
+      .lead {
+        color: var(--muted);
+        font-size: 19px;
+        margin: 22px 0 0;
+        max-width: 680px;
+      }
+
+      .hero-actions,
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 26px;
+      }
+
+      .button {
+        align-items: center;
+        background: var(--green);
+        border-radius: 999px;
+        color: white;
+        display: inline-flex;
+        font-weight: 800;
+        min-height: 44px;
+        padding: 10px 18px;
+      }
+
+      .button.secondary {
+        background: white;
+        border: 1px solid var(--line);
+        color: var(--green-dark);
+      }
+
+      .chip {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+        padding: 7px 11px;
+      }
+
+      .hero-shot {
+        align-self: center;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .hero-shot img {
+        aspect-ratio: 5 / 4;
+        object-fit: cover;
+        object-position: top center;
+        width: 100%;
+      }
+
+      section {
+        padding: 62px 0 0;
+      }
+
+      .section-head {
+        align-items: end;
+        display: flex;
+        gap: 22px;
+        justify-content: space-between;
+        margin-bottom: 22px;
+      }
+
+      .section-head p {
+        color: var(--muted);
+        margin: 10px 0 0;
+        max-width: 720px;
+      }
+
+      .grid {
+        display: grid;
+        gap: 18px;
+      }
+
+      .grid.cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .grid.cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: 0 10px 34px rgba(12, 29, 50, 0.06);
+        padding: 22px;
+      }
+
+      .card.soft {
+        background: var(--surface-soft);
+      }
+
+      .card.dark {
+        background: #0a2238;
+        border-color: #0a2238;
+        color: white;
+      }
+
+      .metric {
+        color: var(--green-dark);
+        font-size: 32px;
+        font-weight: 900;
+        line-height: 1;
+        margin: 12px 0 8px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .timeline {
+        display: grid;
+        gap: 12px;
+      }
+
+      .step {
+        align-items: start;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        display: grid;
+        gap: 14px;
+        grid-template-columns: 42px 1fr;
+        padding: 18px;
+      }
+
+      .step-num {
+        align-items: center;
+        background: var(--green);
+        border-radius: 50%;
+        color: white;
+        display: grid;
+        font-weight: 900;
+        height: 42px;
+        justify-items: center;
+        width: 42px;
+      }
+
+      .step h3 {
+        font-size: 18px;
+        margin: 0 0 4px;
+      }
+
+      .step p,
+      .card p {
+        margin: 0;
+      }
+
+      .module {
+        align-items: start;
+        display: grid;
+        gap: 22px;
+        grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+        margin-top: 22px;
+      }
+
+      .module.reverse {
+        grid-template-columns: minmax(420px, 1.18fr) minmax(0, 0.82fr);
+      }
+
+      .module-copy {
+        position: sticky;
+        top: 86px;
+      }
+
+      .module-copy ul,
+      .api-list {
+        color: var(--muted);
+        margin: 16px 0 0;
+        padding-left: 18px;
+      }
+
+      .module-copy li,
+      .api-list li {
+        margin: 8px 0;
+      }
+
+      .shot-card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .shot-card img {
+        cursor: zoom-in;
+        width: 100%;
+      }
+
+      .caption {
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+        padding: 12px 14px;
+      }
+
+      .flow {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        padding: 16px;
+      }
+
+      .flow-item {
+        background: var(--surface-soft);
+        border: 1px solid #cfe8dc;
+        border-radius: 8px;
+        min-height: 112px;
+        padding: 14px;
+      }
+
+      .flow-item strong {
+        display: block;
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+
+      .flow-item span {
+        color: var(--muted);
+        display: block;
+        font-size: 13px;
+      }
+
+      .status-board {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .status-board .card {
+        min-height: 210px;
+      }
+
+      .tag {
+        border-radius: 999px;
+        display: inline-flex;
+        font-size: 12px;
+        font-weight: 900;
+        margin-bottom: 12px;
+        padding: 5px 9px;
+      }
+
+      .tag.done {
+        background: #dff7ea;
+        color: var(--green-dark);
+      }
+
+      .tag.partial {
+        background: #fff1d7;
+        color: #9b5a00;
+      }
+
+      .tag.todo {
+        background: #f5dede;
+        color: #9d2f2f;
+      }
+
+      .api-cluster {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      code {
+        background: #eef3f8;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: #1c3954;
+        font-family:
+          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.92em;
+        padding: 2px 5px;
+      }
+
+      .modal {
+        align-items: center;
+        background: rgba(7, 21, 37, 0.82);
+        display: none;
+        inset: 0;
+        justify-content: center;
+        padding: 22px;
+        position: fixed;
+        z-index: 100;
+      }
+
+      .modal.is-open {
+        display: flex;
+      }
+
+      .modal img {
+        border-radius: 8px;
+        max-height: 88vh;
+        object-fit: contain;
+        width: min(96vw, 1280px);
+      }
+
+      .modal button {
+        background: white;
+        border: 0;
+        border-radius: 999px;
+        color: var(--ink);
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 900;
+        height: 42px;
+        position: absolute;
+        right: 22px;
+        top: 22px;
+        width: 42px;
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        margin-top: 70px;
+        padding-top: 26px;
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .module,
+        .module.reverse {
+          grid-template-columns: 1fr;
+        }
+
+        .module-copy {
+          position: static;
+        }
+
+        .grid.cols-3,
+        .grid.cols-2,
+        .status-board,
+        .api-cluster {
+          grid-template-columns: 1fr;
+        }
+
+        .flow {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .navlinks {
+          justify-content: flex-start;
+        }
+
+        main {
+          padding-inline: 16px;
+        }
+
+        .section-head {
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 28px;
+        }
+
+        h1 {
+          font-size: 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <nav class="nav" aria-label="项目展示导航">
+        <a class="brand" href="#top">VitalPulse</a>
+        <div class="navlinks">
+          <a href="#overview">项目概览</a>
+          <a href="#flow">核心流程</a>
+          <a href="#modules">模块展示</a>
+          <a href="#api">接口与数据</a>
+          <a href="#status">当前状态</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="kicker">Local-first Health Tracker</p>
+          <h1 id="hero-title">VitalPulse 健康管理项目展示</h1>
+          <p class="lead">
+            这是一个本地优先的健康管理 Web 原型，围绕注册登录、生成个性化计划、记录饮食、
+            记录训练、查看健康评分组成最小可用闭环。此页面把项目中的实际界面截图、模块关系和
+            当前实现状态整理成一个可直接在浏览器打开的展示站点。
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="#modules">查看模块截图</a>
+            <a class="button secondary" href="#flow">理解业务流程</a>
+          </div>
+          <div class="chip-row" aria-label="技术栈">
+            <span class="chip">Next.js 15</span>
+            <span class="chip">React 19</span>
+            <span class="chip">TypeScript</span>
+            <span class="chip">Prisma</span>
+            <span class="chip">SQLite</span>
+            <span class="chip">Tailwind CSS</span>
+          </div>
+        </div>
+        <figure class="hero-shot">
+          <img src="_3/screen.png" alt="VitalPulse 仪表盘真实界面截图" />
+          <figcaption class="caption">
+            项目实际界面：仪表盘展示营养、健康评分和 7 日趋势。
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="overview" aria-labelledby="overview-title">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Overview</p>
+            <h2 id="overview-title">项目想解决什么问题</h2>
+            <p>
+              项目的核心目标是把日常健康行为从分散记录变成一个可见闭环：先建立个人身体目标，
+              再持续记录饮食和训练，最后用仪表盘把投入转化为清晰反馈。
+            </p>
+          </div>
+        </div>
+        <div class="grid cols-3">
+          <article class="card">
+            <h3>用户价值</h3>
+            <p class="metric">30 秒</p>
+            <p class="muted">
+              通过预设食物、油脂选项和动作库降低记录成本，让用户每天能快速完成关键数据输入。
+            </p>
+          </article>
+          <article class="card">
+            <h3>产品形态</h3>
+            <p class="metric">本地优先</p>
+            <p class="muted">
+              当前运行应用位于 <code>my-app/</code>，默认使用本地 SQLite 保存健康数据。
+            </p>
+          </article>
+          <article class="card">
+            <h3>核心闭环</h3>
+            <p class="metric">5 步</p>
+            <p class="muted">
+              注册登录、生成计划、记录饮食、记录训练、查看健康评分与趋势。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="flow" aria-labelledby="flow-title">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Flow</p>
+            <h2 id="flow-title">用户从第一次进入到每日使用的流程</h2>
+            <p>
+              下面这条链路对应当前代码已经实现的主路径。PRD 中提到的验证码和 AI 拍照识别在当前版本中尚未完整落地。
+            </p>
+          </div>
+        </div>
+        <div class="flow" aria-label="核心业务流程">
+          <div class="flow-item">
+            <strong>1. 注册 / 登录</strong>
+            <span>手机号与密码进入系统，JWT 写入 cookie 与本地 token 存储。</span>
+          </div>
+          <div class="flow-item">
+            <strong>2. 个性化计划</strong>
+            <span>填写身高、体重、年龄、性别、运动频率和目标。</span>
+          </div>
+          <div class="flow-item">
+            <strong>3. 饮食记录</strong>
+            <span>选择主食、肉类、蔬菜和油脂，保存为今日餐食。</span>
+          </div>
+          <div class="flow-item">
+            <strong>4. 训练记录</strong>
+            <span>从动作库加入训练清单，一次提交到本地数据库。</span>
+          </div>
+          <div class="flow-item">
+            <strong>5. 仪表盘反馈</strong>
+            <span>聚合营养、运动、睡眠、饮水并生成健康评分。</span>
+          </div>
+        </div>
+        <div class="timeline" style="margin-top: 18px">
+          <article class="step">
+            <span class="step-num">A</span>
+            <div>
+              <h3>首次使用</h3>
+              <p class="muted">
+                用户注册后会进入不可跳过的计划弹窗；没有档案时，仪表盘和饮食页会提示先完成个性化计划。
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <span class="step-num">B</span>
+            <div>
+              <h3>每日记录</h3>
+              <p class="muted">
+                饮食页保存餐食会更新今日摄入；训练页保存 session 会自动同步运动打卡。
+              </p>
+            </div>
+          </article>
+          <article class="step">
+            <span class="step-num">C</span>
+            <div>
+              <h3>结果反馈</h3>
+              <p class="muted">
+                仪表盘计算 BMI、BMR、TDEE、营养目标完成度、健康评分和最近 7 天宏量营养趋势。
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="modules" aria-labelledby="modules-title">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Modules</p>
+            <h2 id="modules-title">项目模块与实际界面</h2>
+            <p>
+              点击任意截图可以放大查看。这里使用仓库中已有的真实截图，不是重新绘制的占位图。
+            </p>
+          </div>
+        </div>
+
+        <article class="module">
+          <div class="module-copy card">
+            <p class="kicker">Dashboard</p>
+            <h3>首页 / 仪表盘模块</h3>
+            <p class="muted">
+              仪表盘是项目的结果页，负责把用户当天的身体指标、饮食进度、运动情况和健康评分统一展示。
+            </p>
+            <ul>
+              <li>BMI、BMR、TDEE 与今日完成率。</li>
+              <li>蛋白质、碳水、脂肪、热量目标进度。</li>
+              <li>健康评分按营养、运动、睡眠、饮水拆分。</li>
+              <li>最近 7 天宏量营养实际值与目标趋势。</li>
+            </ul>
+          </div>
+          <figure class="shot-card">
+            <img src="_3/screen.png" alt="首页仪表盘模块截图" data-zoom />
+            <figcaption class="caption">仪表盘真实截图：健康评分、每日营养与趋势图。</figcaption>
+          </figure>
+        </article>
+
+        <article class="module reverse">
+          <figure class="shot-card">
+            <img src="_4/screen.png" alt="饮食与营养模块截图" data-zoom />
+            <figcaption class="caption">饮食模块真实截图：今日摄入概览、上传区和手动食物选择。</figcaption>
+          </figure>
+          <div class="module-copy card">
+            <p class="kicker">Nutrition</p>
+            <h3>饮食与营养模块</h3>
+            <p class="muted">
+              当前代码主链路以手动录入为准：用户从预设食物分类中选择食物、填写克数、选择油脂用量并保存当前餐食。
+            </p>
+            <ul>
+              <li>主食类、肉类、蔬菜类和油脂用量四类输入。</li>
+              <li>实时计算本餐热量与三大营养素。</li>
+              <li>保存后刷新今日餐食和摄入进度。</li>
+              <li>截图中出现的 AI 上传区属于产品方向，当前实现仍以手动路径为稳定基础。</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="module">
+          <div class="module-copy card">
+            <p class="kicker">Training</p>
+            <h3>每日训练模块</h3>
+            <p class="muted">
+              训练模块围绕动作库和今日训练清单工作。用户按部位筛选动作，设置重量、组数、次数或有氧时长，再统一提交。
+            </p>
+            <ul>
+              <li>胸部、背部、肩部、腿部、有氧分类。</li>
+              <li>支持力量训练和有氧训练不同参数。</li>
+              <li>展示今日目标、昨日回顾和本周统计。</li>
+              <li>提交训练后更新今日记录和仪表盘运动打卡。</li>
+            </ul>
+          </div>
+          <figure class="shot-card">
+            <img src="_2/screen.png" alt="每日训练模块截图" data-zoom />
+            <figcaption class="caption">训练模块真实截图：动作库、训练参数和周统计。</figcaption>
+          </figure>
+        </article>
+
+        <article class="module reverse">
+          <figure class="shot-card">
+            <img src="_1/screen.png" alt="系统设置模块截图" data-zoom />
+            <figcaption class="caption">设置模块真实截图：应用信息、开发者信息、更新日志与隐私入口。</figcaption>
+          </figure>
+          <div class="module-copy card">
+            <p class="kicker">Settings</p>
+            <h3>系统设置模块</h3>
+            <p class="muted">
+              设置页当前主要是信息展示和退出入口，是后续本地数据说明、备份导出、隐私策略等能力的承载位置。
+            </p>
+            <ul>
+              <li>展示应用名称、版本和部署模式。</li>
+              <li>保留更新日志、隐私政策、登出入口。</li>
+              <li>当前仍偏信息框架，完整控制面板属于后续工作。</li>
+            </ul>
+          </div>
+        </article>
+      </section>
+
+      <section id="auth" aria-labelledby="auth-title">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Auth & Onboarding</p>
+            <h2 id="auth-title">认证与个性化计划</h2>
+            <p>
+              注册和登录采用手机号加密码。注册成功后，用户必须完成个人计划，系统据此生成每日营养目标和身体指标。
+            </p>
+          </div>
+        </div>
+        <div class="grid cols-2">
+          <article class="card">
+            <h3>注册 / 登录</h3>
+            <ul class="api-list">
+              <li><code>POST /api/auth/register</code>：创建账号，返回 access token 和 refresh token。</li>
+              <li><code>POST /api/auth/login</code>：校验密码，失败次数过多会临时锁定账号。</li>
+              <li><code>POST /api/auth/refresh</code>：刷新 access token。</li>
+              <li><code>POST /api/auth/logout</code>：清理会话。</li>
+            </ul>
+          </article>
+          <article class="card soft">
+            <h3>计划字段</h3>
+            <ul class="api-list">
+              <li>身高、体重、年龄、性别。</li>
+              <li>运动频率：久坐、轻度、中度、高强度。</li>
+              <li>健身目标：减脂、维持、增肌。</li>
+              <li>后端计算 BMI、BMR、TDEE 和每日宏量营养目标。</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="api" aria-labelledby="api-title">
+        <div class="section-head">
+          <div>
+            <p class="kicker">API & Data</p>
+            <h2 id="api-title">接口与数据如何支撑模块</h2>
+            <p>
+              项目采用 Next.js App Router，把页面与 API Routes 放在同一应用中；服务端逻辑集中在
+              <code>my-app/src/lib/server</code>，数据通过 Prisma 写入 SQLite。
+            </p>
+          </div>
+        </div>
+        <div class="api-cluster">
+          <article class="card">
+            <h3>仪表盘接口</h3>
+            <ul class="api-list">
+              <li><code>GET /api/dashboard</code>：聚合身体指标、营养、训练、清单与趋势。</li>
+              <li>健康评分由服务端计算并 upsert 到 <code>HealthScore</code>。</li>
+              <li>评分由营养、运动、睡眠、饮水四项组成，每项 25 分。</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>饮食接口</h3>
+            <ul class="api-list">
+              <li><code>GET /api/nutrition/today</code>：今日摄入、剩余热量和餐食列表。</li>
+              <li><code>GET /api/nutrition/food-categories</code>：系统预设食物。</li>
+              <li><code>POST /api/nutrition/meals</code>：保存餐食。</li>
+              <li><code>DELETE /api/nutrition/meals/[id]</code>：删除餐食。</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>训练接口</h3>
+            <ul class="api-list">
+              <li><code>GET /api/training/exercises</code>：系统动作库。</li>
+              <li><code>POST /api/training/quick-log</code>：快速记录训练。</li>
+              <li><code>GET /api/training/today</code>：今日训练明细。</li>
+              <li><code>GET /api/training/weekly-stats</code>：本周训练统计。</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>核心数据表</h3>
+            <ul class="api-list">
+              <li><code>User</code>、<code>UserProfile</code>、<code>RefreshToken</code>。</li>
+              <li><code>DailyNutrition</code>、<code>MealRecord</code>、<code>MealFood</code>。</li>
+              <li><code>WorkoutRecord</code>、训练动作与分类表。</li>
+              <li><code>HealthChecklist</code>、<code>HealthScore</code>。</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="status" aria-labelledby="status-title">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Project Status</p>
+            <h2 id="status-title">当前实现状态与边界</h2>
+            <p>
+              这一块适合给评审、同学或协作者快速说明：哪些已经可以演示，哪些只是规划或半成品。
+            </p>
+          </div>
+        </div>
+        <div class="status-board">
+          <article class="card">
+            <span class="tag done">已实现</span>
+            <h3>可演示主链路</h3>
+            <ul class="api-list">
+              <li>手机号注册 / 登录。</li>
+              <li>注册后强制计划弹窗。</li>
+              <li>仪表盘、饮食、训练、设置页面。</li>
+              <li>SQLite 本地持久化和 JWT 鉴权。</li>
+            </ul>
+          </article>
+          <article class="card">
+            <span class="tag partial">部分实现</span>
+            <h3>需要继续完善</h3>
+            <ul class="api-list">
+              <li>设置页仍主要是信息框架。</li>
+              <li>健康清单依赖睡眠和饮水，但用户输入流还不完整。</li>
+              <li>计划更新存在多个 API 入口，后续应收口。</li>
+            </ul>
+          </article>
+          <article class="card">
+            <span class="tag todo">未落地</span>
+            <h3>未来规划</h3>
+            <ul class="api-list">
+              <li>图形验证码。</li>
+              <li>DeepSeek 食物拍照识别完整链路。</li>
+              <li>自动化测试体系。</li>
+              <li>备份导出、桌面打包和恢复流程。</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <footer>
+        <strong>VitalPulse / Stitch Body Health Insight Tracker</strong>
+        <p>
+          展示页文件：<code>project-showcase.html</code>。截图来源：<code>_1</code>、<code>_2</code>、<code>_3</code>、<code>_4</code>。
+          内容依据当前代码、README 与项目记忆整理。
+        </p>
+      </footer>
+    </main>
+
+    <div class="modal" id="imageModal" aria-hidden="true" role="dialog" aria-label="截图放大预览">
+      <button type="button" aria-label="关闭截图预览">×</button>
+      <img alt="" />
+    </div>
+
+    <script>
+      const modal = document.querySelector("#imageModal");
+      const modalImage = modal.querySelector("img");
+      const closeButton = modal.querySelector("button");
+
+      document.querySelectorAll("[data-zoom]").forEach((image) => {
+        image.addEventListener("click", () => {
+          modalImage.src = image.currentSrc || image.src;
+          modalImage.alt = image.alt;
+          modal.classList.add("is-open");
+          modal.setAttribute("aria-hidden", "false");
+        });
+      });
+
+      function closeModal() {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        modalImage.removeAttribute("src");
+      }
+
+      closeButton.addEventListener("click", closeModal);
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) {
+          closeModal();
+        }
+      });
+    </script>
+  </body>
+</html>

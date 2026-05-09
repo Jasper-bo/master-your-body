@@ -4,6 +4,14 @@
 
 项目目标是把“注册登录 -> 生成个性化计划 -> 记录饮食 -> 记录训练 -> 查看健康评分”做成一个可本地运行的最小闭环。当前版本已经具备这条主链路，但仍有部分 PRD 中提到的能力尚未落地，README 以下内容以当前代码现状为准。
 
+## 项目展示页
+
+如果需要让其他人快速了解项目，可以直接用浏览器打开仓库根目录下的
+[`project-showcase.html`](./project-showcase.html)。
+
+这个静态页面整理了项目的核心流程、实际界面截图、功能模块、接口与数据结构，
+不需要启动 Next.js 服务即可查看。
+
 ## 当前状态
 
 已实现：
@@ -57,48 +65,23 @@
 ### 1. 环境要求
 
 - Node.js 18.17+，推荐 Node.js 20 LTS
-- npm 9+，推荐 npm 10+
 
-### 2. 安装依赖
+### 2. 一键启动
 
 ```bash
 cd my-app
-npm install
+./scripts/setup.sh
+npm run dev
 ```
 
-### 3. 配置环境变量
+`setup.sh` 会自动完成安装依赖、生成密钥、初始化数据库等所有准备工作。
 
-复制示例文件：
+也可以分步执行：
 
 ```bash
-cp .env.example .env.local
-```
-
-最少需要确认以下配置：
-
-```env
-DATABASE_URL="file:./dev.db"
-JWT_SECRET="replace-with-32-bytes-or-longer-random-secret"
-JWT_REFRESH_SECRET="replace-with-different-32-bytes-or-longer-random-secret"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-NEXT_PUBLIC_API_BASE_URL="http://localhost:3000/api"
-```
-
-说明：
-
-- 默认 SQLite 数据库文件位于 `my-app/prisma/dev.db`
-- `DEEPSEEK_*` 变量可以先保留示例值；当前代码主链路不依赖 AI 识别功能
-
-### 4. 初始化 Prisma
-
-```bash
-npm run prisma:generate
-npm run db:push
-```
-
-### 5. 启动开发环境
-
-```bash
+cd my-app
+npm install        # 自动生成 Prisma client
+npm run setup      # 生成 .env.local + 初始化数据库
 npm run dev
 ```
 
@@ -107,7 +90,9 @@ npm run dev
 - 应用首页：`http://localhost:3000`
 - 健康检查：`http://localhost:3000/api/health`
 
-### 6. 生产构建
+> `DEEPSEEK_*` 环境变量保留示例值即可，核心功能不依赖 AI 识别。
+
+### 3. 生产构建
 
 ```bash
 npm run build
