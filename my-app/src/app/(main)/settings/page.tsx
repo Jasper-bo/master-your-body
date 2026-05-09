@@ -18,7 +18,7 @@ export default function SettingsPage() {
         </Card>
         <Card>
           <p className="text-sm font-semibold text-muted">部署模式</p>
-          <h2 className="mt-2 font-display text-3xl font-bold">本地优先</h2>
+          <h2 className="mt-2 font-display text-3xl font-bold">数据安全</h2>
           <p className="mt-2 text-muted">仅食物拍照识别调用 DeepSeek API</p>
           <div className="mt-6">
             <LogoutButton />

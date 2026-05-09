@@ -8,8 +8,8 @@
 | 文档版本 | v1.0.0 |
 | 编写日期 | 2026-04-28 |
 | 目标平台 | Web（桌面端优先） |
-| 技术栈 | Next.js 全栈（App Router + API Routes）+ SQLite + Prisma + DeepSeek API |
-| 部署方式 | 纯本地部署，仅 DeepSeek API 外调 |
+| 技术栈 | Next.js 全栈（App Router + API Routes）+ PostgreSQL（生产）/ SQLite（本地开发）+ Prisma + DeepSeek API |
+| 部署方式 | 本地开发（SQLite）+ Vercel 生产部署（PostgreSQL） |
 | 关联文档 | `data-schema.md` — 数据库结构文档 |
 
 ---
@@ -150,7 +150,7 @@ VitalPulse 健康管理系统
     ├──→ [AI 拍照]
     │       │
     │       ├──→ 前端选择 JPG/PNG 文件（≤10MB）
-    │       ├──→ 前端 multipart 上传至本地后端 API
+    │       ├──→ 前端 multipart 上传至后端 API
     │       ├──→ 后端接收图片，进行类型/大小校验
     │       ├──→ 后端将图片 Base64 编码，调用 DeepSeek API（Vision 模型）
     │       ├──→ DeepSeek 返回：食物名、蛋白质(g)、碳水(g)、脂肪(g)
@@ -411,7 +411,7 @@ VitalPulse 健康管理系统
 #### 6.3.1 AI 拍照识别食物
 
 **功能描述：**
-- 用户上传食物照片，本地后端调用 DeepSeek API 进行识别，返回食物名及三大营养素含量，前端计算热量。图片不保存，结果可修改。
+- 用户上传食物照片，后端调用 DeepSeek API 进行识别，返回食物名及三大营养素含量，前端计算热量。图片不保存，结果可修改。
 
 **完整调用链路：**
 
@@ -425,7 +425,7 @@ VitalPulse 健康管理系统
 [前端] 校验文件大小 ≤ 10MB，图片分辨率 ≥ 300×300 px
     │
     ▼
-[前端] 将图片封装为 multipart/form-data，上传至本地后端 API
+[前端] 将图片封装为 multipart/form-data，上传至后端 API
        POST /api/ai/recognize-food
     │
     ▼
@@ -746,7 +746,7 @@ VitalPulse 健康管理系统
 - 仪表盘数据采用服务端聚合（`daily_nutrition`、`health_scores`），避免实时 JOIN。
 - 图片资源使用 WebP/AVIF 格式，懒加载非首屏图片。
 - Next.js 服务端组件（Server Components）减少客户端 JavaScript 体积。
-- AI 识别使用本地后端中转，避免前端直接暴露 DeepSeek API Key。
+- AI 识别使用后端中转，避免前端直接暴露 DeepSeek API Key。
 
 ### 7.2 安全需求
 
@@ -854,7 +854,7 @@ VitalPulse 健康管理系统
 |------|------|----------|
 | 用户留存率低 | 产品价值未达预期 | 强化健康评分的游戏化反馈；仪表盘数据可视化增强成就感；训练回顾提供正向激励 |
 | 健康评分算法被质疑不科学 | 用户不信任 | 算法透明化（详情页展示分项计算过程）；提供免责声明"仅供参考，不构成医疗建议" |
-| 用户隐私顾虑 | 不愿上传身体数据 | 纯本地部署，所有敏感数据存储于本地 SQLite 文件；明确的隐私政策；用户完全掌控数据 |
+| 用户隐私顾虑 | 不愿上传身体数据 | 生产环境数据加密存储于 PostgreSQL；明确的隐私政策；用户数据安全可控 |
 
 ### 9.3 外部依赖
 
@@ -862,7 +862,7 @@ VitalPulse 健康管理系统
 |------|------|----------|
 | DeepSeek API（Vision 模型） | 食物拍照识别 | 降级为手动搜索；接入其他国产多模态模型（如通义千问、智谱 GLM-4V） |
 | Next.js 框架 | 全栈开发基础 | 锁定版本，避免 major 升级带来的 Breaking Change |
-| Prisma ORM | 数据库访问 | 原生 SQLite 驱动（迁移成本高，作为最后手段） |
+| Prisma ORM | 数据库访问 | PostgreSQL（生产）/ SQLite（本地开发），通过 Prisma 统一抽象 |
 
 ---
 

@@ -21,7 +21,7 @@ export default async function TrainingPage() {
     <ModuleShell
       eyebrow="Training"
       title="每日训练"
-      description="从动作库添加力量或有氧动作，确认后写入本地训练记录，并自动同步仪表盘运动打卡。"
+      description="从动作库添加力量或有氧动作，确认后写入训练记录，并自动同步仪表盘运动打卡。"
     >
       <TrainingClient
         initialToday={data.today}

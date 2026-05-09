@@ -1,8 +1,8 @@
 # VitalPulse 环境变量配置清单
 
 > 本文档定义 VitalPulse 健康管理系统运行所需的全部环境变量。
-> 技术栈：Next.js 全栈（App Router + API Routes）、SQLite + Prisma ORM、DeepSeek API
-> 部署方式：纯本地部署，仅 DeepSeek API 外调
+> 技术栈：Next.js 全栈（App Router + API Routes）、PostgreSQL（生产）/ SQLite（本地开发）+ Prisma ORM、DeepSeek API
+> 部署方式：本地开发（SQLite）+ Vercel 生产部署（PostgreSQL），仅 DeepSeek API 外调
 
 ---
 
@@ -10,9 +10,9 @@
 
 | 变量名 | 是否必填 | 默认值 | 说明 | 示例值 | 安全等级 |
 |--------|----------|--------|------|--------|----------|
-| `DATABASE_URL` | 是 | - | SQLite 数据库文件路径。Prisma 通过此字符串连接本地数据库文件，路径相对 `prisma/schema.prisma` 所在目录解析。 | `file:./dev.db` | 服务端机密 |
+| `DATABASE_URL` | 是 | - | 数据库连接串。**本地开发**：`file:./dev.db`（SQLite 单文件）。**生产部署**：PostgreSQL 连接串格式 `postgresql://user:pass@host:port/db`。Prisma 自动适配。 | `file:./dev.db`（本地）或 `postgresql://...`（生产） | 服务端机密 |
 
-> **配置建议**：本地开发和桌面打包均使用 SQLite 文件，不需要数据库端口、用户名或密码。后续打包时应将数据库文件放到系统用户数据目录，避免应用升级覆盖数据。
+> **配置建议**：本地开发使用 SQLite，零配置；生产部署使用 Supabase / Neon 免费 PostgreSQL，在 Vercel 环境变量中设置 `DATABASE_URL` 为 PostgreSQL 连接串。
 
 ---
 
@@ -150,7 +150,10 @@
 # --------------------------------------------
 # 1. 数据库配置（必填）
 # --------------------------------------------
+# 本地开发
 DATABASE_URL="file:./dev.db"
+# 生产部署
+# DATABASE_URL="postgresql://user:password@host:port/database"
 
 # --------------------------------------------
 # 2. JWT 认证配置（必填）
@@ -181,8 +184,8 @@ DEEPSEEK_API_KEY="sk-你的 DeepSeek API 密钥"
 # NEXT_PUBLIC_APP_VERSION=1.0.0
 # PORT=3000
 # NODE_ENV=development
-# NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api
-# NEXT_PUBLIC_APP_URL=http://localhost:3000
+# NEXT_PUBLIC_API_BASE_URL=https://your-project.vercel.app/api
+# NEXT_PUBLIC_APP_URL=https://your-project.vercel.app
 # TZ=Asia/Shanghai
 
 # --------------------------------------------
@@ -270,13 +273,23 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ### 第三步：配置数据库
 
-SQLite 不需要预先安装或创建数据库服务。将 `DATABASE_URL` 设置为本地文件路径即可：
+**本地开发（SQLite）**：零配置，使用默认 `# 本地开发
+DATABASE_URL="file:./dev.db"
+# 生产部署
+# DATABASE_URL="postgresql://user:password@host:port/database"`，首次 `prisma db push` 时自动创建。
+
+**生产部署（PostgreSQL）**：在 Supabase/Neon 创建免费 PostgreSQL，获取连接串填入 `DATABASE_URL`。
 
 ```bash
+# 本地开发
+# 本地开发
 DATABASE_URL="file:./dev.db"
-```
+# 生产部署
+# DATABASE_URL="postgresql://user:password@host:port/database"
 
-首次运行 `prisma db push` 时会自动创建 `my-app/prisma/dev.db`。
+# 生产部署
+DATABASE_URL="postgresql://user:password@host:port/db?sslmode=require"
+```
 
 ### 第四步：申请 DeepSeek API Key
 
@@ -289,29 +302,29 @@ DATABASE_URL="file:./dev.db"
 
 ```bash
 # 安装依赖
-pnpm install
+npm install
 
 # 生成 Prisma Client
-pnpm prisma generate
+npm run prisma:generate
 
-# 同步 SQLite 表结构
-pnpm prisma db push
+# 同步数据库表结构（SQLite 或 PostgreSQL 通用）
+npm run db:push
 
 # 可选：导入种子数据（系统预设食物、动作库）
-pnpm prisma db seed
+npx prisma db seed
 ```
 
 ### 第六步：启动开发服务器
 
 ```bash
 # 开发模式
-pnpm dev
+npm run dev
 
 # 或指定端口
-PORT=8080 pnpm dev
+PORT=8080 npm run dev
 ```
 
-服务启动后，访问 `http://localhost:3000`（或你指定的端口）即可使用。
+服务启动后，访问 `http://localhost:3000`（或你指定的端口）即可使用。生产环境通过 Vercel 域名访问。
 
 ### 第七步：生产环境额外检查
 
@@ -320,7 +333,7 @@ PORT=8080 pnpm dev
 - [ ] `NODE_ENV=production` 已设置
 - [ ] `JWT_SECRET` 和 `JWT_REFRESH_SECRET` 已更换为全新随机值
 - [ ] `SESSION_COOKIE_SECURE=true` 已启用（需 HTTPS）
-- [ ] SQLite 数据库文件已放在稳定的用户数据目录，避免应用升级覆盖
+- [ ] PostgreSQL 数据库已在 Supabase/Neon 创建，连接串正确配置
 - [ ] `DEEPSEEK_API_KEY` 已替换为生产环境专用 Key
 - [ ] `DEBUG=false` 和 `MOCK_AI_RESPONSE=false` 已关闭
 - [ ] `RATE_LIMIT_ENABLED=true` 已启用

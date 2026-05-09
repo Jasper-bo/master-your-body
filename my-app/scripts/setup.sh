@@ -51,7 +51,14 @@ fi
 # ── 4. Initialize database ─────────────────────────────────────────────
 echo ""
 echo "==> Initializing database..."
-npx prisma db push --skip-generate
+if grep -q "\[PROJECT\]" .env.local 2>/dev/null; then
+  echo "  WARNING: DATABASE_URL still has placeholder values."
+  echo "  Edit .env.local and replace with your Supabase connection string,"
+  echo "  then run: npx prisma db push"
+else
+  npx prisma db push --skip-generate
+  echo "  OK: Database schema pushed"
+fi
 
 # ── 5. Done ────────────────────────────────────────────────────────────
 echo ""

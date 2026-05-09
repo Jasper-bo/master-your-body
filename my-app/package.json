@@ -13,7 +13,8 @@
     "prisma:generate": "prisma generate",
     "db:push": "prisma db push",
     "postinstall": "prisma generate",
-    "setup": "node scripts/setup.mjs"
+    "setup": "node scripts/setup.mjs",
+    "vercel-build": "prisma generate && prisma db push && next build"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

@@ -16,9 +16,9 @@ read these files:
 ## Project Snapshot
 
 - Product name: VitalPulse / Stitch Body Health Insight Tracker
-- Product shape: local-first health management prototype
+- Product shape: cloud-hosted health management app (Vercel + PostgreSQL), local SQLite dev mode
 - Runtime app: `my-app/`
-- Current stack: Next.js 15, React 19, TypeScript 5, Prisma, SQLite, Tailwind
+- Current stack: Next.js 15, React 19, TypeScript 5, Prisma, PostgreSQL (prod) / SQLite (dev), Tailwind
 - Current core loop: register/login -> generate plan -> dashboard -> manual nutrition -> quick training -> health score view
 
 ## Source Of Truth
@@ -31,8 +31,8 @@ read these files:
 
 ## Working Agreements
 
-- Preserve the local-first architecture unless the user explicitly asks for
-  a cloud or sync design.
+- Preserve local SQLite dev mode for fast iteration. Production deployment targets
+  Vercel + PostgreSQL.
 - Prefer extending existing patterns in `my-app/src/app/api` and
   `my-app/src/lib/server` before introducing new abstractions.
 - Do not add new dependencies without an explicit request.

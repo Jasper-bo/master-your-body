@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { execSync } from "node:child_process";
-import { existsSync, copyFileSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -33,10 +33,17 @@ if (!existsSync(envFile)) {
 // 2. Push database schema
 console.log("");
 console.log("==> Initializing database...");
-execSync("npx prisma db push --skip-generate", {
-  cwd: root,
-  stdio: "inherit",
-});
+let content = readFileSync(envFile, "utf-8");
+if (content.includes("[PROJECT]")) {
+  console.log("  WARNING: DATABASE_URL still has placeholder values.");
+  console.log("  Edit .env.local with your Supabase connection string first.");
+  console.log("  Then run: npx prisma db push");
+} else {
+  execSync("npx prisma db push --skip-generate", {
+    cwd: root,
+    stdio: "inherit",
+  });
+}
 
 console.log("");
 console.log("Setup complete! Run: npm run dev");

@@ -43,7 +43,9 @@ only the broader PRD.
 
 ## P2: Later stage work
 
-- [ ] Add local backup, export, and restore flows for SQLite-backed user data
+- [ ] Complete Vercel + PostgreSQL production deployment pipeline
+  Reason: project direction has shifted to cloud-hosted multi-user mode. Need
+  vercel.json, Prisma PostgreSQL migration, and deployment documentation.
 
 - [ ] Package the app for desktop distribution with Electron or Tauri
 
@@ -64,6 +66,5 @@ only the broader PRD.
 
 - [ ] Do not make AI the only nutrition entry path
 
-- [ ] Do not introduce cloud-first assumptions unless the product direction
-  changes on purpose
+- [ ] Deploy to Vercel with PostgreSQL as the standard production path
 

@@ -5,12 +5,12 @@
 | 项目 | 内容 |
 |------|------|
 | 产品名称 | Stitch Body Health Insight Tracker |
-| 技术栈 | Next.js 全栈（App Router + API Routes）、SQLite、Prisma ORM |
+| 技术栈 | Next.js 全栈（App Router + API Routes）、PostgreSQL（生产）/ SQLite（本地开发）、Prisma ORM |
 | 编码规范 | 表名/字段名 snake_case，全小写 |
 | 时区处理 | 所有时间戳由 Prisma `DateTime` 写入，UTC 存储，应用层按 `Asia/Shanghai` 展示 |
-| ID 策略 | 主键使用 Prisma `String @default(uuid())`，SQLite 中以文本形式保存 |
+| ID 策略 | 主键使用 Prisma `String @default(uuid())` |
 
-> SQLite 实现说明：下方表结构保留业务字段、索引和约束语义。实际 `prisma/schema.prisma` 不再使用 PostgreSQL native type、`gen_random_uuid()` 或 `timestamptz`；日期和时间统一用 Prisma `DateTime` 映射到 SQLite。
+> 数据库实现说明：本地开发使用 SQLite，生产环境使用 PostgreSQL。Prisma schema 中不使用数据库特定的原生类型（如 `gen_random_uuid()`、`timestamptz`），确保跨数据库兼容。日期和时间统一用 Prisma `DateTime` 映射。
 
 ---
 

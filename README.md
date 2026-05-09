@@ -1,8 +1,8 @@
 # VitalPulse / Stitch Body Health Insight Tracker
 
-本仓库承载一个本地优先的健康管理应用原型。当前可运行形态是一个基于 Next.js 15 的全栈 Web 应用，应用代码位于 `my-app/`，产品文档与架构说明位于仓库根目录。
+本仓库承载一个基于 Next.js 15 的全栈健康管理应用，应用代码位于 `my-app/`，产品文档与架构说明位于仓库根目录。支持本地开发（SQLite）和生产部署（Vercel + PostgreSQL）两种运行模式。
 
-项目目标是把“注册登录 -> 生成个性化计划 -> 记录饮食 -> 记录训练 -> 查看健康评分”做成一个可本地运行的最小闭环。当前版本已经具备这条主链路，但仍有部分 PRD 中提到的能力尚未落地，README 以下内容以当前代码现状为准。
+项目目标是把”注册登录 -> 生成个性化计划 -> 记录饮食 -> 记录训练 -> 查看健康评分”做成一条完整闭环。当前版本已经具备这条主链路，但仍有部分 PRD 中提到的能力尚未落地，README 以下内容以当前代码现状为准。
 
 ## 项目展示页
 
@@ -21,7 +21,7 @@
 - 仪表盘：BMI、BMR、TDEE、营养进度、健康评分、7 日趋势
 - 饮食模块：手动录入主食 / 肉类 / 蔬菜 / 油脂
 - 训练模块：从预置动作库快速记录训练
-- SQLite 本地持久化
+- PostgreSQL 持久化（本地开发兼容 SQLite）
 - JWT 鉴权与基础健康检查接口
 
 尚未完全落地：
@@ -37,7 +37,7 @@
 - React 19
 - TypeScript 5
 - Prisma ORM
-- SQLite
+- PostgreSQL（生产）/ SQLite（本地开发）
 - Tailwind CSS
 - bcryptjs
 
@@ -49,7 +49,7 @@
 │   ├── src/app/               # 页面与 API Routes
 │   ├── src/components/        # 业务组件
 │   ├── src/lib/               # 客户端 / 服务端逻辑
-│   ├── prisma/                # Prisma schema 与 SQLite 数据库
+│   ├── prisma/                # Prisma schema 与数据库迁移
 │   └── package.json
 ├── prd.md                     # 产品需求文档
 ├── function.md                # 功能模块说明
@@ -62,11 +62,13 @@
 
 ## 快速开始
 
-### 1. 环境要求
+### 本地开发（SQLite，零配置）
+
+#### 1. 环境要求
 
 - Node.js 18.17+，推荐 Node.js 20 LTS
 
-### 2. 一键启动
+#### 2. 一键启动
 
 ```bash
 cd my-app
@@ -74,30 +76,41 @@ cd my-app
 npm run dev
 ```
 
-`setup.sh` 会自动完成安装依赖、生成密钥、初始化数据库等所有准备工作。
+访问 `http://localhost:3000` 即可使用。
 
-也可以分步执行：
+### 生产部署（Vercel + PostgreSQL）
+
+#### 1. 准备 PostgreSQL 数据库
+
+在 [Supabase](https://supabase.com) 或 [Neon](https://neon.tech) 免费注册，创建项目，获取 PostgreSQL 连接串。
+
+#### 2. 部署到 Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+
+或手动操作：
 
 ```bash
+npm i -g vercel
 cd my-app
-npm install        # 自动生成 Prisma client
-npm run setup      # 生成 .env.local + 初始化数据库
-npm run dev
+vercel
 ```
 
-启动后访问：
+在 Vercel 控制台中设置环境变量：
 
-- 应用首页：`http://localhost:3000`
-- 健康检查：`http://localhost:3000/api/health`
+| 变量 | 值 |
+|------|-----|
+| `DATABASE_URL` | PostgreSQL 连接串 |
+| `JWT_SECRET` | 随机 32 位字符串 |
+| `JWT_REFRESH_SECRET` | 随机 32 位字符串 |
 
-> `DEEPSEEK_*` 环境变量保留示例值即可，核心功能不依赖 AI 识别。
-
-### 3. 生产构建
+#### 3. 初始化数据库
 
 ```bash
-npm run build
-npm run start
+npx prisma db push
 ```
+
+> 本地开发仍然使用 SQLite（`provider = "sqlite"`），部署时自动切换 PostgreSQL。详见 [deployment.md](./deployment.md)。
 
 ## 常用命令
 
@@ -123,10 +136,9 @@ npm run db:push
 
 ## 运行与数据说明
 
-- 应用默认以本地 Web 服务形式运行，端口为 `3000`
-- 数据默认存储在本地 SQLite 文件，不依赖外部数据库服务
-- 当前仓库中的设计文档包含更完整的远期规划，但代码仍以本地优先、单机可运行版本为主
-- 如果后续要做桌面安装包，需要把数据库路径迁移到系统用户数据目录，而不是继续放在源码目录
+- **本地开发**：数据存储在 SQLite 文件（`my-app/prisma/dev.db`），端口 `3000`，无需外部服务
+- **生产部署**：数据存储在 PostgreSQL，通过 Vercel 托管，用户数据集中管理
+- 当前仓库中的设计文档包含更完整的远期规划
 
 ## 文档导航
 
@@ -136,17 +148,17 @@ npm run db:push
 - [data-schema.md](./data-schema.md): 数据模型与表结构说明
 - [interface.md](./interface.md): 接口契约草案
 - [env-config.md](./env-config.md): 环境变量详细解释
-- [deployment.md](./deployment.md): 本地部署与后续桌面化说明
+- [deployment.md](./deployment.md): 本地开发与 Vercel 生产部署说明
 
 ## 已知差异与风险
 
-- 仓库文档中提到的图形验证码、AI 拍照识别、完整设置页与桌面打包仍未全部实现
-- 目前以手动录入饮食和训练为主，更适合原型验证、内测或个人本地使用
+- 仓库文档中提到的图形验证码、AI 拍照识别、完整设置页仍未全部实现
 - 自动化测试文件尚未建立，当前质量主要依赖 `lint`、`build` 与人工联调
+- 本地开发使用 SQLite，生产部署使用 PostgreSQL，两者 Prisma schema provider 不同，需维护两套 schema 或部署前切换
 
 ## 建议的下一步
 
+- 补齐 Vercel + PostgreSQL 生产部署链路
 - 补齐验证码与 AI 识别，使实现与 PRD 更一致
 - 增加基础接口 / 组件测试
 - 收口设置页内容
-- 规划 Electron 或 Tauri 桌面壳，把源码运行形态升级为可分发安装包

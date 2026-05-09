@@ -3,7 +3,7 @@
 > 版本: v1.0.0
 > 基础路径: `/api`
 > 认证方式: JWT Bearer Token
-> 部署模式: 纯本地部署（仅 DeepSeek API 外调）
+> 部署模式: 本地开发（SQLite）+ Vercel 生产部署（PostgreSQL）
 
 ---
 

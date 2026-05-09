@@ -14,7 +14,7 @@ export default function LoginPage() {
           今天的健康闭环，从一次清晰登录开始。
         </h1>
         <p className="max-w-xl text-lg leading-8 text-muted">
-          本地部署保存健康数据，仅在食物拍照识别时通过后端调用 DeepSeek。
+          健康数据安全存储，仅在食物拍照识别时通过后端调用 DeepSeek。
         </p>
       </div>
 

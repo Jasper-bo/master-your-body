@@ -5,14 +5,12 @@ Last updated: 2026-05-05
 This file captures active engineering and product decisions so they do not
 have to be rediscovered from code alone.
 
-## DEC-001: Keep the product local-first
+## DEC-001: Cloud-hosted with Vercel + PostgreSQL
 
 - Status: active
-- Decision: the primary runtime remains a local web app backed by SQLite
-- Why: this matches the current implementation, avoids cloud complexity, and
-  keeps iteration fast for a single-user prototype
-- Consequence: features should not assume remote sync, shared state, or
-  managed infrastructure unless explicitly requested
+- Decision: production runtime is Vercel + PostgreSQL; local development keeps SQLite for fast iteration
+- Why: this enables multi-user access via browser without local setup, while preserving zero-config local dev
+- Consequence: new features should work in both environments; avoid database-specific SQL unless abstracted through Prisma
 
 ## DEC-002: `my-app/` is the only runtime application
 

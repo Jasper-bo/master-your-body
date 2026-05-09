@@ -11,9 +11,9 @@ documents describe.
 ## Project Identity
 
 - Working name: VitalPulse / Stitch Body Health Insight Tracker
-- Current product form: local-first full-stack web app
+- Current product form: cloud-hosted full-stack web app (Vercel + PostgreSQL), with local SQLite dev mode
 - Runtime location: `my-app/`
-- Primary goal: make a minimal daily health loop usable on one local machine
+- Primary goal: make a daily health loop usable by multiple users via web browser
 
 ## Current Source Of Truth Hierarchy
 
@@ -36,7 +36,7 @@ currently implements a smaller MVP/prototype slice.
 - Dashboard with BMI, BMR, TDEE, nutrition progress, health score, and 7-day trend
 - Manual nutrition logging from predefined food categories
 - Quick training logging from a predefined exercise library
-- SQLite local persistence through Prisma
+- PostgreSQL persistence through Prisma (local dev uses SQLite)
 - Protected routes for dashboard, nutrition, training, and settings
 
 ### Partially implemented or placeholder
@@ -137,9 +137,8 @@ Models that exist but are not yet fully surfaced in the UI:
 
 ## Current Development Assumptions
 
-- The project should continue as a local-first application first
-- The next most valuable work is to close the daily-use loop, not to jump
-  straight to AI or desktop packaging
+- The project should continue as a cloud-hosted application with local dev fallback
+- The next most valuable work is to close the daily-use loop and complete the Vercel deployment pipeline
 - Manual logging must remain a first-class path even after AI features exist
 - Future contributors should update these memory files whenever the real
   product state changes

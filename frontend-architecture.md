@@ -6,7 +6,7 @@
 |------|------|------|
 | 框架 | Next.js 15 (App Router) | 服务端组件减少首屏 JS，API Routes 处理文件上传与 JWT 鉴权 |
 | 语言 | TypeScript 5.x | 全类型覆盖，接口与组件 props 严格定义 |
-| ORM | Prisma | API Routes 中操作 SQLite，类型安全 |
+| ORM | Prisma | API Routes 中操作 PostgreSQL（生产）/ SQLite（本地开发），类型安全 |
 | 样式 | Tailwind CSS 3.x | 推荐理由：原型全部基于 Tailwind；utility-first 适合仪表盘大量微布局；与 Next.js 零配置集成；设计令牌（color/surface/container）可直接映射为 Tailwind 自定义主题。不使用 CSS Modules，避免同一 feature 内样式文件与 TSX 分离维护。 |
 | 图表 | Recharts + 自定义 SVG | Recharts 负责 7 日营养趋势折线图（实线+虚线组合、Tooltip、图例显隐）；评分环形图用自定义 SVG `<circle>` 实现（单环动画轻量，无需引入图表库重渲染开销） |
 | 状态管理 | Zustand 4.x | 轻量、TypeScript 友好、无 Provider 嵌套，适合两份"购物车"型暂存状态（饮食 staging、训练 staging） |
