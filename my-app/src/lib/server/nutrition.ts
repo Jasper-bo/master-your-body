@@ -92,6 +92,12 @@ const categorySeeds = [
   sortOrder: number;
   foods: Array<[string, number, number, number, number]>;
 }>;
+const seededFoodCategoryNames = categorySeeds.map((category) => category.name);
+const seededFoodNames = categorySeeds.flatMap((category) =>
+  category.foods.map(([name]) => name),
+);
+const seededFoodCount = seededFoodNames.length;
+let systemFoodDataReady = false;
 
 const oilOptions: OilOptionData[] = [
   { id: "oil_none", label: "无油", amount: 0, unit: "g", calories: 0, fat: 0 },
@@ -233,6 +239,20 @@ export function parseCreateMealRequest(body: Record<string, unknown>) {
 }
 
 export async function ensureSystemFoodData(client: PrismaClientLike = prisma) {
+  const canUseReadyCache = client === prisma;
+
+  if (canUseReadyCache && systemFoodDataReady) {
+    return;
+  }
+
+  if (await hasCompleteSystemFoodData(client)) {
+    if (canUseReadyCache) {
+      systemFoodDataReady = true;
+    }
+
+    return;
+  }
+
   for (const categorySeed of categorySeeds) {
     const category =
       (await client.foodCategory.findUnique({
@@ -287,6 +307,30 @@ export async function ensureSystemFoodData(client: PrismaClientLike = prisma) {
       }
     }
   }
+
+  if (canUseReadyCache) {
+    systemFoodDataReady = true;
+  }
+}
+
+async function hasCompleteSystemFoodData(client: PrismaClientLike) {
+  const [categoryCount, foodCount] = await Promise.all([
+    client.foodCategory.count({
+      where: {
+        isSystem: true,
+        name: { in: seededFoodCategoryNames },
+      },
+    }),
+    client.foodItem.count({
+      where: {
+        isSystem: true,
+        isActive: true,
+        name: { in: seededFoodNames },
+      },
+    }),
+  ]);
+
+  return categoryCount >= categorySeeds.length && foodCount >= seededFoodCount;
 }
 
 export async function getFoodCategories(): Promise<FoodCategoryData[]> {

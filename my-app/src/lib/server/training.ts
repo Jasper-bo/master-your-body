@@ -106,6 +106,12 @@ const exerciseSeeds = [
   sortOrder: number;
   exercises: Array<[string, boolean, number | null, number | null, number | null]>;
 }>;
+const seededExerciseCategoryNames = exerciseSeeds.map((category) => category.name);
+const seededExerciseNames = exerciseSeeds.flatMap((category) =>
+  category.exercises.map(([name]) => name),
+);
+const seededExerciseCount = seededExerciseNames.length;
+let systemExerciseDataReady = false;
 
 const datePartsFormatter = new Intl.DateTimeFormat("zh-CN", {
   timeZone: TIME_ZONE,
@@ -288,6 +294,20 @@ export function parseQuickLogRequest(body: Record<string, unknown>) {
 }
 
 export async function ensureSystemExerciseData(client: PrismaClientLike = prisma) {
+  const canUseReadyCache = client === prisma;
+
+  if (canUseReadyCache && systemExerciseDataReady) {
+    return;
+  }
+
+  if (await hasCompleteSystemExerciseData(client)) {
+    if (canUseReadyCache) {
+      systemExerciseDataReady = true;
+    }
+
+    return;
+  }
+
   for (const categorySeed of exerciseSeeds) {
     const category =
       (await client.exerciseCategory.findUnique({
@@ -347,6 +367,32 @@ export async function ensureSystemExerciseData(client: PrismaClientLike = prisma
       }
     }
   }
+
+  if (canUseReadyCache) {
+    systemExerciseDataReady = true;
+  }
+}
+
+async function hasCompleteSystemExerciseData(client: PrismaClientLike) {
+  const [categoryCount, exerciseCount] = await Promise.all([
+    client.exerciseCategory.count({
+      where: {
+        isSystem: true,
+        name: { in: seededExerciseCategoryNames },
+      },
+    }),
+    client.exercise.count({
+      where: {
+        isSystem: true,
+        isActive: true,
+        name: { in: seededExerciseNames },
+      },
+    }),
+  ]);
+
+  return (
+    categoryCount >= exerciseSeeds.length && exerciseCount >= seededExerciseCount
+  );
 }
 
 export async function getExerciseLibrary(input: {
