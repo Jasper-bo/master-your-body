@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { apiRequest } from "@/lib/client/api";
@@ -83,6 +83,18 @@ export function TrainingClient({
     () => summarizePending(pendingExercises),
     [pendingExercises],
   );
+
+  useEffect(() => {
+    setToday(initialToday);
+  }, [initialToday]);
+
+  useEffect(() => {
+    setYesterday(initialYesterday);
+  }, [initialYesterday]);
+
+  useEffect(() => {
+    setWeeklyStats(initialWeeklyStats);
+  }, [initialWeeklyStats]);
 
   function handleCategoryChange(nextCategory: CategoryFilter) {
     setCategory(nextCategory);

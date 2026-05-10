@@ -137,3 +137,26 @@ export type QuickLogTrainingResponse = {
   };
   createdAt: string;
 };
+
+export type TrainingHistoryData = {
+  items: Array<{
+    id: string;
+    date: string;
+    durationMin: number;
+    totalExercises: number;
+    totalSets: number;
+    totalVolumeKg: number;
+    trainedParts: ExerciseCategoryKey[];
+    exercises: WorkoutExerciseData[];
+    notes: string | null;
+    createdAt: string;
+  }>;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+};

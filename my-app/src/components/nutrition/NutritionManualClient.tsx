@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -81,6 +81,10 @@ export function NutritionManualClient({
     () => calculatePendingTotals(pendingFoods, selectedOil),
     [pendingFoods, selectedOil],
   );
+
+  useEffect(() => {
+    setToday(initialToday);
+  }, [initialToday]);
 
   function addFood(category: FoodCategoryData) {
     const food = category.foods.find(

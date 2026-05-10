@@ -1,4 +1,6 @@
 import type { Prisma } from "@prisma/client";
+import { getDashboardData } from "@/lib/server/dashboard";
+import historyPolicy from "@/lib/server/history-policy";
 import { prisma } from "@/lib/server/prisma";
 import { isObject } from "@/lib/server/validators";
 import type {
@@ -7,11 +9,20 @@ import type {
   ExerciseData,
   ExerciseLibraryData,
   QuickLogTrainingResponse,
+  TrainingHistoryData,
   TrainingTodayData,
   TrainingWeeklyStatsData,
   TrainingYesterdayData,
   WorkoutSessionData,
 } from "@/types/training";
+
+const { parseHistoryQuery } = historyPolicy as {
+  parseHistoryQuery: (
+    kind: "training",
+    query: Record<string, unknown>,
+    today?: string,
+  ) => TrainingHistoryQuery | null;
+};
 
 const TIME_ZONE = "Asia/Shanghai";
 const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -141,6 +152,14 @@ type WorkoutWithExercises = Prisma.WorkoutRecordGetPayload<{
 }>;
 
 type PrismaClientLike = Prisma.TransactionClient | typeof prisma;
+type TrainingHistoryQuery = {
+  startDate: string;
+  endDate: string;
+  filter: ExerciseCategoryKey | "all";
+  page: number;
+  limit: number;
+  skip: number;
+};
 
 type QuickLogInput = {
   date: string;
@@ -168,6 +187,12 @@ export class TrainingValidationError extends Error {
 export class TrainingExerciseNotFoundError extends Error {
   constructor() {
     super("训练动作不存在或不可用");
+  }
+}
+
+export class TrainingRecordNotFoundError extends Error {
+  constructor() {
+    super("训练记录不存在");
   }
 }
 
@@ -291,6 +316,10 @@ export function parseQuickLogRequest(body: Record<string, unknown>) {
     notes,
     exercises: exercises as QuickLogInput["exercises"],
   } satisfies QuickLogInput;
+}
+
+export function parseTrainingHistoryQuery(query: Record<string, unknown>) {
+  return parseHistoryQuery("training", query, getTodayDateKey());
 }
 
 export async function ensureSystemExerciseData(client: PrismaClientLike = prisma) {
@@ -634,6 +663,48 @@ export async function getTrainingWeeklyStats(
   };
 }
 
+export async function getTrainingHistory(
+  userId: string,
+  input: TrainingHistoryQuery,
+): Promise<TrainingHistoryData> {
+  const where: Prisma.WorkoutRecordWhereInput = {
+    userId,
+    status: "completed",
+    workoutDate: {
+      gte: dateFromKey(input.startDate),
+      lte: dateFromKey(input.endDate),
+    },
+    ...(input.filter !== "all"
+      ? {
+          workoutExercises: {
+            some: {
+              exercise: {
+                category: {
+                  name: categoryNameByKey[input.filter],
+                },
+              },
+            },
+          },
+        }
+      : {}),
+  };
+  const [sessions, total] = await Promise.all([
+    prisma.workoutRecord.findMany({
+      where,
+      orderBy: [{ workoutDate: "desc" }, { createdAt: "desc" }],
+      skip: input.skip,
+      take: input.limit,
+      include: workoutInclude,
+    }),
+    prisma.workoutRecord.count({ where }),
+  ]);
+
+  return {
+    items: sessions.map(serializeHistorySession),
+    pagination: buildPagination(input.page, input.limit, total),
+  };
+}
+
 export async function quickLogTraining(
   userId: string,
   input: QuickLogInput,
@@ -767,6 +838,51 @@ export async function quickLogTraining(
   };
 }
 
+export async function deleteTrainingRecord(userId: string, sessionId: string) {
+  const session = await prisma.workoutRecord.findFirst({
+    where: {
+      id: sessionId,
+      userId,
+    },
+    select: {
+      id: true,
+      workoutDate: true,
+    },
+  });
+
+  if (!session) {
+    throw new TrainingRecordNotFoundError();
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.workoutRecord.delete({ where: { id: session.id } });
+    const remainingCompletedSessions = await tx.workoutRecord.count({
+      where: {
+        userId,
+        workoutDate: session.workoutDate,
+        status: "completed",
+      },
+    });
+
+    await tx.healthChecklist.upsert({
+      where: { userId_recordDate: { userId, recordDate: session.workoutDate } },
+      create: {
+        userId,
+        recordDate: session.workoutDate,
+        exerciseDone: remainingCompletedSessions > 0,
+      },
+      update: {
+        exerciseDone: remainingCompletedSessions > 0,
+      },
+    });
+  });
+  await getDashboardData(userId, keyFromDate(session.workoutDate));
+
+  return {
+    deletedId: session.id,
+  };
+}
+
 async function findSessions(userId: string, dateKey: string) {
   return prisma.workoutRecord.findMany({
     where: {
@@ -794,6 +910,39 @@ async function markExerciseDone(
       exerciseDone: true,
     },
   });
+}
+
+function serializeHistorySession(session: WorkoutWithExercises) {
+  const serialized = serializeSession(session, 0);
+  const trainedParts = Array.from(
+    new Set(serialized.exercises.map((exercise) => exercise.category)),
+  );
+
+  return {
+    id: session.id,
+    date: keyFromDate(session.workoutDate),
+    durationMin: session.totalDurationMin,
+    totalExercises: session.totalExercises,
+    totalSets: session.totalSetsCompleted,
+    totalVolumeKg: serialized.summary.totalVolumeKg,
+    trainedParts,
+    exercises: serialized.exercises,
+    notes: session.notes,
+    createdAt: session.createdAt.toISOString(),
+  };
+}
+
+function buildPagination(page: number, limit: number, total: number) {
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  return {
+    page,
+    limit,
+    total,
+    totalPages,
+    hasNext: page < totalPages,
+    hasPrev: page > 1,
+  };
 }
 
 function serializeExercise(exercise: {

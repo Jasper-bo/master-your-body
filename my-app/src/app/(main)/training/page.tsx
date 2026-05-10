@@ -2,14 +2,17 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ModuleShell } from "@/components/app/ModuleShell";
 import { TrainingClient } from "@/components/training/TrainingClient";
+import { TrainingHistoryClient } from "@/components/training/TrainingHistoryClient";
 import { ACCESS_COOKIE } from "@/lib/server/cookies";
 import { serverEnv } from "@/lib/server/env";
 import { verifyJwt } from "@/lib/server/jwt";
 import {
   getExerciseLibrary,
+  getTrainingHistory,
   getTrainingToday,
   getTrainingWeeklyStats,
   getTrainingYesterday,
+  parseTrainingHistoryQuery,
 } from "@/lib/server/training";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +31,12 @@ export default async function TrainingPage() {
         initialWeeklyStats={data.weeklyStats}
         initialYesterday={data.yesterday}
         library={data.library}
+      />
+      <TrainingHistoryClient
+        initialCategory={data.historyQuery.filter}
+        initialEndDate={data.historyQuery.endDate}
+        initialHistory={data.history}
+        initialStartDate={data.historyQuery.startDate}
       />
     </ModuleShell>
   );
@@ -50,11 +59,18 @@ async function loadTrainingPageData() {
     redirect("/login");
   }
 
-  const [today, yesterday, weeklyStats, library] = await Promise.all([
+  const historyQuery = parseTrainingHistoryQuery({});
+
+  if (!historyQuery) {
+    throw new Error("Default training history query is invalid");
+  }
+
+  const [today, yesterday, weeklyStats, library, history] = await Promise.all([
     getTrainingToday(userId),
     getTrainingYesterday(userId),
     getTrainingWeeklyStats(userId),
     getExerciseLibrary(),
+    getTrainingHistory(userId, historyQuery),
   ]);
 
   return {
@@ -62,5 +78,7 @@ async function loadTrainingPageData() {
     yesterday,
     weeklyStats,
     library,
+    history,
+    historyQuery,
   };
 }

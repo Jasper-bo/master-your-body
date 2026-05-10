@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-05-10
+Last updated: 2026-05-11
 
 ## Purpose
 
@@ -36,6 +36,9 @@ currently implements a smaller MVP/prototype slice.
 - Dashboard with BMI, BMR, TDEE, nutrition progress, health score, and 7-day trend
 - Manual nutrition logging from predefined food categories
 - Quick training logging from a predefined exercise library
+- Health checklist input for water intake and sleep duration
+- Nutrition history review and deletion
+- Training history review and deletion
 - PostgreSQL persistence through Prisma
 - Protected routes for dashboard, nutrition, training, and settings
 
@@ -43,8 +46,8 @@ currently implements a smaller MVP/prototype slice.
 
 - Settings page exists but should stay intentionally simple: app version and
   publisher `贺俊博`
-- Dashboard shows health checklist status, but the user does not yet have a
-  real flow for recording water and sleep
+- Nutrition and training history support viewing and deleting records; editing
+  historical meal items or workout sets is not implemented yet
 - Profile update exists, but the update flow is spread across multiple API
   surfaces
 - Data models exist for AI food photo recognition and app settings, but the
@@ -53,8 +56,7 @@ currently implements a smaller MVP/prototype slice.
 
 ### Not implemented yet
 
-- Health checklist input flow for water and sleep
-- Nutrition and training history management
+- Nutrition and training history edit-in-place flows
 - Qwen food photo upload and recognition flow
 - Automated test suite
 

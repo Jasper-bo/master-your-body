@@ -1,19 +1,19 @@
 # Todo
 
-Last updated: 2026-05-10
+Last updated: 2026-05-11
 
 This file tracks the recommended next work based on the current codebase, not
 only the broader PRD.
 
 ## P0: Highest priority
 
-- [ ] Build real health checklist input for water and sleep
-  Reason: dashboard and score logic already depend on this data, but users do
-  not yet have a proper input flow.
+- [x] Build real health checklist input for water and sleep
+  Result: dashboard users can now record water intake and sleep duration, and
+  those values feed the health score aggregation path.
 
-- [ ] Add nutrition and training history management
-  Reason: the app can create records, but long-term daily use needs better
-  review, edit, and cleanup flows.
+- [x] Add nutrition and training history management MVP
+  Reason: the app can now review and delete historical nutrition and training
+  records. Full edit-in-place flows remain a later extension.
 
 - [ ] Expand the baseline automated test suite
   Reason: auth request refresh and logout policy now have focused tests, but
@@ -25,6 +25,11 @@ only the broader PRD.
   overlapping API surfaces.
 
 ## P1: Next after the core loop is stable
+
+- [ ] Add edit-in-place support for nutrition and training history
+  Scope: allow correcting historical meal items and workout sets while keeping
+  `daily_nutrition`, `health_checklist.exercise_done`, and health scores in
+  sync.
 
 - [ ] Simplify settings into a small app information page
   Scope: show app version and publisher `贺俊博`. Do not expand it into a

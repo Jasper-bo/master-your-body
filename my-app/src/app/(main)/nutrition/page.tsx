@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ModuleShell } from "@/components/app/ModuleShell";
+import { NutritionHistoryClient } from "@/components/nutrition/NutritionHistoryClient";
 import { NutritionManualClient } from "@/components/nutrition/NutritionManualClient";
 import { Card } from "@/components/ui/Card";
 import { ACCESS_COOKIE } from "@/lib/server/cookies";
@@ -8,9 +9,11 @@ import { serverEnv } from "@/lib/server/env";
 import { verifyJwt } from "@/lib/server/jwt";
 import {
   getFoodCategories,
+  getNutritionHistory,
   getNutritionToday,
   getOilOptions,
   NutritionProfileMissingError,
+  parseNutritionHistoryQuery,
 } from "@/lib/server/nutrition";
 
 export const dynamic = "force-dynamic";
@@ -45,6 +48,12 @@ export default async function NutritionPage() {
         initialToday={data.today}
         oilOptions={data.oilOptions}
       />
+      <NutritionHistoryClient
+        initialEndDate={data.historyQuery.endDate}
+        initialHistory={data.history}
+        initialMealType={data.historyQuery.filter}
+        initialStartDate={data.historyQuery.startDate}
+      />
     </ModuleShell>
   );
 }
@@ -67,16 +76,25 @@ async function loadNutritionPageData() {
   }
 
   try {
-    const [today, categories, oilOptions] = await Promise.all([
+    const historyQuery = parseNutritionHistoryQuery({});
+
+    if (!historyQuery) {
+      throw new Error("Default nutrition history query is invalid");
+    }
+
+    const [today, categories, oilOptions, history] = await Promise.all([
       getNutritionToday(userId),
       getFoodCategories(),
       Promise.resolve(getOilOptions()),
+      getNutritionHistory(userId, historyQuery),
     ]);
 
     return {
       today,
       categories,
       oilOptions,
+      history,
+      historyQuery,
     };
   } catch (error) {
     if (error instanceof NutritionProfileMissingError) {

@@ -1,5 +1,7 @@
 import type { Prisma, MealType } from "@prisma/client";
 import { calculateFoodNutrition } from "@/lib/nutrition-math";
+import { getDashboardData } from "@/lib/server/dashboard";
+import historyPolicy from "@/lib/server/history-policy";
 import { prisma } from "@/lib/server/prisma";
 import { isObject } from "@/lib/server/validators";
 import type {
@@ -7,9 +9,18 @@ import type {
   FoodCategoryData,
   FoodCategoryKey,
   MealRecordData,
+  NutritionHistoryData,
   NutritionTodayData,
   OilOptionData,
 } from "@/types/nutrition";
+
+const { parseHistoryQuery } = historyPolicy as {
+  parseHistoryQuery: (
+    kind: "nutrition",
+    query: Record<string, unknown>,
+    today?: string,
+  ) => NutritionHistoryQuery | null;
+};
 
 const TIME_ZONE = "Asia/Shanghai";
 const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -130,6 +141,14 @@ const mealInclude = {
 
 type MealWithFoods = Prisma.MealRecordGetPayload<{ include: typeof mealInclude }>;
 type PrismaClientLike = Prisma.TransactionClient | typeof prisma;
+type NutritionHistoryQuery = {
+  startDate: string;
+  endDate: string;
+  filter: MealType | "all";
+  page: number;
+  limit: number;
+  skip: number;
+};
 
 type CreateMealInput = {
   mealType: MealType;
@@ -236,6 +255,10 @@ export function parseCreateMealRequest(body: Record<string, unknown>) {
     items,
     oilOptionId,
   } satisfies CreateMealInput;
+}
+
+export function parseNutritionHistoryQuery(query: Record<string, unknown>) {
+  return parseHistoryQuery("nutrition", query, getTodayDateKey());
 }
 
 export async function ensureSystemFoodData(client: PrismaClientLike = prisma) {
@@ -439,6 +462,38 @@ export async function getNutritionToday(
   };
 }
 
+export async function getNutritionHistory(
+  userId: string,
+  input: NutritionHistoryQuery,
+): Promise<NutritionHistoryData> {
+  const where: Prisma.MealRecordWhereInput = {
+    userId,
+    recordDate: {
+      gte: dateFromKey(input.startDate),
+      lte: dateFromKey(input.endDate),
+    },
+    ...(input.filter !== "all" ? { mealType: input.filter } : {}),
+  };
+  const [meals, total] = await Promise.all([
+    prisma.mealRecord.findMany({
+      where,
+      orderBy: [{ recordDate: "desc" }, { createdAt: "desc" }],
+      skip: input.skip,
+      take: input.limit,
+      include: mealInclude,
+    }),
+    prisma.mealRecord.count({ where }),
+  ]);
+
+  return {
+    items: meals.map((meal) => ({
+      ...serializeMeal(meal),
+      date: keyFromDate(meal.recordDate),
+    })),
+    pagination: buildPagination(input.page, input.limit, total),
+  };
+}
+
 export async function recordMeal(
   userId: string,
   input: CreateMealInput,
@@ -575,9 +630,23 @@ export async function deleteMealRecord(userId: string, mealId: string) {
     await tx.mealRecord.delete({ where: { id: meal.id } });
     await recalculateDailyNutrition(userId, meal.recordDate, profile, tx);
   });
+  await getDashboardData(userId, keyFromDate(meal.recordDate));
 
   return {
     deletedId: meal.id,
+  };
+}
+
+function buildPagination(page: number, limit: number, total: number) {
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  return {
+    page,
+    limit,
+    total,
+    totalPages,
+    hasNext: page < totalPages,
+    hasPrev: page > 1,
   };
 }
 

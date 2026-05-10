@@ -84,3 +84,15 @@ export type CreateMealResponse = {
   totalFat: number;
   createdAt: string;
 };
+
+export type NutritionHistoryData = {
+  items: Array<MealRecordData & { date: string }>;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+};
