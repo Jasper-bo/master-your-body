@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 720" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
+    <filter id="shadow"><feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#00000015"/></filter>
+  </defs>
+
+  <rect width="1000" height="720" fill="#f8fafc" rx="8"/>
+
+  <text x="500" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">核心业务对象 — 状态转换图</text>
+  <line x1="250" y1="44" x2="750" y2="44" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- ============================================ -->
+  <!-- 1. WorkoutRecord State Transition           -->
+  <!-- ============================================ -->
+  <text x="50" y="80" font-size="15" font-weight="bold" fill="#dc2626">1. WorkoutRecord (训练记录) 状态转换 — workout_status</text>
+
+  <!-- State: in_progress -->
+  <rect x="50" y="100" width="170" height="55" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="135" y="125" text-anchor="middle" font-size="13" font-weight="bold" fill="#92400e">in_progress</text>
+  <text x="135" y="143" text-anchor="middle" font-size="10" fill="#92400e">进行中 (默认初始状态)</text>
+
+  <!-- State: completed -->
+  <rect x="380" y="100" width="170" height="55" rx="10" fill="#dcfce7" stroke="#22c55e" stroke-width="2" filter="url(#shadow)"/>
+  <text x="465" y="125" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534">completed</text>
+  <text x="465" y="143" text-anchor="middle" font-size="10" fill="#166534">已完成 (终态)</text>
+
+  <!-- State: cancelled -->
+  <rect x="700" y="100" width="170" height="55" rx="10" fill="#fee2e2" stroke="#ef4444" stroke-width="2" filter="url(#shadow)"/>
+  <text x="785" y="125" text-anchor="middle" font-size="13" font-weight="bold" fill="#991b1b">cancelled</text>
+  <text x="785" y="143" text-anchor="middle" font-size="10" fill="#991b1b">已取消 (终态)</text>
+
+  <!-- Transitions -->
+  <path d="M220,128 C300,110 300,110 380,128" fill="none" stroke="#22c55e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="300" y="105" text-anchor="middle" font-size="9" fill="#166534">用户完成所有组</text>
+  <text x="300" y="118" text-anchor="middle" font-size="9" fill="#166534">[quick-log / 手动完成]</text>
+
+  <path d="M220,140 C300,160 340,165 380,150" fill="none" stroke="#ef4444" stroke-width="2"/>
+  <path d="M220,140 C250,155 280,160 300,155" fill="none" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <path d="M135,155 C135,180 135,185 135,210" fill="none" stroke="#475569" stroke-width="1.2" stroke-dasharray="4,2"/>
+  <path d="M465,155 C465,180 465,185 465,210" fill="none" stroke="#475569" stroke-width="1.2" stroke-dasharray="4,2"/>
+
+  <!-- Side effects box for completed -->
+  <rect x="350" y="175" width="300" height="50" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="500" y="195" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">completed 触发的副作用:</text>
+  <text x="500" y="212" text-anchor="middle" font-size="9" fill="#166534">① markExerciseDone → upsert health_checklist (exerciseDone=true)</text>
+  <text x="500" y="224" text-anchor="middle" font-size="9" fill="#166534">② 参与7日运动趋势统计 + 健康评分计算 + 周环比统计</text>
+
+  <!-- ============================================ -->
+  <!-- 2. User Account State Transition             -->
+  <!-- ============================================ -->
+  <text x="50" y="270" font-size="15" font-weight="bold" fill="#2563eb">2. User (用户账号) 状态转换 — is_active + login_failures + locked_until</text>
+
+  <!-- State: Normal -->
+  <rect x="50" y="290" width="180" height="60" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="140" y="315" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">正常状态 (Active)</text>
+  <text x="140" y="335" text-anchor="middle" font-size="10" fill="#1e40af">isActive=true, failures=0</text>
+
+  <!-- State: Locked -->
+  <rect x="410" y="290" width="180" height="60" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="500" y="315" text-anchor="middle" font-size="13" font-weight="bold" fill="#92400e">临时锁定 (Locked)</text>
+  <text x="500" y="335" text-anchor="middle" font-size="10" fill="#92400e">lockedUntil = now + 30min</text>
+
+  <!-- State: Disabled -->
+  <rect x="770" y="290" width="180" height="60" rx="10" fill="#fee2e2" stroke="#ef4444" stroke-width="2" filter="url(#shadow)"/>
+  <text x="860" y="315" text-anchor="middle" font-size="13" font-weight="bold" fill="#991b1b">已禁用 (Disabled)</text>
+  <text x="860" y="335" text-anchor="middle" font-size="10" fill="#991b1b">isActive=false (终态)</text>
+
+  <!-- Transitions -->
+  <path d="M230,310 C320,290 320,290 410,310" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="320" y="282" text-anchor="middle" font-size="9" fill="#92400e">连续登录失败 ≥ 5次</text>
+  <text x="320" y="295" text-anchor="middle" font-size="9" fill="#92400e">login_failures >= loginMaxFailures</text>
+
+  <path d="M500,290 C500,270 400,270 320,270 C250,270 250,290 230,310" fill="none" stroke="#3b82f6" stroke-width="2"/>
+  <path d="M500,290 C500,270 400,270 320,270 C250,270 250,310 240,320" fill="none" stroke="#22c55e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="370" y="260" text-anchor="middle" font-size="9" fill="#166534">锁定时间到期 (自动解锁)</text>
+  <text x="370" y="273" text-anchor="middle" font-size="9" fill="#166534">or 密码正确登录 (重置failures)</text>
+
+  <path d="M140,350 C140,380 140,400 140,420" fill="none" stroke="#475569" stroke-width="1" stroke-dasharray="4,2"/>
+
+  <!-- Disabled transitions -->
+  <path d="M230,330 C400,350 650,350 770,330" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="500" y="375" text-anchor="middle" font-size="9" fill="#991b1b">管理员禁用 / 用户注销</text>
+
+  <path d="M860,290 C860,275 860,275 860,260 C860,245 700,245 590,260" fill="none" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="725" y="255" text-anchor="middle" font-size="9" fill="#166534">管理员重新启用</text>
+
+  <!-- ============================================ -->
+  <!-- 3. FoodPhoto State Transition                -->
+  <!-- ============================================ -->
+  <text x="50" y="440" font-size="15" font-weight="bold" fill="#d97706">3. FoodPhoto (食物照片识别) 状态转换 — photo_status</text>
+
+  <!-- State: pending -->
+  <rect x="50" y="460" width="170" height="55" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="135" y="485" text-anchor="middle" font-size="13" font-weight="bold" fill="#92400e">pending</text>
+  <text x="135" y="503" text-anchor="middle" font-size="10" fill="#92400e">待识别 (上传后默认)</text>
+
+  <!-- State: success -->
+  <rect x="380" y="460" width="170" height="55" rx="10" fill="#dcfce7" stroke="#22c55e" stroke-width="2" filter="url(#shadow)"/>
+  <text x="465" y="485" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534">success</text>
+  <text x="465" y="503" text-anchor="middle" font-size="10" fill="#166534">识别成功 (终态)</text>
+
+  <!-- State: failed -->
+  <rect x="700" y="460" width="170" height="55" rx="10" fill="#fee2e2" stroke="#ef4444" stroke-width="2" filter="url(#shadow)"/>
+  <text x="785" y="485" text-anchor="middle" font-size="13" font-weight="bold" fill="#991b1b">failed</text>
+  <text x="785" y="503" text-anchor="middle" font-size="10" fill="#991b1b">识别失败 (终态)</text>
+
+  <!-- Transitions -->
+  <path d="M220,488 C300,470 300,470 380,488" fill="none" stroke="#22c55e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="300" y="462" text-anchor="middle" font-size="9" fill="#166534">AI识别成功</text>
+  <text x="300" y="475" text-anchor="middle" font-size="9" fill="#166534">→ recognizedFoodName + nutritionG</text>
+
+  <path d="M220,500 C280,510 320,512 380,505" fill="none" stroke="#ef4444" stroke-width="2"/>
+  <path d="M220,500 C260,515 290,515 310,515" fill="none" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="300" y="525" text-anchor="middle" font-size="9" fill="#991b1b">识别失败</text>
+  <text x="300" y="538" text-anchor="middle" font-size="9" fill="#991b1b">→ errorMessage 记录原因</text>
+
+  <!-- ============================================ -->
+  <!-- 4. Dashboard Completion Rate                 -->
+  <!-- ============================================ -->
+  <text x="50" y="570" font-size="15" font-weight="bold" fill="#7c3aed">4. Dashboard 完成率 (completionRate) 计算逻辑</text>
+
+  <rect x="50" y="590" width="900" height="115" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1"/>
+  <text x="500" y="612" text-anchor="middle" font-size="12" font-weight="bold" fill="#5b21b6">completionRate = nutritionRate × 50% + workoutRate × 50%</text>
+
+  <rect x="80" y="628" width="380" height="60" rx="5" fill="#fff" stroke="#d8b4fe" stroke-width="1"/>
+  <text x="270" y="648" text-anchor="middle" font-size="11" font-weight="bold" fill="#7c3aed">nutritionRate = min(currentCalories/targetCalories, 1)</text>
+  <text x="270" y="665" text-anchor="middle" font-size="10" fill="#7c3aed">当日卡路里达成比例 (最高100%), targetCalories=0 → 0</text>
+  <text x="270" y="680" text-anchor="middle" font-size="10" fill="#7c3aed">权重: 50%</text>
+
+  <rect x="540" y="628" width="380" height="60" rx="5" fill="#fff" stroke="#d8b4fe" stroke-width="1"/>
+  <text x="730" y="648" text-anchor="middle" font-size="11" font-weight="bold" fill="#7c3aed">workoutRate = completedWorkouts &gt; 0 ? 1 : 0</text>
+  <text x="730" y="665" text-anchor="middle" font-size="10" fill="#7c3aed">当日有已完成训练 → 100%, 没有 → 0%</text>
+  <text x="730" y="680" text-anchor="middle" font-size="10" fill="#7c3aed">权重: 50%</text>
+
+</svg>

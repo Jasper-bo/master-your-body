@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 620" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow-one" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-many" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#dc2626"/>
+    </marker>
+    <filter id="shadow"><feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#00000015"/></filter>
+  </defs>
+
+  <rect width="800" height="620" fill="#f8fafc" rx="8"/>
+
+  <text x="400" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">E-R 图 — 认证模块 (Auth Module)</text>
+  <line x1="200" y1="44" x2="600" y2="44" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- ========== Entity: User ========== -->
+  <rect x="300" y="70" width="200" height="230" rx="6" fill="#fff" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="300" y="70" width="200" height="32" rx="6" fill="#2563eb"/>
+  <rect x="300" y="90" width="200" height="12" fill="#2563eb"/>
+  <text x="400" y="91" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">User (用户)</text>
+
+  <text x="313" y="118" font-size="11" font-weight="bold" fill="#1e40af">PK</text>
+  <text x="345" y="118" font-size="11" fill="#334155">id</text>
+  <text x="500" y="118" font-size="10" fill="#64748b">UUID</text>
+
+  <text x="313" y="137" font-size="11" font-weight="bold" fill="#d97706">UK</text>
+  <text x="345" y="137" font-size="11" fill="#334155">phone</text>
+  <text x="500" y="137" font-size="10" fill="#64748b">string</text>
+
+  <text x="313" y="156" font-size="11" fill="#94a3b8">—</text>
+  <text x="345" y="156" font-size="11" fill="#334155">password_hash</text>
+  <text x="500" y="156" font-size="10" fill="#64748b">string</text>
+
+  <text x="313" y="175" font-size="11" fill="#94a3b8">—</text>
+  <text x="345" y="175" font-size="11" fill="#334155">is_active</text>
+  <text x="500" y="175" font-size="10" fill="#64748b">boolean</text>
+
+  <text x="313" y="194" font-size="11" fill="#94a3b8">—</text>
+  <text x="345" y="194" font-size="11" fill="#334155">login_failures</text>
+  <text x="500" y="194" font-size="10" fill="#64748b">int (default:0)</text>
+
+  <text x="313" y="213" font-size="11" fill="#94a3b8">—</text>
+  <text x="345" y="213" font-size="11" fill="#334155">locked_until</text>
+  <text x="500" y="213" font-size="10" fill="#64748b">datetime?</text>
+
+  <text x="313" y="232" font-size="11" fill="#94a3b8">—</text>
+  <text x="345" y="232" font-size="11" fill="#334155">last_login_at</text>
+  <text x="500" y="232" font-size="10" fill="#64748b">datetime?</text>
+
+  <text x="313" y="251" font-size="11" fill="#94a3b8">—</text>
+  <text x="345" y="251" font-size="11" fill="#334155">created_at</text>
+  <text x="500" y="251" font-size="10" fill="#64748b">datetime</text>
+
+  <text x="313" y="270" font-size="11" fill="#94a3b8">—</text>
+  <text x="345" y="270" font-size="11" fill="#334155">updated_at</text>
+  <text x="500" y="270" font-size="10" fill="#64748b">datetime</text>
+
+  <!-- ========== Entity: UserProfile ========== -->
+  <rect x="50" y="370" width="240" height="195" rx="6" fill="#fff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="50" y="370" width="240" height="32" rx="6" fill="#059669"/>
+  <rect x="50" y="390" width="240" height="12" fill="#059669"/>
+  <text x="170" y="391" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">UserProfile (用户档案)</text>
+
+  <text x="63" y="420" font-size="11" font-weight="bold" fill="#065f46">PK</text>
+  <text x="95" y="420" font-size="11" fill="#334155">id</text>
+  <text x="230" y="420" font-size="10" fill="#64748b">UUID</text>
+
+  <text x="63" y="439" font-size="11" font-weight="bold" fill="#2563eb">UK,FK</text>
+  <text x="95" y="439" font-size="11" fill="#334155">user_id</text>
+  <text x="230" y="439" font-size="10" fill="#64748b">→ User.id</text>
+
+  <text x="63" y="458" font-size="11" fill="#94a3b8">—</text>
+  <text x="95" y="458" font-size="11" fill="#334155">nickname</text>
+  <text x="230" y="458" font-size="10" fill="#64748b">string?</text>
+
+  <text x="63" y="477" font-size="11" fill="#94a3b8">—</text>
+  <text x="95" y="477" font-size="11" fill="#334155">gender</text>
+  <text x="230" y="477" font-size="10" fill="#64748b">enum(male/female/other)</text>
+
+  <text x="63" y="496" font-size="11" fill="#94a3b8">—</text>
+  <text x="95" y="496" font-size="11" fill="#334155">age, height_cm, weight_kg</text>
+  <text x="230" y="496" font-size="10" fill="#64748b">int, decimal, decimal</text>
+
+  <text x="63" y="515" font-size="11" fill="#94a3b8">—</text>
+  <text x="95" y="515" font-size="11" fill="#334155">activity_level</text>
+  <text x="230" y="515" font-size="10" fill="#64748b">enum(4 levels)</text>
+
+  <text x="63" y="534" font-size="11" fill="#94a3b8">—</text>
+  <text x="95" y="534" font-size="11" fill="#334155">fitness_goal</text>
+  <text x="230" y="534" font-size="10" fill="#64748b">enum(lose/maintain/gain)</text>
+
+  <text x="63" y="553" font-size="11" fill="#94a3b8">—</text>
+  <text x="95" y="553" font-size="11" fill="#334155">每日热量/蛋白/碳水/脂肪目标</text>
+  <text x="70" y="529" font-size="9" fill="#6b7280">*daily_calorie/protein/carbs/fat_target*</text>
+
+  <!-- ========== Entity: RefreshToken ========== -->
+  <rect x="510" y="370" width="210" height="175" rx="6" fill="#fff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="510" y="370" width="210" height="32" rx="6" fill="#7c3aed"/>
+  <rect x="510" y="390" width="210" height="12" fill="#7c3aed"/>
+  <text x="615" y="391" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">RefreshToken (刷新令牌)</text>
+
+  <text x="523" y="420" font-size="11" font-weight="bold" fill="#5b21b6">PK</text>
+  <text x="555" y="420" font-size="11" fill="#334155">id</text>
+  <text x="680" y="420" font-size="10" fill="#64748b">UUID</text>
+
+  <text x="523" y="439" font-size="11" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="555" y="439" font-size="11" fill="#334155">user_id</text>
+  <text x="680" y="439" font-size="10" fill="#64748b">→ User.id</text>
+
+  <text x="523" y="458" font-size="11" font-weight="bold" fill="#d97706">UK</text>
+  <text x="555" y="458" font-size="11" fill="#334155">token_hash</text>
+  <text x="680" y="458" font-size="10" fill="#64748b">string (SHA-256)</text>
+
+  <text x="523" y="477" font-size="11" fill="#94a3b8">—</text>
+  <text x="555" y="477" font-size="11" fill="#334155">expires_at</text>
+  <text x="680" y="477" font-size="10" fill="#64748b">datetime</text>
+
+  <text x="523" y="496" font-size="11" fill="#94a3b8">—</text>
+  <text x="555" y="496" font-size="11" fill="#334155">revoked</text>
+  <text x="680" y="496" font-size="10" fill="#64748b">boolean (default:false)</text>
+
+  <text x="523" y="515" font-size="11" fill="#94a3b8">—</text>
+  <text x="555" y="515" font-size="11" fill="#334155">created_at</text>
+  <text x="680" y="515" font-size="10" fill="#64748b">datetime</text>
+
+  <!-- ========== Entity: AppSetting ========== -->
+  <rect x="510" y="180" width="210" height="120" rx="6" fill="#fff" stroke="#d97706" stroke-width="1.5" stroke-dasharray="5,3" filter="url(#shadow)"/>
+  <rect x="510" y="180" width="210" height="28" rx="6" fill="#d97706"/>
+  <rect x="510" y="196" width="210" height="12" fill="#d97706"/>
+  <text x="615" y="198" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">AppSetting (应用设置)</text>
+
+  <text x="523" y="226" font-size="10" font-weight="bold" fill="#92400e">PK</text>
+  <text x="552" y="226" font-size="10" fill="#334155">id</text>
+
+  <text x="523" y="244" font-size="10" fill="#92400e">FK</text>
+  <text x="552" y="244" font-size="10" fill="#334155">user_id</text>
+
+  <text x="523" y="262" font-size="10" fill="#94a3b8">—</text>
+  <text x="552" y="262" font-size="10" fill="#334155">setting_key, setting_value</text>
+
+  <text x="523" y="280" font-size="10" fill="#94a3b8">—</text>
+  <text x="552" y="280" font-size="10" fill="#334155">value_type (enum)</text>
+
+  <!-- ========== Relationships ========== -->
+
+  <!-- User 1:1 UserProfile -->
+  <line x1="300" y1="185" x2="290" y2="185" stroke="#2563eb" stroke-width="2"/>
+  <line x1="290" y1="185" x2="290" y2="460" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-one)"/>
+  <circle cx="290" cy="185" r="3" fill="#2563eb"/>
+  <text x="268" y="330" font-size="10" fill="#2563eb" transform="rotate(-90,268,330)">1 : 1</text>
+  <text x="252" y="330" font-size="9" fill="#64748b" transform="rotate(-90,252,330)">has one</text>
+
+  <!-- User 1:N RefreshToken -->
+  <line x1="500" y1="175" x2="520" y2="440" stroke="#dc2626" stroke-width="2"/>
+  <circle cx="510" cy="175" r="3" fill="#dc2626"/>
+  <text x="510" y="300" font-size="10" fill="#dc2626" transform="rotate(-85,510,300)">1 : N</text>
+  <text x="530" y="300" font-size="9" fill="#64748b">has many</text>
+
+  <!-- User 1:N AppSetting -->
+  <line x1="500" y1="220" x2="510" y2="230" stroke="#d97706" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <circle cx="505" cy="220" r="2" fill="#d97706"/>
+  <text x="505" y="210" font-size="9" fill="#d97706">1 : N</text>
+
+  <!-- JWT Token flow note -->
+  <rect x="40" y="70" width="200" height="130" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+  <text x="140" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">JWT 认证流程</text>
+  <text x="55" y="112" font-size="10" fill="#166534">1. 注册/登录 → bcrypt 验证密码</text>
+  <text x="55" y="130" font-size="10" fill="#166534">2. 签发 Access Token (短期)</text>
+  <text x="55" y="148" font-size="10" fill="#166534">3. 签发 Refresh Token (长期)</text>
+  <text x="55" y="166" font-size="10" fill="#166534">4. Access 过期 → /refresh 刷新</text>
+  <text x="55" y="184" font-size="10" fill="#166534">5. 登出 → 吊销 Refresh Token</text>
+
+  <!-- Lockout note -->
+  <rect x="40" y="220" width="200" height="85" rx="6" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <text x="140" y="242" text-anchor="middle" font-size="12" font-weight="bold" fill="#991b1b">登录锁定机制</text>
+  <text x="55" y="262" font-size="10" fill="#991b1b">login_failures ≥ 5</text>
+  <text x="55" y="278" font-size="10" fill="#991b1b">→ locked_until = now + 30min</text>
+  <text x="55" y="294" font-size="10" fill="#991b1b">成功登录 → 重置 failures + 解锁</text>
+
+  <!-- Legend -->
+  <rect x="40" y="595" width="720" height="20" rx="4" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="609" font-size="9" fill="#64748b">PK = 主键 | UK = 唯一键 | FK = 外键 | ── = 普通属性 | 实线边框 = 核心实体 | 虚线边框 = 辅助实体</text>
+</svg>

@@ -145,38 +145,20 @@ API 请求返回 401 (UNAUTHORIZED)
          │          │(表单待填写) │                  │
          │          └──────┬──────┘                  │
          │                 │                         │
-         │    点击验证码图   │                         │
-         │                 ▼                         │
-         │    ┌─────────────────┐   加载成功         │
-         │    │ captcha-loading │────────────────→   │
-         │    │ (获取验证码中)   │                    │
-         │    └────────┬────────┘                    │
-         │              │ 加载失败                     │
-         │              ▼                            │
-         │    ┌─────────────────┐   点击重试         │
-         └────│  captcha-error  │───────────────────┘
-              │ (验证码获取失败) │
-              └─────────────────┘
-
 idle ──→ 点击提交 ──→ submitting ──→ 成功 ──→ success ──→ 跳转 /dashboard
                         │
-                        └──→ 失败 ──→ error (wrong-password / wrong-captcha / account-not-found)
+                        └──→ 失败 ──→ error (wrong-password / account-not-found / rate-limited)
 ```
 
 ### 2.2 状态转换详表
 
 | From | To | Trigger | Side Effects | Guard |
 |------|-----|---------|--------------|-------|
-| — | `idle` | 页面 mount | 自动调用 `POST /auth/captcha` 获取验证码；清空表单字段（手机号保留上次输入） | — |
-| `idle` | `captcha-loading` | 用户点击验证码图片 | 显示验证码区域 loading spinner（Skeleton） | 当前无正在进行的验证码请求（防抖 500ms） |
-| `captcha-loading` | `idle` | `/auth/captcha` 返回 200 | 更新 `captchaToken` + `captchaImage` 到组件 state；图片 Base64 渲染 | — |
-| `captcha-loading` | `captcha-error` | `/auth/captcha` 返回 500 或网络超时 | 显示「验证码加载失败，点击重试」提示；保留旧验证码（如有）或显示占位图 | 错误码为 `INTERNAL_SERVER_ERROR` 或请求超时 |
-| `captcha-error` | `captcha-loading` | 用户点击重试区域 | 重新发起 `POST /auth/captcha` | 同上的防抖 Guard |
-| `idle` | `submitting` | 用户点击「登录」按钮 | 按钮进入 loading 态（disabled + spinner）；前端表单校验 | 手机号 8-15 位数字、密码 >= 6 位、验证码 4 位数字均通过 |
-| `submitting` | `success` | `POST /auth/login` 返回 200 | 写入 `localStorage.accessToken` / `refreshToken`；更新全局 `authState` 为 `logged_in`；Toast「登录成功」 | 响应 `success === true` |
+| — | `idle` | 页面 mount | 清空表单字段（手机号可保留上次输入） | — |
+| `idle` | `submitting` | 用户点击「登录」按钮 | 按钮进入 loading 态（disabled + spinner）；前端表单校验 | 手机号 8-15 位数字、密码 >= 6 位 |
+| `submitting` | `success` | `POST /auth/login` 返回 200 | 服务端设置 httpOnly access/refresh cookies；更新全局 `authState` 为 `logged_in`；Toast「登录成功」 | 响应 `success === true` |
 | `success` | —（页面卸载）| 定时器 800ms 后 | `router.replace('/dashboard')` 或 `redirect` 参数指定页 | — |
-| `submitting` | `error.wrong-password` | `POST /auth/login` 返回 401，message 含「密码错误」| 按钮恢复可点击；密码输入框清空并聚焦；显示红色错误文案「手机号或密码错误」；验证码自动刷新一次 | 后端错误码 `UNAUTHORIZED` |
-| `submitting` | `error.wrong-captcha` | `POST /auth/login` 返回 401，message 含「验证码错误」| 按钮恢复可点击；验证码输入框清空并聚焦；显示「验证码错误，请重新输入」；自动调用刷新验证码 | 后端错误码 `UNAUTHORIZED` 且验证码字段被指出 |
+| `submitting` | `error.wrong-password` | `POST /auth/login` 返回 401，message 含「密码错误」| 按钮恢复可点击；密码输入框清空并聚焦；显示红色错误文案「手机号或密码错误」 | 后端错误码 `UNAUTHORIZED` |
 | `submitting` | `error.account-not-found` | `POST /auth/login` 返回 401，message 含「账号不存在」| 按钮恢复可点击；手机号输入框下方显示红色提示「该账号不存在，请前往注册」；提供「去注册」快捷链接 | 后端错误码 `UNAUTHORIZED` |
 | `submitting` | `error.rate-limited` | 连续 5 次密码错误后后端返回 429 | 显示「账号已临时锁定 15 分钟，请稍后再试」；整个表单置灰不可操作；启动 15 分钟倒计时 | 后端错误码 `TOO_MANY_REQUESTS` |
 | 任意 `error.*` | `idle` | 用户修改任意表单字段 | 清除当前错误提示；恢复按钮可点击状态 | — |
@@ -187,7 +169,7 @@ idle ──→ 点击提交 ──→ submitting ──→ 成功 ──→ succ
 |------|----------|----------|
 | 手机号 | 失去焦点时校验：纯数字、长度 8-15 | `idle.validating-phone` → `idle.phone-valid` / `idle.phone-invalid`（显示「手机号格式不正确」） |
 | 密码 | 失去焦点时校验：长度 >= 6 | `idle.password-invalid`（显示「密码至少 6 位」） |
-| 验证码 | 输入时实时校验：纯数字、长度 == 4 | 输入非数字自动拦截；未满 4 位时提交按钮 disabled |
+| 图形验证码 | 当前版本不实现 | 不渲染验证码输入框，不调用 `/auth/captcha` |
 
 ---
 
@@ -200,19 +182,18 @@ idle ──→ 点击提交 ──→ submitting ──→ 成功 ──→ succ
 ```
 ─→ idle ──→ 点击提交 ──→ submitting ──→ 注册成功 ──→ success-then-forced-profile-popup
                 │                              │
-                └──→ 失败 ──→ error (phone-exists / password-mismatch / wrong-captcha)
+                └──→ 失败 ──→ error (phone-exists / password-mismatch / validation-failed)
 ```
 
 ### 3.2 状态转换详表
 
 | From | To | Trigger | Side Effects | Guard |
 |------|-----|---------|--------------|-------|
-| — | `idle` | 页面 mount | 自动获取验证码；所有字段为空 | — |
-| `idle` | `submitting` | 点击「注册」按钮 | 前端校验全部字段；按钮 loading | 手机号、密码、确认密码、验证码格式均正确 |
-| `submitting` | `success-then-forced-profile-popup` | `POST /auth/register` 返回 201 | 写入 Token 到 `localStorage`；更新全局 `authState` 为 `logged_in`；立即弹出「个性化计划弹窗」（Profile Popup），不可关闭 | `success === true` |
+| — | `idle` | 页面 mount | 所有字段为空 | — |
+| `idle` | `submitting` | 点击「注册」按钮 | 前端校验全部字段；按钮 loading | 手机号、密码、确认密码格式均正确 |
+| `submitting` | `success-then-forced-profile-popup` | `POST /auth/register` 返回 201 | 服务端设置 httpOnly access/refresh cookies；更新全局 `authState` 为 `logged_in`；立即弹出「个性化计划弹窗」（Profile Popup），不可关闭 | `success === true` |
 | `submitting` | `error.phone-exists` | 返回 409 CONFLICT | 显示「该手机号已注册，请直接登录」；提供跳转 `/login` 链接 | 后端错误码 `CONFLICT` |
 | `submitting` | `error.password-mismatch` | 前端校验触发 | 确认密码框标红抖动；显示「两次输入的密码不一致」 | 前端 Guard：密码 != 确认密码时阻止提交 |
-| `submitting` | `error.wrong-captcha` | 返回 401 | 同登录页验证码错误处理 | — |
 | `submitting` | `error.validation-failed` | 返回 422 | 显示「请检查输入信息是否正确」；对应字段标红 | 后端错误码 `UNPROCESSABLE_ENTITY` |
 
 ---
@@ -383,7 +364,7 @@ page-loading ──→ page-loaded
 |------|-----|---------|--------------|-------|
 | `ai-upload-idle` | `ai-upload-loading` | 用户选择图片文件（点击上传区或拖拽）| 前端校验：文件类型（jpg/png/webp）、大小 <= 10MB、分辨率 >= 300x300；通过后显示上传进度/loading；调用 `POST /nutrition/ai-recognize` (multipart/form-data) | 同时只能有 1 个识别任务在进行中（后续任务排队或提示「请等待当前识别完成」） |
 | `ai-upload-loading` | `ai-result-displayed` | API 返回 200 且识别成功 | 展示识别结果卡片（食物名称、蛋白质、碳水、脂肪、前端计算热量 = 蛋白×4 + 碳水×4 + 脂肪×9）；显示置信度标签 | `results.length > 0` |
-| `ai-upload-loading` | `ai-upload-idle` | API 返回 503 (DeepSeek 不可用) | 显示「AI 识别服务暂时不可用」；提供「重试」和「手动录入」两个选项 | 后端错误码 `SERVICE_UNAVAILABLE` |
+| `ai-upload-loading` | `ai-upload-idle` | API 返回 503 (Qwen 不可用) | 显示「AI 识别服务暂时不可用」；提供「重试」和「手动录入」两个选项 | 后端错误码 `SERVICE_UNAVAILABLE` |
 | `ai-upload-loading` | `ai-upload-idle` | API 返回 200 但识别为空数组 | 显示「未识别出食物，请尝试重新拍摄或手动录入」 | `results.length === 0` |
 | `ai-result-displayed` | `ai-result-editing` | 用户点击营养数值输入框进行修改 | 蛋白质、碳水、脂肪变为可编辑 input；热量实时重新计算 | — |
 | `ai-result-editing` | `ai-result-displayed` | 用户点击「确认使用」| 将该食物数据加入「当前餐食待确认列表」；清空 AI 结果区 | 数值为非负数且有上限（单营养素 <= 500g） |
@@ -521,27 +502,17 @@ page-mount
     ▼
 page-loading ──→ page-loaded
                       │
-        ┌─────────────┼─────────────┐
-        │             │             │
-        ▼             ▼             ▼
-  logout-confirming  changelog-   privacy-policy-
-                     modal-open   modal-open
+                      ▼
+              app-info-displayed
 ```
 
 ### 8.2 状态转换详表
 
 | From | To | Trigger | Side Effects | Guard |
 |------|-----|---------|--------------|-------|
-| — | `page-loading` | 页面 mount | 调用 `GET /settings/app-info`、`GET /settings/developers`（公开接口，无需认证） | — |
-| `page-loading` | `page-loaded` | API 返回 | 渲染应用信息卡片、开发者信息、底部操作按钮 | — |
-| `page-loaded` | `logout-confirming` | 用户点击「退出登录」| 弹出二次确认对话框：「确定要退出登录吗？所有本地数据将被清除。」；选项「取消」/「确认退出」 | 全局 `authState === 'logged_in'` |
-| `logout-confirming` | `page-loaded` | 点击「取消」| 关闭确认对话框；保持当前页面 | — |
-| `logout-confirming` | `logged_out`（全局）| 点击「确认退出」| 调用 `POST /auth/logout`；清除 `localStorage` 所有 Token；全局 `authState` 变为 `logged_out`；`window.location.href = '/login'` | — |
-| `page-loaded` | `changelog-modal-open` | 点击「更新日志」按钮 | 弹出模态框；调用 `GET /settings/changelog`；按版本倒序展示时间线；支持 Markdown 渲染 | — |
-| `changelog-modal-open` | `page-loaded` | 点击关闭按钮/ESC/遮罩 | 关闭模态框 | — |
-| `page-loaded` | `privacy-policy-modal-open` | 点击「隐私政策」按钮 | 弹出模态框或新标签页（视实现）；调用 `GET /settings/privacy-policy`；渲染 Markdown 内容 | — |
-| `privacy-policy-modal-open` | `page-loaded` | 点击关闭按钮/ESC/遮罩 | 关闭模态框 | — |
-| `privacy-policy-modal-open` | `privacy-policy-error` | URL 无法访问或 API 返回 500 | 提示「链接暂时无法访问，请稍后重试」 | — |
+| — | `page-loading` | 页面 mount | 读取静态配置或调用 `GET /settings/app-info` | — |
+| `page-loading` | `page-loaded` | 数据可用 | 渲染版本号和发布者 `贺俊博` | — |
+| `page-loaded` | `app-info-displayed` | 渲染完成 | 页面保持只读展示，无更新日志、隐私政策、主题、单位、提醒或备份导出入口 | — |
 
 ---
 
@@ -572,7 +543,7 @@ page-loading ──→ page-loaded
 | 错误类型 | From | To | Trigger | Side Effects | Guard |
 |----------|------|-----|---------|--------------|-------|
 | **401 未授权** | 任何受保护页面 | `/login` | API 返回 401 且 Refresh 失败 | 清除 Token；Toast「登录已过期，请重新登录」；跳转 `/login?redirect=currentPath` | 排除 `/auth/login` 和 `/auth/register` 本身 |
-| **503 DeepSeek 不可用** | `ai-upload-loading` | `ai-degraded-to-manual` | `POST /nutrition/ai-recognize` 返回 503 | 显示「AI 识别服务暂时不可用，请使用手动录入」；提供「手动录入」快捷跳转按钮 | 后端错误码 `SERVICE_UNAVAILABLE` |
+| **503 Qwen 不可用** | `ai-upload-loading` | `ai-degraded-to-manual` | `POST /nutrition/ai-recognize` 返回 503 | 显示「AI 识别服务暂时不可用，请使用手动录入」；提供「手动录入」快捷跳转按钮 | 后端错误码 `SERVICE_UNAVAILABLE` |
 | **网络错误** | 任何 API 请求中 | `network-error` | `navigator.onLine === false` 或请求超时 | Toast「网络连接异常，请检查网络后重试」；表单类请求保留用户输入不丢失 | 通过 Axios 拦截器统一捕获 `error.message === 'Network Error'` |
 | **网络恢复** | `network-error` | 正常状态 | `window.online` 事件触发 | 自动重试最近一次失败的请求（仅限幂等请求 GET/PUT） | — |
 | **表单校验错误** | 任意表单填写中 | `field-error` | 失去焦点时校验失败 | 输入框边框变红（`border-color: error`）；显示错误文案；执行 shake 动画（300ms） | — |
@@ -584,7 +555,7 @@ page-loading ──→ page-loaded
 
 | 场景 | 降级状态 | 行为 |
 |------|----------|------|
-| DeepSeek API 超时 (>15s) | `ai-timeout` | 返回 503 给前端；前端降级为纯手动录入；本地缓存高频食物识别结果（未来扩展） |
+| Qwen API 超时 (>15s) | `ai-timeout` | 返回 503 给前端；前端降级为纯手动录入；本地缓存高频食物识别结果（未来扩展） |
 | 高并发下聚合表更新延迟 | `data-stale` | 仪表盘展示时显示「数据更新中」轻提示；前端乐观更新后等待 WebSocket 或轮询确认 |
 | 图片上传超过 10MB | `file-oversize` | 前端拦截不上传；提示「图片大小超过 10MB，请压缩后重试」 |
 | 图片格式不支持 | `file-type-error` | 前端拦截；提示「仅支持 JPG、PNG 格式」 |

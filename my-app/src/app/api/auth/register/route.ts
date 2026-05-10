@@ -70,11 +70,6 @@ export async function POST(request: Request) {
   const response = ok(
     {
       user: serializeUser(createdUser),
-      tokens: {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-        expiresIn: tokens.expiresIn,
-      },
     },
     { status: 201 },
   );

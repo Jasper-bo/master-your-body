@@ -1,0 +1,259 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow-many" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-fk" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563eb"/>
+    </marker>
+    <filter id="shadow"><feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#00000015"/></filter>
+  </defs>
+
+  <rect width="1000" height="750" fill="#f8fafc" rx="8"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">E-R 图 — 训练与健康模块 (Training &amp; Health Module)</text>
+  <line x1="230" y1="44" x2="770" y2="44" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- ========== ExerciseCategory ========== -->
+  <rect x="30" y="70" width="200" height="145" rx="6" fill="#fff" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="30" y="70" width="200" height="30" rx="6" fill="#dc2626"/>
+  <rect x="30" y="88" width="200" height="12" fill="#dc2626"/>
+  <text x="130" y="90" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">ExerciseCategory (动作分类)</text>
+
+  <text x="43" y="116" font-size="10" font-weight="bold" fill="#991b1b">PK</text>
+  <text x="72" y="116" font-size="10" fill="#334155">id</text>
+
+  <text x="43" y="134" font-size="10" font-weight="bold" fill="#d97706">UK</text>
+  <text x="72" y="134" font-size="10" fill="#334155">name</text>
+  <text x="200" y="134" font-size="9" fill="#64748b" text-anchor="end">"胸部"/"背部"/...</text>
+
+  <text x="43" y="152" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="152" font-size="10" fill="#334155">sort_order</text>
+
+  <text x="43" y="170" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="170" font-size="10" fill="#334155">icon</text>
+
+  <text x="43" y="188" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="188" font-size="10" fill="#334155">is_system</text>
+
+  <!-- ========== Exercise ========== -->
+  <rect x="330" y="70" width="250" height="200" rx="6" fill="#fff" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="330" y="70" width="250" height="30" rx="6" fill="#dc2626"/>
+  <rect x="330" y="88" width="250" height="12" fill="#dc2626"/>
+  <text x="455" y="90" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">Exercise (训练动作)</text>
+
+  <text x="343" y="116" font-size="10" font-weight="bold" fill="#991b1b">PK</text>
+  <text x="372" y="116" font-size="10" fill="#334155">id</text>
+
+  <text x="343" y="134" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="372" y="134" font-size="10" fill="#334155">category_id → ExerciseCategory.id</text>
+
+  <text x="343" y="152" font-size="10" fill="#94a3b8">—</text>
+  <text x="372" y="152" font-size="10" fill="#334155">name</text>
+  <text x="555" y="152" font-size="9" fill="#64748b">string</text>
+
+  <text x="343" y="170" font-size="10" fill="#94a3b8">—</text>
+  <text x="372" y="170" font-size="10" fill="#334155">description</text>
+
+  <text x="343" y="188" font-size="10" fill="#94a3b8">—</text>
+  <text x="372" y="188" font-size="10" fill="#334155">is_cardio</text>
+  <text x="555" y="188" font-size="9" fill="#64748b">boolean</text>
+
+  <text x="343" y="206" font-size="10" fill="#94a3b8">—</text>
+  <text x="372" y="206" font-size="10" fill="#334155">default_sets / default_reps</text>
+  <text x="555" y="206" font-size="9" fill="#64748b">int?</text>
+
+  <text x="343" y="224" font-size="10" fill="#94a3b8">—</text>
+  <text x="372" y="224" font-size="10" fill="#334155">default_duration_min</text>
+  <text x="555" y="224" font-size="9" fill="#64748b">int?</text>
+
+  <text x="343" y="242" font-size="10" fill="#94a3b8">—</text>
+  <text x="372" y="242" font-size="10" fill="#334155">is_system, is_active</text>
+  <text x="555" y="242" font-size="9" fill="#64748b">boolean</text>
+
+  <!-- ========== WorkoutRecord ========== -->
+  <rect x="30" y="300" width="230" height="200" rx="6" fill="#fff" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="30" y="300" width="230" height="30" rx="6" fill="#dc2626"/>
+  <rect x="30" y="318" width="230" height="12" fill="#dc2626"/>
+  <text x="145" y="320" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">WorkoutRecord (训练记录)</text>
+
+  <text x="43" y="346" font-size="10" font-weight="bold" fill="#991b1b">PK</text>
+  <text x="72" y="346" font-size="10" fill="#334155">id</text>
+
+  <text x="43" y="364" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="72" y="364" font-size="10" fill="#334155">user_id → User.id</text>
+
+  <text x="43" y="382" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="382" font-size="10" fill="#334155">workout_date</text>
+  <text x="235" y="382" font-size="9" fill="#64748b" text-anchor="end">datetime</text>
+
+  <text x="43" y="400" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="400" font-size="10" fill="#334155">start_time / end_time</text>
+  <text x="235" y="400" font-size="9" fill="#64748b" text-anchor="end">datetime?</text>
+
+  <text x="43" y="418" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="418" font-size="10" fill="#334155">total_duration_min</text>
+  <text x="235" y="418" font-size="9" fill="#64748b" text-anchor="end">int</text>
+
+  <text x="43" y="436" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="436" font-size="10" fill="#334155">total_exercises</text>
+
+  <text x="43" y="454" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="454" font-size="10" fill="#334155">total_sets_completed</text>
+
+  <text x="43" y="472" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="472" font-size="10" fill="#334155">status</text>
+  <text x="235" y="472" font-size="9" fill="#64748b" text-anchor="end">enum(WorkoutStatus)</text>
+
+  <text x="43" y="490" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="490" font-size="10" fill="#334155">notes</text>
+
+  <!-- ========== WorkoutExercise ========== -->
+  <rect x="360" y="320" width="260" height="195" rx="6" fill="#fff" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="360" y="320" width="260" height="30" rx="6" fill="#dc2626"/>
+  <rect x="360" y="338" width="260" height="12" fill="#dc2626"/>
+  <text x="490" y="340" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">WorkoutExercise (训练-动作关联)</text>
+
+  <text x="373" y="366" font-size="10" font-weight="bold" fill="#991b1b">PK</text>
+  <text x="402" y="366" font-size="10" fill="#334155">id</text>
+
+  <text x="373" y="384" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="402" y="384" font-size="10" fill="#334155">workout_record_id → WorkoutRecord.id</text>
+
+  <text x="373" y="402" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="402" y="402" font-size="10" fill="#334155">exercise_id → Exercise.id</text>
+
+  <text x="373" y="420" font-size="10" fill="#94a3b8">—</text>
+  <text x="402" y="420" font-size="10" fill="#334155">exercise_order / set_number</text>
+  <text x="590" y="420" font-size="9" fill="#64748b">int</text>
+
+  <text x="373" y="438" font-size="10" fill="#94a3b8">—</text>
+  <text x="402" y="438" font-size="10" fill="#334155">weight_kg / reps (力量)</text>
+  <text x="590" y="438" font-size="9" fill="#64748b">decimal?/int?</text>
+
+  <text x="373" y="456" font-size="10" fill="#94a3b8">—</text>
+  <text x="402" y="456" font-size="10" fill="#334155">duration_min (有氧)</text>
+
+  <text x="373" y="474" font-size="10" fill="#94a3b8">—</text>
+  <text x="402" y="474" font-size="10" fill="#334155">incline_percent / resistance</text>
+  <text x="590" y="474" font-size="9" fill="#64748b">decimal?/int?</text>
+
+  <text x="373" y="492" font-size="10" fill="#94a3b8">—</text>
+  <text x="402" y="492" font-size="10" fill="#334155">load_setting / is_completed</text>
+  <text x="590" y="492" font-size="9" fill="#64748b">string?/boolean</text>
+
+  <!-- ========== HealthChecklist ========== -->
+  <rect x="710" y="70" width="220" height="165" rx="6" fill="#fff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="710" y="70" width="220" height="30" rx="6" fill="#7c3aed"/>
+  <rect x="710" y="88" width="220" height="12" fill="#7c3aed"/>
+  <text x="820" y="90" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">HealthChecklist (健康打卡)</text>
+
+  <text x="723" y="116" font-size="10" font-weight="bold" fill="#5b21b6">PK</text>
+  <text x="752" y="116" font-size="10" fill="#334155">id</text>
+
+  <text x="723" y="134" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="752" y="134" font-size="10" fill="#334155">user_id → User.id</text>
+
+  <text x="723" y="152" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="152" font-size="10" fill="#334155">record_date</text>
+
+  <text x="723" y="170" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="170" font-size="10" fill="#334155">water_intake (bool) / water_intake_ml</text>
+  <text x="723" y="188" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="188" font-size="10" fill="#334155">sleep_quality (bool) / sleep_actual_hours</text>
+  <text x="723" y="206" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="206" font-size="10" fill="#334155">exercise_done (bool)</text>
+
+  <text x="723" y="224" font-size="10" font-weight="bold" fill="#d97706">UK</text>
+  <text x="752" y="224" font-size="10" fill="#334155">(user_id, record_date)</text>
+
+  <!-- ========== HealthScore ========== -->
+  <rect x="710" y="280" width="220" height="175" rx="6" fill="#fff" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="710" y="280" width="220" height="30" rx="6" fill="#7c3aed"/>
+  <rect x="710" y="298" width="220" height="12" fill="#7c3aed"/>
+  <text x="820" y="300" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">HealthScore (健康评分)</text>
+
+  <text x="723" y="326" font-size="10" font-weight="bold" fill="#5b21b6">PK</text>
+  <text x="752" y="326" font-size="10" fill="#334155">id</text>
+
+  <text x="723" y="344" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="752" y="344" font-size="10" fill="#334155">user_id → User.id</text>
+
+  <text x="723" y="362" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="362" font-size="10" fill="#334155">record_date</text>
+
+  <text x="723" y="380" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="380" font-size="10" fill="#334155">total_score / grade</text>
+  <text x="895" y="380" font-size="9" fill="#64748b" text-anchor="end">int / A|B|C|D</text>
+
+  <text x="723" y="398" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="398" font-size="10" fill="#334155">nutrition_score (0-25)</text>
+  <text x="723" y="416" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="416" font-size="10" fill="#334155">exercise_score (0-25)</text>
+  <text x="723" y="434" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="434" font-size="10" fill="#334155">sleep_score (0-25)</text>
+  <text x="723" y="452" font-size="10" fill="#94a3b8">—</text>
+  <text x="752" y="452" font-size="10" fill="#334155">hydration_score (0-25)</text>
+
+  <!-- ========== Relationships ========== -->
+
+  <!-- ExerciseCategory 1:N Exercise -->
+  <line x1="230" y1="130" x2="330" y2="145" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-many)"/>
+  <circle cx="280" cy="130" r="3" fill="#dc2626"/>
+  <text x="270" y="120" font-size="9" fill="#dc2626">1 : N</text>
+
+  <!-- WorkoutRecord 1:N WorkoutExercise -->
+  <line x1="260" y1="390" x2="360" y2="405" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-many)"/>
+  <circle cx="310" cy="395" r="3" fill="#dc2626"/>
+  <text x="298" y="388" font-size="9" fill="#dc2626">1 : N</text>
+
+  <!-- Exercise 1:N WorkoutExercise (FK reference) -->
+  <line x1="580" y1="180" x2="580" y2="405" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-fk)"/>
+  <circle cx="580" cy="300" r="3" fill="#2563eb"/>
+  <text x="590" y="300" font-size="9" fill="#2563eb">N : 1 (FK)</text>
+
+  <!-- WorkoutRecord -> HealthChecklist (exerciseDone trigger) -->
+  <line x1="260" y1="430" x2="710" y2="140" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-fk)"/>
+  <text x="460" y="295" font-size="9" fill="#8b5cf6">quick-log 事务内 markExerciseDone</text>
+  <text x="460" y="310" font-size="9" fill="#8b5cf6">→ upsert health_checklist.exercise_done=true</text>
+
+  <!-- HealthChecklist -> HealthScore (computed) -->
+  <line x1="710" y1="350" x2="690" y2="350" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="678" y="343" font-size="9" fill="#8b5cf6">计算</text>
+
+  <!-- Dashboard computation flow -->
+  <rect x="30" y="560" width="500" height="125" rx="6" fill="#ede9fe" stroke="#a78bfa" stroke-width="1"/>
+  <text x="280" y="582" text-anchor="middle" font-size="12" font-weight="bold" fill="#5b21b6">仪表盘健康评分计算 (calculateHealthScore)</text>
+
+  <text x="45" y="602" font-size="10" fill="#5b21b6">nutrition_score (0-25): 基于当日卡路里达成率 + 宏量营养均衡度</text>
+  <text x="45" y="620" font-size="10" fill="#5b21b6">  └ calorieRatio → |1 - current/target| × 250 → 25分满分</text>
+  <text x="45" y="638" font-size="10" fill="#5b21b6">  └ macroBalance → (protein + carb + fat) / 3 → 加权计算</text>
+  <text x="45" y="656" font-size="10" fill="#5b21b6">exercise_score (0-25): totalWorkoutMinutes ≥ 30 满分, 否则按比例</text>
+  <text x="45" y="674" font-size="10" fill="#5b21b6">sleep_score (0-25): sleepActualHours / sleepTargetHours × 25</text>
+  <text x="45" y="692" font-size="10" fill="#5b21b6">hydration_score (0-25): waterMl / waterTargetMl × 25</text>
+  <text x="45" y="710" font-size="10" fill="#5b21b6">totalScore = Σ 四项 → grade: A(≥90) / B(≥75) / C(≥60) / D(&lt;60)</text>
+
+  <!-- Grade legend -->
+  <rect x="560" y="560" width="400" height="125" rx="6" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="760" y="582" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">评分等级</text>
+
+  <rect x="580" y="598" width="40" height="20" rx="4" fill="#22c55e"/>
+  <text x="600" y="612" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">A</text>
+  <text x="630" y="612" font-size="10" fill="#334155">≥ 90 分, 优秀</text>
+
+  <rect x="710" y="598" width="40" height="20" rx="4" fill="#3b82f6"/>
+  <text x="730" y="612" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">B</text>
+  <text x="760" y="612" font-size="10" fill="#334155">≥ 75 分, 良好</text>
+
+  <rect x="580" y="626" width="40" height="20" rx="4" fill="#f59e0b"/>
+  <text x="600" y="640" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">C</text>
+  <text x="630" y="640" font-size="10" fill="#334155">≥ 60 分, 一般</text>
+
+  <rect x="710" y="626" width="40" height="20" rx="4" fill="#ef4444"/>
+  <text x="730" y="640" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">D</text>
+  <text x="760" y="640" font-size="10" fill="#334155">&lt; 60 分, 需要改进</text>
+
+  <!-- Legend -->
+  <rect x="30" y="700" width="940" height="25" rx="4" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="50" y="717" font-size="9" fill="#64748b">PK=主键 | UK=唯一键 | FK=外键 | 红色=训练模块 | 紫色=健康模块 | 紫色虚线=计算派生/事件触发 | 训练→健康: quick-log事务内自动标记exercise_done</text>
+</svg>

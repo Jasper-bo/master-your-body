@@ -3,22 +3,22 @@
 > 版本: v2.0.0
 > 日期: 2026-05-10
 > 适用产品: VitalPulse 健康管理系统
-> 技术栈: Next.js 15 + PostgreSQL（生产）/ SQLite（本地开发）+ Prisma + DeepSeek API
+> 技术栈: Next.js 15 + PostgreSQL + Prisma + 千问/Qwen 多模态模型
 
 ---
 
 ## 1. 部署概述
 
-VitalPulse 支持**两种运行模式**：
+VitalPulse 支持本地开发和生产部署两种运行模式，但数据库统一使用 PostgreSQL：
 
 | 模式 | 数据库 | 适用场景 |
 |------|--------|----------|
-| **本地开发** | SQLite（`file:./dev.db`） | 个人开发调试，零配置 |
+| **本地开发** | PostgreSQL（本机 / Supabase / Neon / Vercel Postgres） | 个人开发调试或给朋友在电脑上运行 |
 | **生产部署** | PostgreSQL（Vercel Postgres / Supabase / Neon） | 多用户共享，7x24 在线 |
 
 ---
 
-## 2. 本地开发（SQLite，零配置）
+## 2. 本地开发（PostgreSQL）
 
 ### 2.1 系统要求
 
@@ -27,17 +27,18 @@ VitalPulse 支持**两种运行模式**：
 | Node.js | 18.17.0 | 20 LTS |
 | npm | 9+ | 10+ |
 
-无需安装任何数据库服务。
+需要准备一个 PostgreSQL 连接串。可以使用本机 PostgreSQL，也可以使用 Supabase、Neon 或 Vercel Postgres 的免费实例。
 
 ### 2.2 启动步骤
 
 ```bash
 cd my-app
-./scripts/setup.sh
+npm install
+npx prisma db push
 npm run dev
 ```
 
-访问 `http://localhost:3000`。
+访问 `http://localhost:3000`。在另一台电脑运行时，先创建 `my-app/.env.local` 并配置 `DATABASE_URL`、`JWT_SECRET`、`JWT_REFRESH_SECRET`。如启用 AI 拍照识别，再配置 `QWEN_API_KEY`。
 
 ---
 
@@ -54,7 +55,7 @@ npm run dev
                                         │ HTTPS（仅拍照识别）
                                         ↓
                               ┌──────────────────┐
-                              │   DeepSeek API   │
+                              │ 千问/Qwen API    │
                               └──────────────────┘
 ```
 
@@ -95,17 +96,17 @@ vercel
 | `DATABASE_URL` | `postgresql://user:pass@host:port/db` | PostgreSQL 连接串 |
 | `JWT_SECRET` | 随机 64 位 hex 字符串 | 用于签发 JWT |
 | `JWT_REFRESH_SECRET` | 随机 64 位 hex 字符串 | 不同于 JWT_SECRET |
-| `DEEPSEEK_API_KEY` | `sk-...` | DeepSeek API 密钥（可选） |
+| `QWEN_API_KEY` | `sk-...` | 千问/Qwen API 密钥（启用 AI 拍照识别时需要） |
+| `QWEN_API_ENDPOINT` | 兼容 OpenAI 的千问接口地址 | 可选 |
+| `QWEN_MODEL` | `qwen-vl-plus` / `qwen-vl-max` | 可选 |
 
 生成安全随机密钥：`openssl rand -hex 32`
 
-### 3.5 第四步：切换 Prisma Provider 并初始化数据库
+### 3.5 第四步：初始化数据库
 
-切换到 PostgreSQL provider：
+当前项目的 Prisma provider 统一为 PostgreSQL，不再做 SQLite / PostgreSQL 切换：
 
 ```bash
-# 编辑 prisma/schema.prisma，将 provider = "sqlite" 改为 provider = "postgresql"
-# 然后推送 schema 到 PostgreSQL：
 npx prisma db push
 ```
 
@@ -120,16 +121,15 @@ vercel --prod
 
 ---
 
-## 4. 两种模式的 Prisma Provider 切换
+## 4. Prisma Provider
 
-当前项目提供两套 schema 分支策略：
+当前项目只维护 PostgreSQL provider：
 
-| 分支/文件 | Provider | 用途 |
-|-----------|----------|------|
-| `prisma/schema.prisma` | `sqlite` | 本地开发 |
-| 部署时手动切换 | `postgresql` | 生产部署 |
+| 文件 | Provider | 用途 |
+|------|----------|------|
+| `prisma/schema.prisma` | `postgresql` | 本地开发与生产部署 |
 
-> 后续可考虑使用环境变量动态切换或维护两套 schema 文件。
+不要重新引入 SQLite provider，除非产品方向明确要求离线单机模式。
 
 ---
 
@@ -142,7 +142,7 @@ npm run dev
 # 生成 Prisma Client
 npm run prisma:generate
 
-# 同步数据库结构（SQLite / PostgreSQL 通用）
+# 同步 PostgreSQL 数据库结构
 npm run db:push
 
 # 查看数据库
@@ -162,17 +162,17 @@ vercel --prod
 
 | 问题 | 可能原因 | 处理方式 |
 |------|----------|----------|
-| Vercel 部署后 500 错误 | Provider 仍是 `sqlite` | 改为 `postgresql` 并重新部署 |
 | DATABASE_URL 无法连接 | PostgreSQL 连接串格式不对 | 检查格式：`postgresql://user:pass@host:port/db?sslmode=require` |
 | 部署后表不存在 | 未执行 `db push` | 本地执行 `npx prisma db push` 指向 PostgreSQL |
-| 本地开发报错 | `.env.local` 中 DATABASE_URL 不对 | 确保本地使用 `file:./dev.db` |
+| 本地开发报错 | `.env.local` 中 DATABASE_URL 不对 | 确保本地也使用 PostgreSQL 连接串 |
+| 国内朋友无法访问 `*.vercel.app` | Vercel 在中国大陆访问不稳定 | 给朋友本地 PostgreSQL 运行步骤，或后续考虑国内云镜像/备案域名 |
 
 ---
 
 ## 7. 安全边界
 
 - JWT Secret 存放在 Vercel 环境变量中，不暴露给前端
-- DeepSeek API Key 仅服务端读取
+- Qwen API Key 仅服务端读取
 - 用户健康数据存储在 PostgreSQL，通过 Prisma 参数化查询防止 SQL 注入
 - 生产环境开启 HTTPS（Vercel 默认提供）
 

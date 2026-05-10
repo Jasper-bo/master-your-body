@@ -1,6 +1,6 @@
 # Todo
 
-Last updated: 2026-05-05
+Last updated: 2026-05-10
 
 This file tracks the recommended next work based on the current codebase, not
 only the broader PRD.
@@ -15,9 +15,10 @@ only the broader PRD.
   Reason: the app can create records, but long-term daily use needs better
   review, edit, and cleanup flows.
 
-- [ ] Establish a baseline automated test suite
-  Reason: there are currently no tests, and the existing logic is already
-  complex enough to regress easily.
+- [ ] Expand the baseline automated test suite
+  Reason: auth request refresh and logout policy now have focused tests, but
+  validators, nutrition, training, and dashboard aggregation still need
+  coverage.
 
 - [ ] Consolidate the plan/profile update flow
   Reason: registration, forced onboarding, and later plan edits currently use
@@ -25,17 +26,14 @@ only the broader PRD.
 
 ## P1: Next after the core loop is stable
 
-- [ ] Expand settings from placeholder content into a real control panel
-  Scope should include at least profile access, local data explanation, and
-  future backup/export hooks.
+- [ ] Simplify settings into a small app information page
+  Scope: show app version and publisher `贺俊博`. Do not expand it into a
+  general control panel unless product scope changes.
 
-- [ ] Decide whether to implement captcha or reduce the docs to the current
-  simpler auth model
-  Reason: current docs and current implementation disagree in a visible way.
-
-- [ ] Implement AI food photo recognition as an additive flow
+- [ ] Implement Qwen food photo recognition as an additive flow
   Reason: the schema and product docs anticipate it, but the manual path
-  should remain the default baseline.
+  should remain the default baseline. The provider direction is Qwen
+  multimodal, not DeepSeek.
 
 - [ ] Reconcile root docs with actual implementation
   Target files include `README.md`, `prd.md`, `interface.md`, and
@@ -43,11 +41,10 @@ only the broader PRD.
 
 ## P2: Later stage work
 
-- [ ] Complete Vercel + PostgreSQL production deployment pipeline
-  Reason: project direction has shifted to cloud-hosted multi-user mode. Need
-  vercel.json, Prisma PostgreSQL migration, and deployment documentation.
-
-- [ ] Package the app for desktop distribution with Electron or Tauri
+- [ ] Complete PostgreSQL-backed local and Vercel deployment pipeline
+  Reason: the project should now use PostgreSQL in both local and production
+  modes, including clear setup steps for another computer and production
+  environment verification.
 
 - [ ] Improve operational polish such as empty states, loading states, and
   failure recovery around auth, nutrition, and training flows
@@ -62,9 +59,12 @@ only the broader PRD.
 
 ## Explicitly not the next priority
 
-- [ ] Do not prioritize desktop packaging before the web MVP is more complete
+- [ ] Do not plan Electron/Tauri desktop packaging in the current roadmap
 
 - [ ] Do not make AI the only nutrition entry path
 
 - [ ] Deploy to Vercel with PostgreSQL as the standard production path
 
+- [ ] Do not implement graphical captcha in the current auth flow
+
+- [ ] Do not use DeepSeek for food photo recognition; use Qwen multimodal

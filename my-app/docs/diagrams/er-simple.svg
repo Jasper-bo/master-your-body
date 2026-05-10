@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" font-family="SimSun, 'Noto Sans SC', sans-serif">
+  <defs>
+    <marker id="arrow1" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#000"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="650" fill="#fff"/>
+
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#000">Body Fitness 系统 E-R 图</text>
+
+  <!-- ===== User ===== -->
+  <rect x="30" y="50" width="160" height="120" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="110" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">User (用户)</text>
+  <line x1="30" y1="82" x2="190" y2="82" stroke="#000" stroke-width="0.5"/>
+  <text x="40" y="100" font-size="10" fill="#000">id (PK)</text>
+  <text x="40" y="116" font-size="10" fill="#000">phone (UK)</text>
+  <text x="40" y="132" font-size="10" fill="#000">password_hash</text>
+  <text x="40" y="148" font-size="10" fill="#000">is_active, locked_until</text>
+  <text x="40" y="164" font-size="10" fill="#000">created_at</text>
+
+  <!-- ===== UserProfile ===== -->
+  <rect x="30" y="200" width="160" height="120" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="110" y="222" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">UserProfile (档案)</text>
+  <line x1="30" y1="232" x2="190" y2="232" stroke="#000" stroke-width="0.5"/>
+  <text x="40" y="250" font-size="10" fill="#000">id (PK)</text>
+  <text x="40" y="266" font-size="10" fill="#000">user_id (UK, FK)</text>
+  <text x="40" y="282" font-size="10" fill="#000">gender, age</text>
+  <text x="40" y="298" font-size="10" fill="#000">height_cm, weight_kg</text>
+  <text x="40" y="314" font-size="10" fill="#000">activity_level, fitness_goal</text>
+
+  <!-- ===== RefreshToken ===== -->
+  <rect x="30" y="350" width="160" height="100" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="110" y="372" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">RefreshToken (令牌)</text>
+  <line x1="30" y1="382" x2="190" y2="382" stroke="#000" stroke-width="0.5"/>
+  <text x="40" y="400" font-size="10" fill="#000">id (PK)</text>
+  <text x="40" y="416" font-size="10" fill="#000">user_id (FK)</text>
+  <text x="40" y="432" font-size="10" fill="#000">token_hash (UK)</text>
+  <text x="40" y="448" font-size="10" fill="#000">expires_at, revoked</text>
+
+  <!-- ===== FoodCategory ===== -->
+  <rect x="30" y="480" width="160" height="80" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="110" y="502" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">FoodCategory (分类)</text>
+  <line x1="30" y1="512" x2="190" y2="512" stroke="#000" stroke-width="0.5"/>
+  <text x="40" y="530" font-size="10" fill="#000">id (PK), name (UK)</text>
+  <text x="40" y="546" font-size="10" fill="#000">sort_order, icon</text>
+
+  <!-- ===== FoodItem ===== -->
+  <rect x="260" y="50" width="180" height="120" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="350" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">FoodItem (食物)</text>
+  <line x1="260" y1="82" x2="440" y2="82" stroke="#000" stroke-width="0.5"/>
+  <text x="270" y="100" font-size="10" fill="#000">id (PK)</text>
+  <text x="270" y="116" font-size="10" fill="#000">category_id (FK)</text>
+  <text x="270" y="132" font-size="10" fill="#000">name</text>
+  <text x="270" y="148" font-size="10" fill="#000">calories/protein/carbs/fat</text>
+  <text x="270" y="164" font-size="10" fill="#000">(per 100g), unit</text>
+
+  <!-- ===== MealRecord ===== -->
+  <rect x="260" y="210" width="180" height="120" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="350" y="232" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">MealRecord (餐次)</text>
+  <line x1="260" y1="242" x2="440" y2="242" stroke="#000" stroke-width="0.5"/>
+  <text x="270" y="260" font-size="10" fill="#000">id (PK)</text>
+  <text x="270" y="276" font-size="10" fill="#000">user_id (FK)</text>
+  <text x="270" y="292" font-size="10" fill="#000">record_date, meal_type</text>
+  <text x="270" y="308" font-size="10" fill="#000">total_calories/protein/...</text>
+  <text x="270" y="324" font-size="10" fill="#000">note</text>
+
+  <!-- ===== MealFood ===== -->
+  <rect x="260" y="370" width="180" height="100" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="350" y="392" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">MealFood (关联)</text>
+  <line x1="260" y1="402" x2="440" y2="402" stroke="#000" stroke-width="0.5"/>
+  <text x="270" y="420" font-size="10" fill="#000">id (PK)</text>
+  <text x="270" y="436" font-size="10" fill="#000">meal_record_id (FK)</text>
+  <text x="270" y="452" font-size="10" fill="#000">food_item_id (FK)</text>
+  <text x="270" y="468" font-size="10" fill="#000">quantity_g, calculated_*</text>
+
+  <!-- ===== DailyNutrition ===== -->
+  <rect x="260" y="500" width="180" height="80" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="350" y="522" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">DailyNutrition (汇总)</text>
+  <line x1="260" y1="532" x2="440" y2="532" stroke="#000" stroke-width="0.5"/>
+  <text x="270" y="550" font-size="10" fill="#000">id (PK), user_id (FK)</text>
+  <text x="270" y="566" font-size="10" fill="#000">total_calories/protein</text>
+  <text x="270" y="582" font-size="10" fill="#000">(user_id,record_date) UK</text>
+
+  <!-- ===== ExerciseCategory ===== -->
+  <rect x="510" y="50" width="180" height="80" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="600" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">ExerciseCategory</text>
+  <line x1="510" y1="82" x2="690" y2="82" stroke="#000" stroke-width="0.5"/>
+  <text x="520" y="100" font-size="10" fill="#000">id (PK), name (UK)</text>
+  <text x="520" y="116" font-size="10" fill="#000">sort_order, icon</text>
+
+  <!-- ===== Exercise ===== -->
+  <rect x="510" y="160" width="180" height="120" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="600" y="182" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">Exercise (动作)</text>
+  <line x1="510" y1="192" x2="690" y2="192" stroke="#000" stroke-width="0.5"/>
+  <text x="520" y="210" font-size="10" fill="#000">id (PK)</text>
+  <text x="520" y="226" font-size="10" fill="#000">category_id (FK)</text>
+  <text x="520" y="242" font-size="10" fill="#000">name</text>
+  <text x="520" y="258" font-size="10" fill="#000">is_cardio</text>
+  <text x="520" y="274" font-size="10" fill="#000">default_sets/reps/duration</text>
+
+  <!-- ===== WorkoutRecord ===== -->
+  <rect x="510" y="310" width="180" height="120" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="600" y="332" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">WorkoutRecord</text>
+  <line x1="510" y1="342" x2="690" y2="342" stroke="#000" stroke-width="0.5"/>
+  <text x="520" y="360" font-size="10" fill="#000">id (PK), user_id (FK)</text>
+  <text x="520" y="376" font-size="10" fill="#000">workout_date, status</text>
+  <text x="520" y="392" font-size="10" fill="#000">start_time, end_time</text>
+  <text x="520" y="408" font-size="10" fill="#000">total_duration/exercises/</text>
+  <text x="520" y="424" font-size="10" fill="#000">sets, notes</text>
+
+  <!-- ===== WorkoutExercise ===== -->
+  <rect x="510" y="460" width="180" height="100" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="600" y="482" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">WorkoutExercise</text>
+  <line x1="510" y1="492" x2="690" y2="492" stroke="#000" stroke-width="0.5"/>
+  <text x="520" y="510" font-size="10" fill="#000">id (PK)</text>
+  <text x="520" y="526" font-size="10" fill="#000">workout_record_id (FK)</text>
+  <text x="520" y="542" font-size="10" fill="#000">exercise_id (FK)</text>
+  <text x="520" y="558" font-size="10" fill="#000">weight_kg, reps, duration</text>
+
+  <!-- ===== HealthChecklist ===== -->
+  <rect x="750" y="50" width="130" height="100" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="815" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">HealthCheck</text>
+  <line x1="750" y1="82" x2="880" y2="82" stroke="#000" stroke-width="0.5"/>
+  <text x="758" y="100" font-size="10" fill="#000">id (PK)</text>
+  <text x="758" y="116" font-size="10" fill="#000">user_id (FK)</text>
+  <text x="758" y="132" font-size="10" fill="#000">water_intake</text>
+  <text x="758" y="148" font-size="10" fill="#000">sleep_quality</text>
+  <text x="758" y="164" font-size="10" fill="#000">exercise_done</text>
+
+  <!-- ===== HealthScore ===== -->
+  <rect x="750" y="190" width="130" height="100" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="815" y="212" text-anchor="middle" font-size="13" font-weight="bold" fill="#000">HealthScore</text>
+  <line x1="750" y1="222" x2="880" y2="222" stroke="#000" stroke-width="0.5"/>
+  <text x="758" y="240" font-size="10" fill="#000">id (PK)</text>
+  <text x="758" y="256" font-size="10" fill="#000">user_id (FK)</text>
+  <text x="758" y="272" font-size="10" fill="#000">total_score</text>
+  <text x="758" y="288" font-size="10" fill="#000">grade (A/B/C/D)</text>
+
+  <!-- ===== Relationships ===== -->
+
+  <!-- User 1:1 UserProfile -->
+  <line x1="30" y1="100" x2="20" y2="250" stroke="#000" stroke-width="1.5"/>
+  <text x="12" y="180" font-size="9" fill="#000">1</text>
+  <line x1="190" y1="270" x2="200" y2="270" stroke="#000" stroke-width="1.5"/>
+  <text x="200" y="265" font-size="9" fill="#000">1</text>
+
+  <!-- User 1:N RefrechToken -->
+  <line x1="190" y1="110" x2="220" y2="400" stroke="#000" stroke-width="1.5"/>
+  <text x="205" y="260" font-size="9" fill="#000">1</text>
+  <text x="30" y1="390" x2="20" y2="110" stroke="#000" stroke-width="1.5"/>
+  <text x="18" y="260" font-size="9" fill="#000">N</text>
+
+  <!-- User 1:N MealRecord, WorkoutRecord, HealthChecklist, HealthScore -->
+  <line x1="190" y1="120" x2="260" y2="260" stroke="#000" stroke-width="1.2" stroke-dasharray="4,2"/>
+  <text x="230" y="195" font-size="9" fill="#000">1</text>
+  <text x="240" y="195" font-size="9" fill="#000">N</text>
+
+  <line x1="190" y1="130" x2="510" y2="360" stroke="#000" stroke-width="1.2" stroke-dasharray="4,2"/>
+  <text x="350" y="255" font-size="9" fill="#000">1</text>
+  <text x="360" y="255" font-size="9" fill="#000">N</text>
+
+  <line x1="190" y1="140" x2="750" y2="90" stroke="#000" stroke-width="1.2" stroke-dasharray="4,2"/>
+  <text x="480" y="108" font-size="9" fill="#000">1 N</text>
+
+  <line x1="190" y1="150" x2="750" y2="230" stroke="#000" stroke-width="1.2" stroke-dasharray="4,2"/>
+  <text x="480" y="190" font-size="9" fill="#000">1 N</text>
+
+  <!-- FoodCategory 1:N FoodItem -->
+  <line x1="190" y1="520" x2="260" y2="100" stroke="#000" stroke-width="1.2"/>
+  <text x="225" y="320" font-size="9" fill="#000">1 N</text>
+
+  <!-- MealRecord 1:N MealFood -->
+  <line x1="440" y1="270" x2="460" y2="420" stroke="#000" stroke-width="1.2"/>
+  <text x="448" y="350" font-size="9" fill="#000">1 N</text>
+
+  <!-- FoodItem 1:N MealFood -->
+  <line x1="440" y1="140" x2="460" y2="430" stroke="#000" stroke-width="1.2"/>
+  <text x="458" y="290" font-size="9" fill="#000">N 1</text>
+
+  <!-- ExerciseCategory 1:N Exercise -->
+  <line x1="690" y1="90" x2="710" y2="220" stroke="#000" stroke-width="1.2"/>
+  <text x="698" y="160" font-size="9" fill="#000">1 N</text>
+
+  <!-- WorkoutRecord 1:N WorkoutExercise -->
+  <line x1="690" y1="370" x2="710" y2="510" stroke="#000" stroke-width="1.2"/>
+  <text x="698" y="445" font-size="9" fill="#000">1 N</text>
+
+  <!-- Exercise 1:N WorkoutExercise -->
+  <line x1="510" y1="260" x2="500" y2="500" stroke="#000" stroke-width="1.2"/>
+  <text x="495" y="390" font-size="9" fill="#000">1 N</text>
+
+</svg>

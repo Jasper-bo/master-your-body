@@ -5,12 +5,12 @@
 | 项目 | 内容 |
 |------|------|
 | 产品名称 | Stitch Body Health Insight Tracker |
-| 技术栈 | Next.js 全栈（App Router + API Routes）、PostgreSQL（生产）/ SQLite（本地开发）、Prisma ORM |
+| 技术栈 | Next.js 全栈（App Router + API Routes）、PostgreSQL、Prisma ORM |
 | 编码规范 | 表名/字段名 snake_case，全小写 |
 | 时区处理 | 所有时间戳由 Prisma `DateTime` 写入，UTC 存储，应用层按 `Asia/Shanghai` 展示 |
 | ID 策略 | 主键使用 Prisma `String @default(uuid())` |
 
-> 数据库实现说明：本地开发使用 SQLite，生产环境使用 PostgreSQL。Prisma schema 中不使用数据库特定的原生类型（如 `gen_random_uuid()`、`timestamptz`），确保跨数据库兼容。日期和时间统一用 Prisma `DateTime` 映射。
+> 数据库实现说明：本地开发和生产环境统一使用 PostgreSQL。Prisma schema 是数据库结构源头，避免维护 SQLite / PostgreSQL 两套 provider。日期和时间统一用 Prisma `DateTime` 映射。
 
 ---
 
@@ -435,7 +435,7 @@ exercises }o--|| exercise_categories : "属于部位"
 
 ### 3.15 app_settings（应用设置表）
 
-用户级个性化设置，键值对存储。当前版本无单位制切换、无深色模式、无提醒设置。
+用户级个性化设置，键值对存储。当前设置页只展示版本号和发布者 `贺俊博`，通常不需要写入用户级设置；该表保留给未来必要配置。
 
 | 字段名 | 数据类型 | 约束 | 说明 |
 |--------|----------|------|------|
@@ -455,48 +455,7 @@ exercises }o--|| exercise_categories : "属于部位"
 
 ---
 
-### 3.16 system_info（系统信息 / 版本表）
-
-应用元数据、版本号、更新日志、隐私政策、开发者信息。
-
-| 字段名 | 数据类型 | 约束 | 说明 |
-|--------|----------|------|------|
-| id | uuid | PRIMARY KEY, DEFAULT gen_random_uuid() | 记录 ID |
-| app_name | varchar(100) | NOT NULL | 应用名称 |
-| app_version | varchar(20) | NOT NULL | 版本号，如 `1.0.0` |
-| build_number | varchar(20) | NULLABLE | 构建号 |
-| release_notes | text | NULLABLE | 更新日志 Markdown |
-| privacy_policy_content | text | NULLABLE | 隐私政策内容（Markdown） |
-| developer_name | varchar(50) | NULLABLE | 开发者姓名 |
-| developer_title | varchar(50) | NULLABLE | 开发者职位 |
-| is_current | boolean | NOT NULL, DEFAULT false | 是否为当前生效版本 |
-| created_at | timestamptz | NOT NULL, DEFAULT now() | 创建时间 |
-
-**索引：**
-- `idx_system_info_current` (is_current) WHERE is_current = true
-
----
-
-### 3.17 captchas（图形验证码表）
-
-用于登录/注册页的图形验证码，后端生成 4 位数字图片，每次打开页面自动获取，点击可刷新。
-
-| 字段名 | 数据类型 | 约束 | 说明 |
-|--------|----------|------|------|
-| id | uuid | PRIMARY KEY, DEFAULT gen_random_uuid() | 记录 ID |
-| token | varchar(64) | NOT NULL, UNIQUE | 验证码标识令牌（前端传入） |
-| code | varchar(4) | NOT NULL | 4 位数字验证码 |
-| expires_at | timestamptz | NOT NULL | 过期时间 |
-| used | boolean | NOT NULL, DEFAULT false | 是否已使用 |
-| created_at | timestamptz | NOT NULL, DEFAULT now() | 创建时间 |
-
-**索引：**
-- `idx_captchas_token` (token) — 验证时查询
-- `idx_captchas_expires` (expires_at) — 定时清理过期验证码
-
----
-
-### 3.18 refresh_tokens（刷新令牌表）
+### 3.16 refresh_tokens（刷新令牌表）
 
 存储 JWT Refresh Token，用于 Access Token 过期后无感刷新。
 
@@ -769,11 +728,11 @@ function calculateWorkoutCompletion(workout_record_id):
 - 用户数据（`users`、`user_profiles`）：物理删除 + 级联，或归档到冷存储。
 - 食物/动作库系统数据（`food_items`、`exercises`）：使用 `is_active` 软删除，避免历史记录断裂。
 - 用户行为明细（`meal_records`、`workout_records`、`meal_foods`、`workout_exercises`）：保留 90 天后自动物理删除，减少数据膨胀。
-- 验证码与令牌（`captchas`、`refresh_tokens`）：过期后物理删除，定时任务清理。
+- 令牌（`refresh_tokens`）：过期后物理删除，定时任务清理。当前产品方向不实现图形验证码，不需要 `captchas` 表。
 
 ### 5.3 性能优化建议
 
 1. **聚合表机制**：`daily_nutrition` 和 `health_scores` 作为汇总表，避免仪表盘实时 JOIN 大量明细数据。通过应用层事件在 `meal_records`、`workout_records`、`health_checklist` 变更时自动更新。
 2. **分区策略**：当 `meal_records`、`workout_records` 数据量超过千万级时，可按 `record_date` / `workout_date` 进行按月分区。
 3. **定时清理**：配置应用层定时器，自动删除 90 天前的 `meal_records`、`workout_records` 及其关联明细。
-4. **验证码/令牌 TTL**：`captchas` 和 `refresh_tokens` 设置较短过期时间（验证码 5 分钟，Refresh Token 7 天），并配合定时清理任务。
+4. **令牌 TTL**：`refresh_tokens` 设置较短过期时间（默认 7 天），并配合定时清理任务。

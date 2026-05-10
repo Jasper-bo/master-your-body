@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow-one" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-many" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-fk" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#059669"/>
+    </marker>
+    <filter id="shadow"><feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#00000015"/></filter>
+  </defs>
+
+  <rect width="960" height="700" fill="#f8fafc" rx="8"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">E-R 图 — 营养模块 (Nutrition Module)</text>
+  <line x1="250" y1="44" x2="710" y2="44" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- ========== FoodCategory ========== -->
+  <rect x="30" y="70" width="200" height="145" rx="6" fill="#fff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="30" y="70" width="200" height="30" rx="6" fill="#059669"/>
+  <rect x="30" y="88" width="200" height="12" fill="#059669"/>
+  <text x="130" y="90" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">FoodCategory (食物分类)</text>
+
+  <text x="43" y="116" font-size="10" font-weight="bold" fill="#065f46">PK</text>
+  <text x="72" y="116" font-size="10" fill="#334155">id</text>
+  <text x="200" y="116" font-size="9" fill="#64748b" text-anchor="end">UUID</text>
+
+  <text x="43" y="134" font-size="10" font-weight="bold" fill="#d97706">UK</text>
+  <text x="72" y="134" font-size="10" fill="#334155">name</text>
+  <text x="200" y="134" font-size="9" fill="#64748b" text-anchor="end">string ("主食类")</text>
+
+  <text x="43" y="152" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="152" font-size="10" fill="#334155">sort_order</text>
+  <text x="200" y="152" font-size="9" fill="#64748b" text-anchor="end">int</text>
+
+  <text x="43" y="170" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="170" font-size="10" fill="#334155">icon</text>
+  <text x="200" y="170" font-size="9" fill="#64748b" text-anchor="end">string?</text>
+
+  <text x="43" y="188" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="188" font-size="10" fill="#334155">is_system</text>
+  <text x="200" y="188" font-size="9" fill="#64748b" text-anchor="end">boolean</text>
+
+  <!-- ========== FoodItem ========== -->
+  <rect x="340" y="70" width="240" height="185" rx="6" fill="#fff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="340" y="70" width="240" height="30" rx="6" fill="#059669"/>
+  <rect x="340" y="88" width="240" height="12" fill="#059669"/>
+  <text x="460" y="90" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">FoodItem (食物条目)</text>
+
+  <text x="353" y="116" font-size="10" font-weight="bold" fill="#065f46">PK</text>
+  <text x="382" y="116" font-size="10" fill="#334155">id</text>
+
+  <text x="353" y="134" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="382" y="134" font-size="10" fill="#334155">category_id → FoodCategory.id</text>
+
+  <text x="353" y="152" font-size="10" fill="#94a3b8">—</text>
+  <text x="382" y="152" font-size="10" fill="#334155">name</text>
+
+  <text x="353" y="170" font-size="10" fill="#94a3b8">—</text>
+  <text x="382" y="170" font-size="10" fill="#334155">calories_per_100g</text>
+  <text x="555" y="170" font-size="9" fill="#64748b">int</text>
+
+  <text x="353" y="188" font-size="10" fill="#94a3b8">—</text>
+  <text x="382" y="188" font-size="10" fill="#334155">protein/carbs/fat_per_100g</text>
+  <text x="555" y="188" font-size="9" fill="#64748b">decimal</text>
+
+  <text x="353" y="206" font-size="10" fill="#94a3b8">—</text>
+  <text x="382" y="206" font-size="10" fill="#334155">unit (默认 "g")</text>
+
+  <text x="353" y="224" font-size="10" fill="#94a3b8">—</text>
+  <text x="382" y="224" font-size="10" fill="#334155">is_system, is_active</text>
+  <text x="555" y="224" font-size="9" fill="#64748b">boolean</text>
+
+  <!-- ========== MealRecord ========== -->
+  <rect x="30" y="300" width="220" height="185" rx="6" fill="#fff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="30" y="300" width="220" height="30" rx="6" fill="#059669"/>
+  <rect x="30" y="318" width="220" height="12" fill="#059669"/>
+  <text x="140" y="320" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">MealRecord (餐次记录)</text>
+
+  <text x="43" y="346" font-size="10" font-weight="bold" fill="#065f46">PK</text>
+  <text x="72" y="346" font-size="10" fill="#334155">id</text>
+
+  <text x="43" y="364" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="72" y="364" font-size="10" fill="#334155">user_id → User.id</text>
+
+  <text x="43" y="382" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="382" font-size="10" fill="#334155">record_date</text>
+  <text x="225" y="382" font-size="9" fill="#64748b" text-anchor="end">datetime</text>
+
+  <text x="43" y="400" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="400" font-size="10" fill="#334155">meal_type</text>
+  <text x="225" y="400" font-size="9" fill="#64748b" text-anchor="end">enum</text>
+
+  <text x="43" y="418" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="418" font-size="10" fill="#334155">total_calories / protein /</text>
+  <text x="72" y="432" font-size="10" fill="#334155">carbs / fat</text>
+  <text x="225" y="425" font-size="9" fill="#64748b" text-anchor="end">int/decimal</text>
+
+  <text x="43" y="452" font-size="10" fill="#94a3b8">—</text>
+  <text x="72" y="452" font-size="10" fill="#334155">note</text>
+  <text x="225" y="452" font-size="9" fill="#64748b" text-anchor="end">string?</text>
+
+  <!-- ========== MealFood ========== -->
+  <rect x="340" y="350" width="250" height="150" rx="6" fill="#fff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="340" y="350" width="250" height="30" rx="6" fill="#059669"/>
+  <rect x="340" y="368" width="250" height="12" fill="#059669"/>
+  <text x="465" y="370" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">MealFood (餐次-食物关联)</text>
+
+  <text x="353" y="396" font-size="10" font-weight="bold" fill="#065f46">PK</text>
+  <text x="382" y="396" font-size="10" fill="#334155">id</text>
+
+  <text x="353" y="414" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="382" y="414" font-size="10" fill="#334155">meal_record_id → MealRecord.id</text>
+
+  <text x="353" y="432" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="382" y="432" font-size="10" fill="#334155">food_item_id → FoodItem.id</text>
+
+  <text x="353" y="450" font-size="10" fill="#94a3b8">—</text>
+  <text x="382" y="450" font-size="10" fill="#334155">quantity_g</text>
+  <text x="560" y="450" font-size="9" fill="#64748b">decimal</text>
+
+  <text x="353" y="468" font-size="10" fill="#94a3b8">—</text>
+  <text x="382" y="468" font-size="10" fill="#334155">calculated_calories / protein</text>
+  <text x="560" y="468" font-size="9" fill="#64748b">int/decimal</text>
+  <text x="382" y="483" font-size="10" fill="#334155">/ carbs / fat</text>
+
+  <!-- ========== DailyNutrition ========== -->
+  <rect x="680" y="250" width="240" height="195" rx="6" fill="#fff" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="680" y="250" width="240" height="30" rx="6" fill="#059669"/>
+  <rect x="680" y="268" width="240" height="12" fill="#059669"/>
+  <text x="800" y="270" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">DailyNutrition (每日营养汇总)</text>
+
+  <text x="693" y="296" font-size="10" font-weight="bold" fill="#065f46">PK</text>
+  <text x="722" y="296" font-size="10" fill="#334155">id</text>
+
+  <text x="693" y="314" font-size="10" font-weight="bold" fill="#dc2626">FK</text>
+  <text x="722" y="314" font-size="10" fill="#334155">user_id → User.id</text>
+
+  <text x="693" y="332" font-size="10" fill="#94a3b8">—</text>
+  <text x="722" y="332" font-size="10" fill="#334155">record_date</text>
+
+  <text x="693" y="350" font-size="10" fill="#94a3b8">—</text>
+  <text x="722" y="350" font-size="10" fill="#334155">total_calories / protein</text>
+  <text x="895" y="350" font-size="9" fill="#64748b" text-anchor="end">int/decimal</text>
+  <text x="722" y="364" font-size="10" fill="#334155">/ carbs / fat</text>
+
+  <text x="693" y="382" font-size="10" fill="#94a3b8">—</text>
+  <text x="722" y="382" font-size="10" fill="#334155">calories_target / protein</text>
+  <text x="895" y="382" font-size="9" fill="#64748b" text-anchor="end">int</text>
+  <text x="722" y="396" font-size="10" fill="#334155">/ carbs / fat_target</text>
+
+  <text x="693" y="418" font-size="10" font-weight="bold" fill="#d97706">UK</text>
+  <text x="722" y="418" font-size="10" fill="#334155">(user_id, record_date)</text>
+  <text x="895" y="418" font-size="9" fill="#64748b" text-anchor="end">复合唯一</text>
+
+  <!-- ========== FoodPhoto ========== -->
+  <rect x="680" y="70" width="240" height="135" rx="6" fill="#fff" stroke="#d97706" stroke-width="1.5" stroke-dasharray="5,3" filter="url(#shadow)"/>
+  <rect x="680" y="70" width="240" height="28" rx="6" fill="#d97706"/>
+  <rect x="680" y="86" width="240" height="12" fill="#d97706"/>
+  <text x="800" y="88" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">FoodPhoto (食物照片识别)</text>
+
+  <text x="693" y="114" font-size="10" font-weight="bold" fill="#92400e">PK</text>
+  <text x="722" y="114" font-size="10" fill="#334155">id</text>
+  <text x="693" y="132" font-size="10" fill="#92400e">FK</text>
+  <text x="722" y="132" font-size="10" fill="#334155">user_id</text>
+  <text x="693" y="150" font-size="10" fill="#94a3b8">—</text>
+  <text x="722" y="150" font-size="10" fill="#334155">recognized_food_name</text>
+  <text x="693" y="168" font-size="10" fill="#94a3b8">—</text>
+  <text x="722" y="168" font-size="10" fill="#334155">protein/carbs/fat_g</text>
+  <text x="693" y="186" font-size="10" fill="#94a3b8">—</text>
+  <text x="722" y="186" font-size="10" fill="#334155">status (pending/success/failed)</text>
+
+  <!-- ========== Relationships ========== -->
+
+  <!-- FoodCategory 1:N FoodItem -->
+  <line x1="230" y1="130" x2="340" y2="140" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-many)"/>
+  <circle cx="285" cy="130" r="3" fill="#dc2626"/>
+  <text x="275" y="120" font-size="9" fill="#dc2626">1 : N</text>
+
+  <!-- MealRecord 1:N MealFood -->
+  <line x1="250" y1="385" x2="340" y2="410" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-many)"/>
+  <circle cx="295" cy="395" r="3" fill="#dc2626"/>
+  <text x="285" y="388" font-size="9" fill="#dc2626">1 : N</text>
+
+  <!-- FoodItem 1:N MealFood -->
+  <line x1="580" y1="190" x2="580" y2="410" stroke="#059669" stroke-width="2" marker-end="url(#arrow-fk)"/>
+  <circle cx="580" cy="300" r="3" fill="#059669"/>
+  <text x="590" y="300" font-size="9" fill="#059669">N : 1 (FK引用)</text>
+
+  <!-- DailyNutrition derived from MealRecords (dashed, computed) -->
+  <line x1="250" y1="430" x2="680" y2="340" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrow-one)"/>
+  <text x="430" y="395" font-size="9" fill="#8b5cf6">汇总计算 (事务内 upsert)</text>
+
+  <!-- Nutrition Calculation Note -->
+  <rect x="30" y="530" width="480" height="110" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+  <text x="270" y="552" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">营养计算流程</text>
+  <text x="45" y="574" font-size="10" fill="#166534">1. 用户选择 foodItem + 份量 (g) + 油脂档位 (可选) → POST /api/nutrition/meals</text>
+  <text x="45" y="592" font-size="10" fill="#166534">2. calculateFoodNutrition(foodPer100g, quantityG) → 计算出该食物的 calories/protein/carbs/fat</text>
+  <text x="45" y="610" font-size="10" fill="#166534">3. 油脂选项映射: oil_light(少油5g)→45kcal/5g脂肪, oil_medium(中等10g)→90kcal/10g脂肪, oil_heavy(多油20g)→180kcal/20g脂肪</text>
+  <text x="45" y="628" font-size="10" fill="#166534">4. 创建 MealRecord + MealFoods → 事务内 recalculateDailyNutrition → upsert DailyNutrition (汇总值+目标值)</text>
+
+  <!-- Oil Option Note -->
+  <rect x="540" y="530" width="380" height="110" rx="6" fill="#fef3c7" stroke="#fcd34d" stroke-width="1"/>
+  <text x="730" y="552" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400e">油脂选项 (OilOption) 预设档位</text>
+  <text x="555" y="574" font-size="11" fill="#92400e">oil_none   — 无油 0g — 0kcal / 0g fat</text>
+  <text x="555" y="594" font-size="11" fill="#92400e">oil_light  — 少油 5g — 45kcal / 5g fat</text>
+  <text x="555" y="614" font-size="11" fill="#92400e">oil_medium — 中等 10g — 90kcal / 10g fat</text>
+  <text x="555" y="634" font-size="11" fill="#92400e">oil_heavy  — 多油 20g — 180kcal / 20g fat</text>
+
+  <!-- Legend -->
+  <rect x="30" y="665" width="900" height="25" rx="4" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="50" y="682" font-size="9" fill="#64748b">PK = 主键 | UK = 唯一键 | FK = 外键 | 实线框 = 核心实体 | 虚线框 = 辅助实体 | 紫色虚线 = 计算派生 | N:1 FK引用 = 外键约束方向</text>
+</svg>

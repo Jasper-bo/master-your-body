@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 850" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-user" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563eb"/>
+    </marker>
+    <filter id="shadow"><feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#00000015"/></filter>
+  </defs>
+
+  <rect width="1100" height="850" fill="#f8fafc" rx="8"/>
+
+  <text x="550" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Body Fitness 系统 — 第 1 层 DFD (系统分解)</text>
+  <line x1="250" y1="44" x2="850" y2="44" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- ===== External Entity: User ===== -->
+  <rect x="30" y="90" width="130" height="50" rx="6" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="95" y="112" text-anchor="middle" font-size="13" font-weight="bold" fill="#334155">用户</text>
+  <text x="95" y="129" text-anchor="middle" font-size="10" fill="#64748b">(健身者)</text>
+
+  <!-- ===== P1: Auth Processing ===== -->
+  <rect x="235" y="80" width="200" height="100" rx="10" fill="#2563eb" filter="url(#shadow)"/>
+  <text x="335" y="105" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">P1 认证处理</text>
+  <text x="335" y="125" text-anchor="middle" font-size="11" fill="#dbeafe">POST /api/auth/register</text>
+  <text x="335" y="142" text-anchor="middle" font-size="11" fill="#dbeafe">POST /api/auth/login</text>
+  <text x="335" y="159" text-anchor="middle" font-size="11" fill="#dbeafe">GET /api/auth/refresh</text>
+  <text x="335" y="176" text-anchor="middle" font-size="11" fill="#dbeafe">POST /api/auth/logout</text>
+
+  <!-- ===== P2: Nutrition Management ===== -->
+  <rect x="235" y="250" width="200" height="100" rx="10" fill="#059669" filter="url(#shadow)"/>
+  <text x="335" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">P2 营养管理</text>
+  <text x="335" y="295" text-anchor="middle" font-size="11" fill="#d1fae5">GET /api/nutrition/food-categories</text>
+  <text x="335" y="312" text-anchor="middle" font-size="11" fill="#d1fae5">POST /api/nutrition/meals</text>
+  <text x="335" y="329" text-anchor="middle" font-size="11" fill="#d1fae5">DELETE /api/nutrition/meals/[id]</text>
+  <text x="335" y="346" text-anchor="middle" font-size="11" fill="#d1fae5">GET /api/nutrition/today</text>
+
+  <!-- ===== P3: Training Management ===== -->
+  <rect x="235" y="420" width="200" height="100" rx="10" fill="#dc2626" filter="url(#shadow)"/>
+  <text x="335" y="445" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">P3 训练管理</text>
+  <text x="335" y="465" text-anchor="middle" font-size="11" fill="#fee2e2">GET /api/training/exercises</text>
+  <text x="335" y="482" text-anchor="middle" font-size="11" fill="#fee2e2">POST /api/training/quick-log</text>
+  <text x="335" y="499" text-anchor="middle" font-size="11" fill="#fee2e2">GET /api/training/today</text>
+  <text x="335" y="516" text-anchor="middle" font-size="11" fill="#fee2e2">GET /api/training/yesterday</text>
+  <text x="335" y="533" text-anchor="middle" font-size="11" fill="#fee2e2">GET /api/training/weekly-stats</text>
+
+  <!-- ===== P4: Dashboard ===== -->
+  <rect x="545" y="250" width="220" height="100" rx="10" fill="#7c3aed" filter="url(#shadow)"/>
+  <text x="655" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">P4 仪表盘 &amp; 健康评分</text>
+  <text x="655" y="295" text-anchor="middle" font-size="11" fill="#ede9fe">GET /api/dashboard</text>
+  <text x="655" y="312" text-anchor="middle" font-size="11" fill="#ede9fe">汇总营养/训练/水分/睡眠</text>
+  <text x="655" y="329" text-anchor="middle" font-size="11" fill="#ede9fe">计算健康评分 (A/B/C/D)</text>
+  <text x="655" y="346" text-anchor="middle" font-size="11" fill="#ede9fe">BMI/BMR/TDEE 计算</text>
+
+  <!-- ===== P5: Plan Management ===== -->
+  <rect x="545" y="420" width="220" height="70" rx="10" fill="#ea580c" filter="url(#shadow)"/>
+  <text x="655" y="445" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">P5 用户计划管理</text>
+  <text x="655" y="465" text-anchor="middle" font-size="11" fill="#ffedd5">PUT /api/users/me/plan</text>
+  <text x="655" y="482" text-anchor="middle" font-size="11" fill="#ffedd5">重算营养目标</text>
+
+  <!-- ===== Data Stores (right side, open-ended rectangles) ===== -->
+  <!-- D1: Users + Tokens -->
+  <g transform="translate(830, 70)">
+    <rect x="0" y="10" width="160" height="55" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L148,0 Q160,0 160,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="160" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="80" y="28" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">D1 用户 &amp; 令牌</text>
+    <text x="80" y="44" text-anchor="middle" font-size="10" fill="#64748b">users</text>
+    <text x="80" y="58" text-anchor="middle" font-size="10" fill="#64748b">refresh_tokens</text>
+  </g>
+
+  <!-- D2: Nutrition Data -->
+  <g transform="translate(830, 190)">
+    <rect x="0" y="10" width="160" height="55" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L148,0 Q160,0 160,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="160" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="80" y="28" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">D2 营养数据</text>
+    <text x="80" y="44" text-anchor="middle" font-size="10" fill="#64748b">food_categories, food_items</text>
+    <text x="80" y="58" text-anchor="middle" font-size="10" fill="#64748b">meal_records, meal_foods</text>
+  </g>
+
+  <!-- D3: Training Data -->
+  <g transform="translate(830, 310)">
+    <rect x="0" y="10" width="160" height="55" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L148,0 Q160,0 160,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="160" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="80" y="28" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">D3 训练数据</text>
+    <text x="80" y="44" text-anchor="middle" font-size="10" fill="#64748b">exercise_categories</text>
+    <text x="80" y="58" text-anchor="middle" font-size="10" fill="#64748b">exercises, workout_records</text>
+  </g>
+
+  <!-- D4: Health Data -->
+  <g transform="translate(830, 430)">
+    <rect x="0" y="10" width="160" height="55" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L148,0 Q160,0 160,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="160" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="80" y="28" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">D4 健康数据</text>
+    <text x="80" y="44" text-anchor="middle" font-size="10" fill="#64748b">health_checklist</text>
+    <text x="80" y="58" text-anchor="middle" font-size="10" fill="#64748b">health_scores</text>
+  </g>
+
+  <!-- D5: User Profile -->
+  <g transform="translate(830, 560)">
+    <rect x="0" y="10" width="160" height="40" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L148,0 Q160,0 160,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="160" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="80" y="28" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">D5 用户档案</text>
+    <text x="80" y="44" text-anchor="middle" font-size="10" fill="#64748b">user_profiles</text>
+  </g>
+
+  <!-- === Data Flow Lines === -->
+
+  <!-- User <-> P1 -->
+  <line x1="160" y1="110" x2="235" y2="115" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-user)"/>
+  <text x="195" y="90" font-size="9" fill="#2563eb">注册/登录</text>
+  <line x1="235" y1="145" x2="160" y2="130" stroke="#2563eb" stroke-width="1.8" marker-end="url(#arrow-user)"/>
+  <text x="195" y="155" font-size="9" fill="#2563eb">JWT + 用户信息</text>
+
+  <!-- User <-> P2 -->
+  <line x1="160" y1="130" x2="235" y2="285" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="190" y="210" font-size="9" fill="#2563eb">食物+份量</text>
+  <line x1="235" y1="310" x2="160" y2="140" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="180" y="235" font-size="9" fill="#2563eb">营养汇总</text>
+
+  <!-- User <-> P3 -->
+  <line x1="160" y1="140" x2="235" y2="460" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="185" y="320" font-size="9" fill="#2563eb">训练记录</text>
+  <line x1="235" y1="480" x2="160" y2="150" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="175" y="340" font-size="9" fill="#2563eb">训练统计</text>
+
+  <!-- P1 -> D1 -->
+  <line x1="435" y1="115" x2="830" y2="100" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="630" y="95" font-size="9" fill="#64748b">读写用户/令牌</text>
+
+  <!-- P2 -> D2 -->
+  <line x1="435" y1="285" x2="830" y2="220" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="630" y="245" font-size="9" fill="#64748b">读写食物/餐次</text>
+
+  <!-- P3 -> D3 -->
+  <line x1="435" y1="455" x2="830" y2="340" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="630" y="390" font-size="9" fill="#64748b">读写训练数据</text>
+
+  <!-- P4 -> D2, D3, D4 -->
+  <line x1="545" y1="285" x2="500" y2="285" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="510" y="280" font-size="8" fill="#64748b">读取</text>
+  <line x1="545" y1="315" x2="500" y2="460" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="510" y="400" font-size="8" fill="#64748b">读取</text>
+  <line x1="655" y1="350" x2="830" y2="450" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="740" y="405" font-size="8" fill="#64748b">upsert HealthScore</text>
+
+  <!-- P5 -> D5 -->
+  <line x1="655" y1="420" x2="830" y2="580" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="750" y="510" font-size="9" fill="#64748b">upsert profile</text>
+
+  <!-- Middleware (implicit auth check) -->
+  <rect x="500" y="75" width="240" height="30" rx="5" fill="#fef3c7" stroke="#d97706" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="620" y="95" text-anchor="middle" font-size="10" fill="#92400e">中间件: Cookie验证 → 路由保护/重定向</text>
+
+  <!-- Legend -->
+  <rect x="30" y="660" width="1040" height="165" rx="6" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="50" y="685" font-size="12" font-weight="bold" fill="#334155">图例</text>
+
+  <rect x="50" y="698" width="26" height="16" rx="3" fill="#2563eb"/>
+  <text x="86" y="711" font-size="10" fill="#334155">认证处理</text>
+  <rect x="170" y="698" width="26" height="16" rx="3" fill="#059669"/>
+  <text x="206" y="711" font-size="10" fill="#334155">营养管理</text>
+  <rect x="290" y="698" width="26" height="16" rx="3" fill="#dc2626"/>
+  <text x="326" y="711" font-size="10" fill="#334155">训练管理</text>
+  <rect x="410" y="698" width="26" height="16" rx="3" fill="#7c3aed"/>
+  <text x="446" y="711" font-size="10" fill="#334155">仪表盘</text>
+  <rect x="530" y="698" width="26" height="16" rx="3" fill="#ea580c"/>
+  <text x="566" y="711" font-size="10" fill="#334155">计划管理</text>
+
+  <g transform="translate(50,730)">
+    <rect x="0" y="0" width="30" height="16" rx="2" fill="#f1f5f9" stroke="#475569" stroke-width="1"/>
+    <path d="M0,4 Q0,0 6,0 L24,0 Q30,0 30,4" fill="#e2e8f0" stroke="#475569" stroke-width="1"/>
+    <line x1="30" y1="4" x2="30" y2="16" stroke="#475569" stroke-width="1"/>
+    <text x="42" y="13" font-size="10" fill="#334155">数据存储 (PostgreSQL 表)</text>
+  </g>
+  <rect x="240" y="730" width="26" height="16" rx="3" fill="#f1f5f9" stroke="#64748b" stroke-width="1"/>
+  <text x="278" y="743" font-size="10" fill="#334155">外部实体</text>
+  <line x1="400" y1="738" x2="440" y2="738" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="455" y="743" font-size="10" fill="#334155">用户交互数据流</text>
+  <line x1="580" y1="738" x2="620" y2="738" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="635" y="743" font-size="10" fill="#334155">系统内部数据流</text>
+</svg>

@@ -1,6 +1,6 @@
 # Decisions
 
-Last updated: 2026-05-05
+Last updated: 2026-05-10
 
 This file captures active engineering and product decisions so they do not
 have to be rediscovered from code alone.
@@ -8,9 +8,12 @@ have to be rediscovered from code alone.
 ## DEC-001: Cloud-hosted with Vercel + PostgreSQL
 
 - Status: active
-- Decision: production runtime is Vercel + PostgreSQL; local development keeps SQLite for fast iteration
-- Why: this enables multi-user access via browser without local setup, while preserving zero-config local dev
-- Consequence: new features should work in both environments; avoid database-specific SQL unless abstracted through Prisma
+- Decision: production runtime is Vercel + PostgreSQL, and local development
+  should also use PostgreSQL through `DATABASE_URL`
+- Why: keeping one database provider prevents documentation drift, Prisma
+  provider switching, and local/production behavior mismatches
+- Consequence: new features should be built and verified against PostgreSQL;
+  do not reintroduce SQLite-specific setup unless explicitly requested
 
 ## DEC-002: `my-app/` is the only runtime application
 
@@ -43,16 +46,18 @@ have to be rediscovered from code alone.
 ## DEC-005: Close the daily-use loop before adding showcase features
 
 - Status: active
-- Decision: prioritize health checklist input, history management, settings
-  completion, and test coverage before desktop packaging
+- Decision: prioritize health checklist input, nutrition/training history
+  management, minimal settings metadata, and test coverage before showcase
+  features
 - Why: the project already has the beginnings of a usable loop, but several
   important supporting flows are still missing
 - Consequence: "can the user use this every day?" is a better priority filter
-  than "does this look advanced in the PRD?"
+  than "does this look advanced in the PRD?"; desktop packaging is out of the
+  current roadmap
 
 ## DEC-006: Preserve the hybrid auth model for now, but treat it as debt
 
-- Status: active with follow-up
+- Status: superseded by DEC-009
 - Decision: keep the current cookie plus localStorage auth approach until a
   dedicated simplification pass is scheduled
 - Why: middleware and SSR rely on cookies, while the current client request
@@ -79,3 +84,46 @@ have to be rediscovered from code alone.
 - Consequence: tests for validators, nutrition math, dashboard aggregation,
   and core API flows should be treated as foundational work
 
+## DEC-009: Use httpOnly cookies as the single browser auth source
+
+- Status: active
+- Decision: browser auth should rely on same-origin httpOnly access and
+  refresh cookies, not localStorage bearer tokens
+- Why: page rendering and middleware already depend on cookies, and the
+  previous hybrid model could prefer stale localStorage tokens over current
+  cookies
+- Consequence: client API requests retry authenticated 401 responses through
+  `/api/auth/refresh`, middleware redirects expired protected-page sessions
+  through the refresh endpoint, and logout revokes only the current refresh
+  cookie rather than all devices
+
+## DEC-010: Do not implement captcha in the current auth flow
+
+- Status: active
+- Decision: keep registration and login as phone plus password without a
+  graphical captcha
+- Why: current product direction favors a simpler auth flow, and the existing
+  code already has password failure lockout behavior
+- Consequence: remove captcha from forward-looking docs and do not add
+  `/api/auth/captcha` unless this decision is explicitly changed
+
+## DEC-011: Use Qwen multimodal models for food photo recognition
+
+- Status: active
+- Decision: AI food photo recognition should use a server-side Qwen
+  multimodal adapter instead of DeepSeek
+- Why: the product still wants photo-assisted nutrition entry, but the model
+  provider direction has changed
+- Consequence: environment variables, API docs, UI copy, and failure handling
+  should refer to Qwen; manual nutrition logging remains the fallback and
+  baseline path
+
+## DEC-012: Keep settings intentionally minimal
+
+- Status: active
+- Decision: the settings page should show only app version and publisher
+  `贺俊博` for now
+- Why: a larger control panel would distract from the core daily loop
+- Consequence: remove planned settings scope such as release-note timelines,
+  policy pages, units, themes, reminders, and backup controls unless
+  separately requested later

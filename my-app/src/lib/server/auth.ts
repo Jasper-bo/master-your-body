@@ -11,11 +11,7 @@ export type AuthContext = {
 };
 
 export async function getAuthContext(request: NextRequest): Promise<AuthContext> {
-  const headerToken = request.headers
-    .get("authorization")
-    ?.replace(/^Bearer\s+/i, "");
-  const cookieToken = request.cookies.get(ACCESS_COOKIE)?.value;
-  const accessToken = headerToken || cookieToken;
+  const accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
 
   if (!accessToken) {
     throw new Error("Missing access token");

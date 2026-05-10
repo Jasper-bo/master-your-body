@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1050 720" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-user" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#dc2626"/>
+    </marker>
+    <filter id="shadow"><feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#00000015"/></filter>
+  </defs>
+
+  <rect width="1050" height="720" fill="#f8fafc" rx="8"/>
+
+  <text x="525" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a">第 2 层 DFD — P3 训练管理展开</text>
+  <line x1="250" y1="42" x2="800" y2="42" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- User -->
+  <rect x="30" y="100" width="110" height="40" rx="5" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="85" y="125" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">用户</text>
+
+  <!-- P3.1 Exercise Library -->
+  <rect x="200" y="70" width="220" height="80" rx="8" fill="#dc2626" filter="url(#shadow)"/>
+  <text x="310" y="93" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">P3.1 获取动作库</text>
+  <text x="310" y="112" text-anchor="middle" font-size="10" fill="#fee2e2">GET /api/training/exercises</text>
+  <text x="310" y="128" text-anchor="middle" font-size="10" fill="#fee2e2">ensureSystemExerciseData</text>
+  <text x="310" y="144" text-anchor="middle" font-size="10" fill="#fee2e2">分页查询 + 分类筛选 + 搜索</text>
+
+  <!-- P3.2 Quick Log -->
+  <rect x="200" y="200" width="220" height="85" rx="8" fill="#dc2626" filter="url(#shadow)"/>
+  <text x="310" y="223" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">P3.2 快速记录训练</text>
+  <text x="310" y="242" text-anchor="middle" font-size="10" fill="#fee2e2">POST /api/training/quick-log</text>
+  <text x="310" y="258" text-anchor="middle" font-size="10" fill="#fee2e2">校验输入 → 验证 exerciseId</text>
+  <text x="310" y="274" text-anchor="middle" font-size="10" fill="#fee2e2">力量/有氧 分支处理 → 创建记录</text>
+
+  <!-- P3.3 Mark Exercise Done -->
+  <rect x="520" y="200" width="220" height="85" rx="8" fill="#dc2626" filter="url(#shadow)"/>
+  <text x="630" y="223" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">P3.3 标记运动完成</text>
+  <text x="630" y="242" text-anchor="middle" font-size="10" fill="#fee2e2">markExerciseDone</text>
+  <text x="630" y="258" text-anchor="middle" font-size="10" fill="#fee2e2">upsert health_checklist</text>
+  <text x="630" y="274" text-anchor="middle" font-size="10" fill="#fee2e2">exerciseDone = true</text>
+
+  <!-- P3.4 Training Today -->
+  <rect x="200" y="340" width="220" height="85" rx="8" fill="#dc2626" filter="url(#shadow)"/>
+  <text x="310" y="363" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">P3.4 今日训练概览</text>
+  <text x="310" y="382" text-anchor="middle" font-size="10" fill="#fee2e2">GET /api/training/today</text>
+  <text x="310" y="398" text-anchor="middle" font-size="10" fill="#fee2e2">查询 workout_records + exercises</text>
+  <text x="310" y="414" text-anchor="middle" font-size="10" fill="#fee2e2">计算进度/完成率/训练部位</text>
+
+  <!-- P3.5 Training Yesterday -->
+  <rect x="520" y="340" width="220" height="85" rx="8" fill="#dc2626" filter="url(#shadow)"/>
+  <text x="630" y="363" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">P3.5 昨日训练回顾</text>
+  <text x="630" y="382" text-anchor="middle" font-size="10" fill="#fee2e2">GET /api/training/yesterday</text>
+  <text x="630" y="398" text-anchor="middle" font-size="10" fill="#fee2e2">查询昨日已完成训练</text>
+  <text x="630" y="414" text-anchor="middle" font-size="10" fill="#fee2e2">汇总组数/容量/时长</text>
+
+  <!-- P3.6 Weekly Stats -->
+  <rect x="200" y="480" width="220" height="85" rx="8" fill="#dc2626" filter="url(#shadow)"/>
+  <text x="310" y="503" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">P3.6 训练周报</text>
+  <text x="310" y="522" text-anchor="middle" font-size="10" fill="#fee2e2">GET /api/training/weekly-stats</text>
+  <text x="310" y="538" text-anchor="middle" font-size="10" fill="#fee2e2">查询本周+上周 completed 记录</text>
+  <text x="310" y="554" text-anchor="middle" font-size="10" fill="#fee2e2">计算周环比变化 (WoW)</text>
+
+  <!-- Data Stores -->
+  <g transform="translate(800, 70)">
+    <rect x="0" y="10" width="170" height="50" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L158,0 Q170,0 170,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="170" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="85" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">exercise_categories</text>
+    <text x="85" y="43" text-anchor="middle" font-size="10" fill="#64748b">胸部/背部/肩部/腿部/有氧</text>
+    <text x="85" y="56" text-anchor="middle" font-size="9" fill="#94a3b8">1 : N → exercises</text>
+  </g>
+
+  <g transform="translate(800, 160)">
+    <rect x="0" y="10" width="170" height="50" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L158,0 Q170,0 170,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="170" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="85" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">exercises</text>
+    <text x="85" y="43" text-anchor="middle" font-size="10" fill="#64748b">name, isCardio, default*</text>
+    <text x="85" y="56" text-anchor="middle" font-size="9" fill="#94a3b8">力量动作 / 有氧动作</text>
+  </g>
+
+  <g transform="translate(800, 250)">
+    <rect x="0" y="10" width="170" height="50" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L158,0 Q170,0 170,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="170" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="85" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">workout_records</text>
+    <text x="85" y="43" text-anchor="middle" font-size="10" fill="#64748b">status, totalDurationMin</text>
+    <text x="85" y="56" text-anchor="middle" font-size="9" fill="#94a3b8">totalExercises, totalSets</text>
+  </g>
+
+  <g transform="translate(800, 340)">
+    <rect x="0" y="10" width="170" height="50" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L158,0 Q170,0 170,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="170" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="85" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">workout_exercises</text>
+    <text x="85" y="43" text-anchor="middle" font-size="10" fill="#64748b">weightKg, reps, durationMin</text>
+    <text x="85" y="56" text-anchor="middle" font-size="9" fill="#94a3b8">incline, resistance, loadSetting</text>
+  </g>
+
+  <g transform="translate(800, 430)">
+    <rect x="0" y="10" width="170" height="50" rx="3" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+    <path d="M0,10 Q0,0 12,0 L158,0 Q170,0 170,10" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="170" y2="10" stroke="#475569" stroke-width="1.5"/>
+    <text x="85" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">health_checklist</text>
+    <text x="85" y="43" text-anchor="middle" font-size="10" fill="#64748b">exerciseDone, waterIntake</text>
+    <text x="85" y="56" text-anchor="middle" font-size="9" fill="#94a3b8">sleepQuality, waterIntakeMl</text>
+  </g>
+
+  <!-- User -> P3.1 -->
+  <line x1="140" y1="105" x2="200" y2="105" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="160" y="98" font-size="9" fill="#dc2626">浏览动作库</text>
+
+  <!-- User -> P3.2 -->
+  <line x1="140" y1="120" x2="200" y2="235" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="155" y="180" font-size="9" fill="#dc2626">训练数据 (动作+组数+重量)</text>
+
+  <!-- User -> P3.4 -->
+  <line x1="140" y1="130" x2="200" y2="375" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="155" y="260" font-size="9" fill="#dc2626">查看今日</text>
+
+  <!-- User -> P3.5 -->
+  <line x1="140" y1="140" x2="520" y2="375" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="320" y="255" font-size="9" fill="#dc2626">查看昨日</text>
+
+  <!-- User -> P3.6 -->
+  <line x1="140" y1="148" x2="200" y2="515" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow-user)"/>
+  <text x="150" y="350" font-size="9" fill="#dc2626">查看周报</text>
+
+  <!-- P3.1 -> DS -->
+  <line x1="420" y1="100" x2="800" y2="95" stroke="#475569" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="420" y1="120" x2="800" y2="185" stroke="#475569" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- P3.2 -> DS -->
+  <line x1="420" y1="230" x2="800" y2="185" stroke="#475569" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="520" y="200" font-size="8" fill="#64748b">验证 exerciseId (isActive=true)</text>
+  <line x1="420" y1="250" x2="800" y2="275" stroke="#475569" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="520" y="260" font-size="8" fill="#64748b">创建 WorkoutRecord</text>
+  <line x1="420" y1="270" x2="800" y2="365" stroke="#475569" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="520" y="335" font-size="8" fill="#64748b">创建 WorkoutExercise</text>
+
+  <!-- P3.2 -> P3.3 -->
+  <line x1="420" y1="245" x2="520" y2="245" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="465" y="238" font-size="8" fill="#64748b">事务内调用</text>
+
+  <!-- P3.3 -> DS -->
+  <line x1="630" y1="285" x2="800" y2="455" stroke="#475569" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="720" y="380" font-size="8" fill="#64748b">upsert exerciseDone=true</text>
+
+  <!-- P3.4 -> DS -->
+  <line x1="420" y1="375" x2="800" y2="275" stroke="#475569" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="550" y="320" font-size="8" fill="#64748b">查询 workout_records</text>
+
+  <!-- P3.5 -> DS -->
+  <line x1="520" y1="375" x2="470" y2="375" stroke="#475569" stroke-width="1.2"/>
+  <line x1="470" y1="375" x2="470" y2="320" stroke="#475569" stroke-width="1.2"/>
+  <text x="480" y="350" font-size="8" fill="#64748b">查昨日</text>
+
+  <!-- P3.6 -> DS -->
+  <line x1="420" y1="515" x2="800" y2="275" stroke="#475569" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="550" y="400" font-size="8" fill="#64748b">查本周+上周 completed</text>
+
+  <!-- Strength vs Cardio Note -->
+  <rect x="30" y="520" width="370" height="70" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="215" y="540" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400e">⚡ 力量训练 vs 有氧训练 分支处理</text>
+  <text x="215" y="558" text-anchor="middle" font-size="10" fill="#92400e">力量训练: 必须填写 weightKg + reps</text>
+  <text x="215" y="574" text-anchor="middle" font-size="10" fill="#92400e">有氧训练: 必须填写 durationMin，可选 incline/resistance/loadSetting</text>
+
+  <!-- WorkoutStatus Note -->
+  <rect x="430" y="520" width="210" height="70" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="535" y="540" text-anchor="middle" font-size="11" font-weight="bold" fill="#0369a1">WorkoutStatus 枚举</text>
+  <text x="535" y="558" text-anchor="middle" font-size="10" fill="#0369a1">in_progress → 创建时默认状态</text>
+  <text x="535" y="574" text-anchor="middle" font-size="10" fill="#0369a1">completed  → quick-log 直接完成</text>
+  <text x="535" y="590" text-anchor="middle" font-size="10" fill="#0369a1">cancelled  → 用户主动取消</text>
+
+  <!-- Validation Note -->
+  <rect x="670" y="520" width="300" height="70" rx="6" fill="#f3e8ff" stroke="#9333ea" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="820" y="540" text-anchor="middle" font-size="11" font-weight="bold" fill="#7c3aed">校验规则</text>
+  <text x="820" y="558" text-anchor="middle" font-size="10" fill="#7c3aed">reps: 1-100 | weightKg: 0-500</text>
+  <text x="820" y="574" text-anchor="middle" font-size="10" fill="#7c3aed">durationMin: 1-600 | incline: -10~40</text>
+  <text x="820" y="590" text-anchor="middle" font-size="10" fill="#7c3aed">resistance: 0-100 | 动作数≤20 | 组数≤20</text>
+</svg>

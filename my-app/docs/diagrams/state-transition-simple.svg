@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="SimSun, 'Noto Sans SC', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#000"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="500" fill="#fff"/>
+
+  <text x="400" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#000">Body Fitness 状态转换图</text>
+
+  <!-- ===== 1. WorkoutRecord ===== -->
+  <text x="30" y="60" font-size="13" font-weight="bold" fill="#000">1. WorkoutRecord (训练记录) — workout_status</text>
+
+  <!-- in_progress -->
+  <rect x="60" y="80" width="140" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="130" y="103" text-anchor="middle" font-size="13" fill="#000">in_progress</text>
+  <text x="130" y="120" text-anchor="middle" font-size="10" fill="#555">进行中 (初始状态)</text>
+
+  <!-- completed -->
+  <rect x="330" y="80" width="140" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="400" y="103" text-anchor="middle" font-size="13" fill="#000">completed</text>
+  <text x="400" y="120" text-anchor="middle" font-size="10" fill="#555">已完成 (终态)</text>
+
+  <!-- cancelled -->
+  <rect x="600" y="80" width="140" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="670" y="103" text-anchor="middle" font-size="13" fill="#000">cancelled</text>
+  <text x="670" y="120" text-anchor="middle" font-size="10" fill="#555">已取消 (终态)</text>
+
+  <!-- 转换箭头 -->
+  <line x1="200" y1="105" x2="330" y2="105" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="265" y="98" text-anchor="middle" font-size="9" fill="#000">用户完成训练</text>
+
+  <line x1="200" y1="120" x2="330" y2="120" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="265" y="138" text-anchor="middle" font-size="9" fill="#000">用户取消训练</text>
+
+  <!-- 完成后的副作用 -->
+  <text x="400" y="155" text-anchor="middle" font-size="10" fill="#555">触发: 标记 health_checklist.exercise_done = true</text>
+
+  <!-- ===== 2. User Account ===== -->
+  <text x="30" y="200" font-size="13" font-weight="bold" fill="#000">2. User (用户账号) — is_active / login_failures / locked_until</text>
+
+  <!-- Normal -->
+  <rect x="60" y="220" width="140" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="130" y="243" text-anchor="middle" font-size="13" fill="#000">正常 (Active)</text>
+  <text x="130" y="260" text-anchor="middle" font-size="10" fill="#555">is_active=true, failures=0</text>
+
+  <!-- Locked -->
+  <rect x="330" y="220" width="140" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="400" y="243" text-anchor="middle" font-size="13" fill="#000">临时锁定 (Locked)</text>
+  <text x="400" y="260" text-anchor="middle" font-size="10" fill="#555">failures≥5, 锁定30min</text>
+
+  <!-- Disabled -->
+  <rect x="600" y="220" width="140" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="670" y="243" text-anchor="middle" font-size="13" fill="#000">已禁用 (Disabled)</text>
+  <text x="670" y="260" text-anchor="middle" font-size="10" fill="#555">is_active=false (终态)</text>
+
+  <!-- 转换 -->
+  <line x1="200" y1="245" x2="330" y2="245" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="265" y="238" text-anchor="middle" font-size="9" fill="#000">连续登录失败≥5次</text>
+
+  <line x1="400" y1="220" x2="400" y2="210" stroke="#000" stroke-width="1.2"/>
+  <line x1="400" y1="210" x2="200" y2="210" stroke="#000" stroke-width="1.2"/>
+  <line x1="200" y1="210" x2="200" y2="220" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="300" y="203" text-anchor="middle" font-size="9" fill="#000">锁定到期 / 密码正确登录</text>
+
+  <line x1="200" y1="260" x2="600" y2="260" stroke="#000" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="400" y="275" text-anchor="middle" font-size="9" fill="#000">管理员禁用</text>
+
+  <!-- ===== 3. FoodPhoto ===== -->
+  <text x="30" y="320" font-size="13" font-weight="bold" fill="#000">3. FoodPhoto (食物照片识别) — photo_status</text>
+
+  <rect x="60" y="340" width="140" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="130" y="363" text-anchor="middle" font-size="13" fill="#000">pending</text>
+  <text x="130" y="380" text-anchor="middle" font-size="10" fill="#555">待识别 (初始状态)</text>
+
+  <rect x="330" y="340" width="140" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="400" y="363" text-anchor="middle" font-size="13" fill="#000">success</text>
+  <text x="400" y="380" text-anchor="middle" font-size="10" fill="#555">识别成功 (终态)</text>
+
+  <rect x="600" y="340" width="140" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="670" y="363" text-anchor="middle" font-size="13" fill="#000">failed</text>
+  <text x="670" y="380" text-anchor="middle" font-size="10" fill="#555">识别失败 (终态)</text>
+
+  <line x1="200" y1="365" x2="330" y2="365" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="265" y="358" text-anchor="middle" font-size="9" fill="#000">AI识别成功</text>
+
+  <line x1="200" y1="380" x2="330" y2="380" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="265" y="398" text-anchor="middle" font-size="9" fill="#000">AI识别失败</text>
+
+  <text x="400" y="420" text-anchor="middle" font-size="10" fill="#555">成功: 记录 recognized_food_name, protein_g, carbs_g, fat_g</text>
+  <text x="400" y="438" text-anchor="middle" font-size="10" fill="#555">失败: 记录 error_message</text>
+
+</svg>

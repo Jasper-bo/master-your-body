@@ -3,7 +3,7 @@
 > 版本: v1.0.0
 > 基础路径: `/api`
 > 认证方式: JWT Bearer Token
-> 部署模式: 本地开发（SQLite）+ Vercel 生产部署（PostgreSQL）
+> 部署模式: 本地 PostgreSQL 开发 + Vercel 生产部署（PostgreSQL）
 
 ---
 
@@ -17,7 +17,7 @@
 6. [训练模块 (Training)](#6-训练模块-training)
 7. [健康打卡模块 (CheckIn)](#7-健康打卡模块-checkin)
 8. [设置模块 (Settings)](#8-设置模块-settings)
-9. [DeepSeek AI 拍照识别集成](#9-deepseek-ai-拍照识别集成)
+9. [千问/Qwen AI 拍照识别集成](#9-千问qwen-ai-拍照识别集成)
 10. [附录 A: 数据字典](#附录-a-数据字典)
 11. [附录 B: HTTP 状态码与业务错误码汇总表](#附录-b-http-状态码与业务错误码汇总表)
 
@@ -81,7 +81,7 @@ http://localhost:3000/api
 | `CONFLICT` | 409 | 资源冲突（如重复创建） |
 | `UNPROCESSABLE_ENTITY` | 422 | 请求语义错误（如验证失败） |
 | `INTERNAL_SERVER_ERROR` | 500 | 服务器内部错误 |
-| `SERVICE_UNAVAILABLE` | 503 | 服务暂时不可用（如 DeepSeek API 不可用时） |
+| `SERVICE_UNAVAILABLE` | 503 | 服务暂时不可用（如 Qwen API 不可用时） |
 
 ### 1.6 分页规范
 
@@ -112,40 +112,9 @@ http://localhost:3000/api
 
 ## 2. 认证模块 (Auth)
 
-### 2.1 获取图形验证码
+### 2.1 图形验证码
 
-- **URL**: `/auth/captcha`
-- **Method**: `POST`
-- **Description**: 生成 4 位数字图形验证码，每次打开登录/注册页自动获取，点击图片可手动刷新
-- **Auth**: 否
-
-**Request Body**: 无
-
-**Response (200 OK)**:
-
-```json
-{
-  "success": true,
-  "data": {
-    "captchaToken": "capt_abc123",
-    "captchaImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
-  },
-  "error": null,
-  "meta": {
-    "timestamp": "2026-04-28T10:00:00Z",
-    "requestId": "req_abc123"
-  }
-}
-```
-
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `captchaToken` | string | 验证码唯一标识，后续注册/登录时需回传 |
-| `captchaImage` | string | Base64 编码的 PNG 图片（4 位数字） |
-
-**Error Codes**:
-
-- `INTERNAL_SERVER_ERROR` (500) - 验证码生成失败
+当前产品方向不实现图形验证码，也不提供 `/auth/captcha` 接口。登录防护依赖密码失败次数锁定、Refresh Token 轮换和后续可选限流。
 
 ---
 
@@ -162,8 +131,6 @@ http://localhost:3000/api
 |------|------|------|------|
 | `phone` | string | 是 | 手机号，纯数字，长度 8-15 位，无具体号段校验 |
 | `password` | string | 是 | 密码，至少 6 位，无复杂度要求 |
-| `captchaToken` | string | 是 | 获取验证码时返回的 token |
-| `captchaCode` | string | 是 | 用户输入的 4 位数字验证码 |
 | `heightCm` | number | 是 | 身高，单位 cm |
 | `weightKg` | number | 是 | 体重，单位 kg |
 | `age` | integer | 是 | 年龄 |
@@ -177,8 +144,6 @@ http://localhost:3000/api
 {
   "phone": "13800138000",
   "password": "123456",
-  "captchaToken": "capt_abc123",
-  "captchaCode": "7842",
   "heightCm": 175,
   "weightKg": 70,
   "age": 28,
@@ -237,7 +202,6 @@ http://localhost:3000/api
 **Error Codes**:
 
 - `CONFLICT` (409) - 手机号已被注册
-- `UNAUTHORIZED` (401) - 验证码错误或已过期
 - `UNPROCESSABLE_ENTITY` (422) - 参数校验失败
 
 ---
@@ -255,17 +219,13 @@ http://localhost:3000/api
 |------|------|------|------|
 | `phone` | string | 是 | 注册手机号 |
 | `password` | string | 是 | 登录密码 |
-| `captchaToken` | string | 是 | 获取验证码时返回的 token |
-| `captchaCode` | string | 是 | 用户输入的 4 位数字验证码 |
 
 **Request Example**:
 
 ```json
 {
   "phone": "13800138000",
-  "password": "123456",
-  "captchaToken": "capt_abc123",
-  "captchaCode": "7842"
+  "password": "123456"
 }
 ```
 
@@ -313,7 +273,7 @@ http://localhost:3000/api
 
 **Error Codes**:
 
-- `UNAUTHORIZED` (401) - 手机号或密码错误，或验证码错误/过期
+- `UNAUTHORIZED` (401) - 手机号或密码错误，或账号不可用
 - `UNPROCESSABLE_ENTITY` (422) - 参数校验失败
 
 ---
@@ -800,7 +760,7 @@ http://localhost:3000/api
 
 - **URL**: `/nutrition/ai-recognize`
 - **Method**: `POST`
-- **Description**: 上传食物照片，调用 DeepSeek API 识别食物并返回营养信息（蛋白质/碳水/脂肪）。热量由前端根据三大营养素计算，不保存图片
+- **Description**: 上传食物照片，调用千问/Qwen 多模态模型识别食物并返回营养信息（估算克数、蛋白质/碳水/脂肪）。热量由前端根据三大营养素计算，不保存图片
 - **Auth**: 是
 - **Content-Type**: `multipart/form-data`
 
@@ -871,7 +831,7 @@ http://localhost:3000/api
 **Error Codes**:
 
 - `UNPROCESSABLE_ENTITY` (422) - 图片格式不支持或大小超限
-- `SERVICE_UNAVAILABLE` (503) - DeepSeek API 调用失败或超时
+- `SERVICE_UNAVAILABLE` (503) - Qwen API 调用失败或超时
 
 ---
 
@@ -1178,6 +1138,68 @@ http://localhost:3000/api
 **Error Codes**:
 
 - `UNPROCESSABLE_ENTITY` (422) - 日期范围不合法或超过最大限制（最多 90 天）
+
+---
+
+### 5.8 获取饮食历史记录
+
+- **URL**: `/nutrition/history`
+- **Method**: `GET`
+- **Description**: 按日期范围获取餐食历史，用于查看、删除和后续编辑餐食记录
+- **Auth**: 是
+
+**Request Query Params**:
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `startDate` | string | 是 | - | 开始日期 `YYYY-MM-DD` |
+| `endDate` | string | 是 | - | 结束日期 `YYYY-MM-DD` |
+| `mealType` | string | 否 | `all` | 餐别筛选：`breakfast` / `lunch` / `dinner` / `snack` / `all` |
+| `page` | integer | 否 | 1 | 页码 |
+| `limit` | integer | 否 | 20 | 每页数量 |
+
+**Response (200 OK)**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "meal_001",
+        "date": "2026-04-28",
+        "mealType": "lunch",
+        "totalCalories": 570,
+        "totalProtein": 38,
+        "totalCarbs": 62,
+        "totalFat": 16,
+        "foods": [
+          { "id": "mf_001", "name": "糙米饭", "amount": 200, "unit": "g", "calories": 222 },
+          { "id": "mf_002", "name": "鸡胸肉", "amount": 150, "unit": "g", "calories": 248 }
+        ],
+        "createdAt": "2026-04-28T12:15:00Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 1,
+      "totalPages": 1,
+      "hasNext": false,
+      "hasPrev": false
+    }
+  },
+  "error": null,
+  "meta": {
+    "timestamp": "2026-04-28T10:00:00Z",
+    "requestId": "req_abc123"
+  }
+}
+```
+
+**说明**:
+
+- 删除或后续编辑历史餐食后，后端必须重新聚合 `daily_nutrition` 并触发健康评分更新。
 
 ---
 
@@ -1738,6 +1760,90 @@ http://localhost:3000/api
 
 ---
 
+### 6.10 获取训练历史记录
+
+- **URL**: `/training/history`
+- **Method**: `GET`
+- **Description**: 按日期范围获取训练历史，用于回顾、删除和后续编辑训练记录
+- **Auth**: 是
+
+**Request Query Params**:
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `startDate` | string | 是 | - | 开始日期 `YYYY-MM-DD` |
+| `endDate` | string | 是 | - | 结束日期 `YYYY-MM-DD` |
+| `category` | string | 否 | `all` | 部位筛选：`chest` / `back` / `shoulder` / `leg` / `cardio` / `all` |
+| `page` | integer | 否 | 1 | 页码 |
+| `limit` | integer | 否 | 20 | 每页数量 |
+
+**Response (200 OK)**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "sess_004",
+        "date": "2026-04-28",
+        "durationMin": 45,
+        "totalExercises": 1,
+        "totalSets": 3,
+        "totalVolumeKg": 1820,
+        "trainedParts": ["chest"],
+        "exercises": [
+          {
+            "name": "卧推",
+            "category": "chest",
+            "type": "strength",
+            "sets": [
+              { "setNumber": 1, "reps": 10, "weightKg": 60 },
+              { "setNumber": 2, "reps": 10, "weightKg": 60 },
+              { "setNumber": 3, "reps": 8, "weightKg": 65 }
+            ]
+          }
+        ],
+        "createdAt": "2026-04-28T15:00:00Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 1,
+      "totalPages": 1,
+      "hasNext": false,
+      "hasPrev": false
+    }
+  },
+  "error": null,
+  "meta": {
+    "timestamp": "2026-04-28T10:00:00Z",
+    "requestId": "req_abc123"
+  }
+}
+```
+
+**说明**:
+
+- 删除或后续编辑历史训练后，后端必须重新计算训练统计、`health_checklist.exercise_done` 和健康评分。
+
+---
+
+### 6.11 删除训练历史记录
+
+- **URL**: `/training/history/:id`
+- **Method**: `DELETE`
+- **Description**: 删除一条训练历史记录，并同步更新训练统计、运动打卡状态和健康评分
+- **Auth**: 是
+
+**Error Codes**:
+
+- `NOT_FOUND` (404) - 训练记录不存在
+- `FORBIDDEN` (403) - 无权删除该记录
+
+---
+
 ## 7. 健康打卡模块 (CheckIn)
 
 ### 7.1 获取今日打卡状态
@@ -1946,11 +2052,13 @@ http://localhost:3000/api
 
 ## 8. 设置模块 (Settings)
 
+当前设置页保持极简，只展示版本号与发布者 `贺俊博`。不规划更新日志、隐私政策、主题、单位、提醒或备份导出接口。
+
 ### 8.1 获取应用信息
 
 - **URL**: `/settings/app-info`
 - **Method**: `GET`
-- **Description**: 获取应用基本信息（图标、名称、版本号）
+- **Description**: 获取应用基本信息（名称、版本号、发布者）
 - **Auth**: 否（公开接口）
 
 **Response (200 OK)**:
@@ -1961,12 +2069,8 @@ http://localhost:3000/api
   "data": {
     "name": "VitalPulse",
     "displayName": "VitalPulse 健康管理系统",
-    "version": "1.2.0",
-    "buildNumber": "20260428.1",
-    "iconUrl": "https://cdn.vitalpulse.app/icons/app-icon-512.png",
-    "description": "您的全方位健康管理助手",
-    "supportEmail": "support@vitalpulse.app",
-    "website": "https://vitalpulse.app"
+    "version": "1.0.0",
+    "publisher": "贺俊博"
   },
   "error": null,
   "meta": {
@@ -1978,214 +2082,7 @@ http://localhost:3000/api
 
 ---
 
-### 8.2 获取开发者信息
-
-- **URL**: `/settings/developers`
-- **Method**: `GET`
-- **Description**: 获取开发团队信息
-- **Auth**: 否（公开接口）
-
-**Response (200 OK)**:
-
-```json
-{
-  "success": true,
-  "data": {
-    "teamName": "VitalPulse Team",
-    "members": [
-      {
-        "id": "dev_001",
-        "name": "张三",
-        "role": "后端架构师",
-        "bio": "专注于高可用后端系统设计与微服务架构"
-      },
-      {
-        "id": "dev_002",
-        "name": "李四",
-        "role": "前端负责人",
-        "bio": "热爱交互设计与性能优化"
-      }
-    ]
-  },
-  "error": null,
-  "meta": {
-    "timestamp": "2026-04-28T10:00:00Z",
-    "requestId": "req_abc123"
-  }
-}
-```
-
----
-
-### 8.3 获取更新日志
-
-- **URL**: `/settings/changelog`
-- **Method**: `GET`
-- **Description**: 获取应用版本更新日志
-- **Auth**: 否（公开接口）
-
-**Request Query Params**:
-
-| 参数 | 类型 | 必填 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `page` | integer | 否 | 1 | 页码 |
-| `limit` | integer | 否 | 10 | 每页数量 |
-
-**Response (200 OK)**:
-
-```json
-{
-  "success": true,
-  "data": {
-    "items": [
-      {
-        "version": "1.2.0",
-        "buildNumber": "20260428.1",
-        "releaseDate": "2026-04-28",
-        "changes": [
-          { "type": "feature", "description": "新增 AI 拍照识别食物功能" },
-          { "type": "feature", "description": "训练动作库新增 20+ 动作" },
-          { "type": "fix", "description": "修复营养趋势图数据展示异常" },
-          { "type": "improvement", "description": "优化首页加载性能" }
-        ]
-      },
-      {
-        "version": "1.1.0",
-        "buildNumber": "20260415.2",
-        "releaseDate": "2026-04-15",
-        "changes": [
-          { "type": "feature", "description": "新增健康评分打卡系统" }
-        ]
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 10,
-      "total": 5,
-      "totalPages": 1,
-      "hasNext": false,
-      "hasPrev": false
-    }
-  },
-  "error": null,
-  "meta": {
-    "timestamp": "2026-04-28T10:00:00Z",
-    "requestId": "req_abc123"
-  }
-}
-```
-
----
-
-### 8.4 获取隐私政策
-
-- **URL**: `/settings/privacy-policy`
-- **Method**: `GET`
-- **Description**: 获取隐私政策文本内容
-- **Auth**: 否（公开接口）
-
-**Response (200 OK)**:
-
-```json
-{
-  "success": true,
-  "data": {
-    "title": "VitalPulse 隐私政策",
-    "lastUpdated": "2026-04-01",
-    "version": "2.0",
-    "content": "## 1. 信息收集\n\n我们收集您在使用 VitalPulse 应用时提供的个人信息...",
-    "sections": [
-      { "heading": "信息收集", "anchor": "collection" },
-      { "heading": "信息使用", "anchor": "usage" },
-      { "heading": "信息共享", "anchor": "sharing" },
-      { "heading": "数据安全", "anchor": "security" },
-      { "heading": "用户权利", "anchor": "rights" }
-    ]
-  },
-  "error": null,
-  "meta": {
-    "timestamp": "2026-04-28T10:00:00Z",
-    "requestId": "req_abc123"
-  }
-}
-```
-
----
-
-### 8.5 获取用户个性化设置
-
-- **URL**: `/users/me/settings`
-- **Method**: `GET`
-- **Description**: 获取当前用户的应用个性化设置
-- **Auth**: 是
-
-**Response (200 OK)**:
-
-```json
-{
-  "success": true,
-  "data": {
-    "language": "zh-CN"
-  },
-  "error": null,
-  "meta": {
-    "timestamp": "2026-04-28T10:00:00Z",
-    "requestId": "req_abc123"
-  }
-}
-```
-
-**说明**:
-
-- 当前系统设置项精简，无单位制切换、无深色模式、无提醒设置
-
----
-
-### 8.6 更新用户个性化设置
-
-- **URL**: `/users/me/settings`
-- **Method**: `PATCH`
-- **Description**: 更新当前用户的应用个性化设置（支持部分更新）
-- **Auth**: 是
-
-**Request Body**:
-
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `language` | string | 否 | 语言代码，如 `zh-CN` |
-
-**Request Example**:
-
-```json
-{
-  "language": "zh-CN"
-}
-```
-
-**Response (200 OK)**:
-
-```json
-{
-  "success": true,
-  "data": {
-    "language": "zh-CN",
-    "updatedAt": "2026-04-28T10:10:00Z"
-  },
-  "error": null,
-  "meta": {
-    "timestamp": "2026-04-28T10:10:00Z",
-    "requestId": "req_abc123"
-  }
-}
-```
-
-**Error Codes**:
-
-- `UNPROCESSABLE_ENTITY` (422) - 设置值不合法
-
----
-
-## 9. DeepSeek AI 拍照识别集成
+## 9. 千问/Qwen AI 拍照识别集成
 
 ### 9.1 调用流程
 
@@ -2194,23 +2091,23 @@ http://localhost:3000/api
     ↓
 后端接收图片 → 校验格式/大小
     ↓
-后端调用 DeepSeek API（图片 base64 + prompt）
+后端调用千问/Qwen 多模态 API（图片 base64 + prompt）
     ↓
-解析 DeepSeek 响应 → 提取食物名 + 蛋白质 + 碳水 + 脂肪
+解析千问响应 → 提取食物名 + 估算克数 + 蛋白质 + 碳水 + 脂肪
     ↓
 返回识别结果给前端（不含热量，热量由前端计算）
     ↓
 用户可修改结果 → 确认后调用 POST /api/nutrition/meals 保存
 ```
 
-### 9.2 后端请求 DeepSeek API 格式
+### 9.2 后端请求千问/Qwen API 格式
 
-**API Endpoint**: `https://api.deepseek.com/v1/chat/completions`
+**API Endpoint**: `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
 
 **Request Headers**:
 
 ```
-Authorization: Bearer <DEEPSEEK_API_KEY>
+Authorization: Bearer <QWEN_API_KEY>
 Content-Type: application/json
 ```
 
@@ -2218,7 +2115,7 @@ Content-Type: application/json
 
 ```json
 {
-  "model": "deepseek-chat",
+  "model": "qwen-vl-plus",
   "messages": [
     {
       "role": "user",
@@ -2236,7 +2133,7 @@ Content-Type: application/json
       ]
     }
   ],
-  "temperature": 0.3,
+  "temperature": 0.2,
   "max_tokens": 1024
 }
 ```
@@ -2268,7 +2165,7 @@ Content-Type: application/json
 
 ### 9.4 响应解析
 
-**DeepSeek 成功响应示例**:
+**千问/Qwen 成功响应示例**:
 
 ```json
 {
@@ -2294,8 +2191,8 @@ Content-Type: application/json
 
 | 场景 | 行为 |
 |------|------|
-| DeepSeek API 超时（>15s） | 返回 `SERVICE_UNAVAILABLE` (503)，提示用户稍后重试 |
-| DeepSeek API 返回非 JSON | 尝试正则提取 JSON，失败则返回空结果列表 |
+| 千问/Qwen API 超时（>15s） | 返回 `SERVICE_UNAVAILABLE` (503)，提示用户稍后重试 |
+| 千问/Qwen API 返回非 JSON | 尝试正则提取 JSON，失败则返回空结果列表 |
 | 图片格式不支持 | 返回 `UNPROCESSABLE_ENTITY` (422) |
 | 图片超过 10MB | 返回 `UNPROCESSABLE_ENTITY` (422) |
 | API Key 失效/额度不足 | 返回 `SERVICE_UNAVAILABLE` (503)，记录服务端日志 |
@@ -2400,9 +2297,9 @@ Content-Type: application/json
 | 404 | Not Found | 请求的资源不存在 |
 | 409 | Conflict | 资源冲突（如重复创建） |
 | 422 | Unprocessable Entity | 请求语义错误（验证失败） |
-| 429 | Too Many Requests | 请求过于频繁（验证码/登录） |
+| 429 | Too Many Requests | 请求过于频繁（登录/注册/AI 识别） |
 | 500 | Internal Server Error | 服务器内部错误 |
-| 503 | Service Unavailable | 依赖服务不可用（如 DeepSeek API） |
+| 503 | Service Unavailable | 依赖服务不可用（如 Qwen API） |
 
 ### B.2 业务错误码
 

@@ -4,19 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { apiRequest } from "@/lib/client/api";
-import { storeAuthTokens } from "@/lib/client/auth-storage";
+import { clearAuthTokens } from "@/lib/client/auth-storage";
 import {
   ProfileModal,
   type ProfileFormValues,
 } from "@/components/auth/ProfileModal";
-
-type AuthResponse = {
-  tokens: {
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-  };
-};
 
 export function RegisterForm() {
   const router = useRouter();
@@ -39,7 +31,7 @@ export function RegisterForm() {
     setError(null);
 
     try {
-      const data = await apiRequest<AuthResponse>("/api/auth/register", {
+      await apiRequest("/api/auth/register", {
         method: "POST",
         body: JSON.stringify({
           phone,
@@ -47,7 +39,7 @@ export function RegisterForm() {
         }),
       });
 
-      storeAuthTokens(data.tokens);
+      clearAuthTokens();
       setShowProfileModal(true);
     } catch (submissionError) {
       setError(

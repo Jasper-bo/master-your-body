@@ -4,15 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { apiRequest } from "@/lib/client/api";
-import { storeAuthTokens } from "@/lib/client/auth-storage";
-
-type AuthResponse = {
-  tokens: {
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-  };
-};
+import { clearAuthTokens } from "@/lib/client/auth-storage";
 
 export function LoginForm() {
   const router = useRouter();
@@ -29,7 +21,7 @@ export function LoginForm() {
     setError(null);
 
     try {
-      const data = await apiRequest<AuthResponse>("/api/auth/login", {
+      await apiRequest("/api/auth/login", {
         method: "POST",
         body: JSON.stringify({
           phone,
@@ -37,7 +29,7 @@ export function LoginForm() {
         }),
       });
 
-      storeAuthTokens(data.tokens);
+      clearAuthTokens();
       router.replace(searchParams.get("redirect") || "/dashboard");
     } catch (submissionError) {
       setError(

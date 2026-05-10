@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ModuleShell } from "@/components/app/ModuleShell";
+import { HealthChecklistClient } from "@/components/dashboard/HealthChecklistClient";
 import { UpdatePlanButton } from "@/components/dashboard/UpdatePlanButton";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -112,31 +113,10 @@ export default async function DashboardPage() {
         />
       </section>
 
-      <section className="grid gap-5 lg:grid-cols-3">
-        {dashboard.healthScore.checklist.map((item) => (
-          <Card key={item.id} className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-muted">健康打卡</p>
-              <h3 className="mt-1 font-display text-xl font-semibold">
-                {item.name}
-              </h3>
-              <p className="mt-2 text-sm text-muted">
-                {item.current} / {item.target}
-              </p>
-            </div>
-            <span
-              className={[
-                "rounded-full px-3 py-1 text-sm font-semibold",
-                item.completed
-                  ? "bg-primary-bright/15 text-primary"
-                  : "bg-surface-muted text-muted",
-              ].join(" ")}
-            >
-              {item.completed ? "已达标" : "待记录"}
-            </span>
-          </Card>
-        ))}
-      </section>
+      <HealthChecklistClient
+        checklist={dashboard.healthScore.checklist}
+        date={dashboard.date}
+      />
 
       <Card className="space-y-5">
         <div>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563eb"/>
+    </marker>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#00000020"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="620" fill="#f8fafc" rx="8"/>
+
+  <!-- Title -->
+  <text x="480" y="38" text-anchor="middle" font-size="22" font-weight="bold" fill="#0f172a">Body Fitness 系统 — 顶层 DFD (上下文图)</text>
+  <line x1="200" y1="52" x2="760" y2="52" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- Central System -->
+  <rect x="330" y="220" width="300" height="100" rx="12" fill="#2563eb" filter="url(#shadow)"/>
+  <text x="480" y="262" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">Body Fitness</text>
+  <text x="480" y="285" text-anchor="middle" font-size="13" fill="#dbeafe">Web 应用 (Next.js)</text>
+  <text x="480" y="305" text-anchor="middle" font-size="11" fill="#93c5fd">健身追踪与管理平台</text>
+
+  <!-- External Entity: User -->
+  <rect x="50" y="80" width="160" height="60" rx="6" fill="#f1f5f9" stroke="#64748b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="130" y="107" text-anchor="middle" font-size="14" font-weight="bold" fill="#334155">用户 (健身者)</text>
+  <text x="130" y="125" text-anchor="middle" font-size="11" fill="#64748b">外部实体</text>
+
+  <!-- External Entity: Browser Cookies -->
+  <rect x="50" y="180" width="160" height="60" rx="6" fill="#f1f5f9" stroke="#64748b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="130" y="207" text-anchor="middle" font-size="14" font-weight="bold" fill="#334155">浏览器 Cookie</text>
+  <text x="130" y="225" text-anchor="middle" font-size="11" fill="#64748b">Access / Refresh Token</text>
+
+  <!-- External Entity: PostgreSQL -->
+  <rect x="750" y="180" width="160" height="60" rx="6" fill="#f1f5f9" stroke="#64748b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="830" y="207" text-anchor="middle" font-size="14" font-weight="bold" fill="#334155">PostgreSQL</text>
+  <text x="830" y="225" text-anchor="middle" font-size="11" fill="#64748b">数据库</text>
+
+  <!-- External Entity: JWT Service -->
+  <rect x="750" y="80" width="160" height="60" rx="6" fill="#f1f5f9" stroke="#64748b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="830" y="107" text-anchor="middle" font-size="14" font-weight="bold" fill="#334155">JWT 认证服务</text>
+  <text x="830" y="125" text-anchor="middle" font-size="11" fill="#64748b">Token 签发 / 验证</text>
+
+  <!-- Data Flows: User <-> System -->
+  <!-- User -> System -->
+  <line x1="210" y1="105" x2="330" y2="245" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="250" y="160" font-size="11" fill="#2563eb" transform="rotate(-35,250,160)">手机号+密码</text>
+  <text x="250" y="175" font-size="11" fill="#2563eb" transform="rotate(-35,250,175)">身体数据+计划</text>
+
+  <!-- System -> User -->
+  <line x1="330" y1="295" x2="210" y2="135" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="238" y="240" font-size="11" fill="#2563eb" transform="rotate(-35,238,240)">认证状态 + JWT</text>
+  <text x="238" y="255" font-size="11" fill="#2563eb" transform="rotate(-35,238,255)">仪表盘/营养/训练数据</text>
+
+  <!-- Cookies <-> System -->
+  <line x1="210" y1="210" x2="330" y2="270" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="255" y="238" font-size="10" fill="#64748b">携带 Cookie</text>
+
+  <line x1="330" y1="275" x2="210" y2="210" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="255" y="253" font-size="10" fill="#64748b">Set-Cookie</text>
+
+  <!-- System <-> PostgreSQL -->
+  <line x1="630" y1="260" x2="750" y2="200" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="712" y="222" font-size="10" fill="#64748b">SQL 查询/写入</text>
+
+  <line x1="750" y1="210" x2="630" y2="280" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="712" y="255" font-size="10" fill="#64748b">查询结果集</text>
+
+  <!-- System <-> JWT -->
+  <line x1="630" y1="240" x2="750" y2="105" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="708" y="165" font-size="10" fill="#64748b">签发 Token</text>
+
+  <line x1="750" y1="115" x2="630" y2="260" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="708" y="195" font-size="10" fill="#64748b">验证结果</text>
+
+  <!-- Legend -->
+  <rect x="50" y="450" width="860" height="145" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="70" y="475" font-size="13" font-weight="bold" fill="#334155">图例</text>
+  <rect x="70" y="490" width="40" height="22" rx="4" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+  <text x="125" y="506" font-size="12" fill="#334155">外部实体</text>
+  <rect x="220" y="490" width="40" height="22" rx="4" fill="#2563eb"/>
+  <text x="275" y="506" font-size="12" fill="#334155">处理 (系统)</text>
+  <line x1="405" y1="501" x2="465" y2="501" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="480" y="506" font-size="12" fill="#334155">数据流 (蓝色 = 用户交互)</text>
+  <line x1="650" y1="501" x2="710" y2="501" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="725" y="506" font-size="12" fill="#334155">数据流 (灰 = 系统内部)</text>
+  <text x="70" y="540" font-size="11" fill="#64748b">用户输入: 注册信息, 登录凭证, 身体数据, 个性化计划, 食物记录(g+油脂), 训练记录(动作+组数+重量)</text>
+  <text x="70" y="560" font-size="11" fill="#64748b">系统输出: 仪表盘数据, 营养报告(当日/7日趋势), 训练统计(今日/昨日/周报), 健康评分(A/B/C/D), 认证状态, JWT Token</text>
+  <text x="70" y="580" font-size="11" fill="#64748b">数据存储: PostgreSQL (14个业务表), JWT Tokens 存储于 httpOnly Cookie + DB refresh_tokens</text>
+</svg>

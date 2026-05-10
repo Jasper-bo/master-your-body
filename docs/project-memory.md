@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-05-05
+Last updated: 2026-05-10
 
 ## Purpose
 
@@ -11,7 +11,7 @@ documents describe.
 ## Project Identity
 
 - Working name: VitalPulse / Stitch Body Health Insight Tracker
-- Current product form: cloud-hosted full-stack web app (Vercel + PostgreSQL), with local SQLite dev mode
+- Current product form: cloud-hosted full-stack web app (Vercel + PostgreSQL), with local development also using a configured PostgreSQL database
 - Runtime location: `my-app/`
 - Primary goal: make a daily health loop usable by multiple users via web browser
 
@@ -36,26 +36,27 @@ currently implements a smaller MVP/prototype slice.
 - Dashboard with BMI, BMR, TDEE, nutrition progress, health score, and 7-day trend
 - Manual nutrition logging from predefined food categories
 - Quick training logging from a predefined exercise library
-- PostgreSQL persistence through Prisma (local dev uses SQLite)
+- PostgreSQL persistence through Prisma
 - Protected routes for dashboard, nutrition, training, and settings
 
 ### Partially implemented or placeholder
 
-- Settings page exists but is still mostly informational
+- Settings page exists but should stay intentionally simple: app version and
+  publisher `贺俊博`
 - Dashboard shows health checklist status, but the user does not yet have a
   real flow for recording water and sleep
 - Profile update exists, but the update flow is spread across multiple API
   surfaces
 - Data models exist for AI food photo recognition and app settings, but the
-  user-facing flows are not complete
+  user-facing flows are not complete. The AI provider direction is Qwen
+  multimodal models, not DeepSeek.
 
 ### Not implemented yet
 
-- Captcha flow described in PRD and interface docs
-- DeepSeek food photo upload and recognition flow
-- Desktop packaging with Electron or Tauri
+- Health checklist input flow for water and sleep
+- Nutrition and training history management
+- Qwen food photo upload and recognition flow
 - Automated test suite
-- Backup/export and restore flows for local data
 
 ## Architecture Snapshot
 
@@ -69,11 +70,13 @@ currently implements a smaller MVP/prototype slice.
 ### Auth model
 
 - Server responses set httpOnly cookies for access and refresh tokens
-- Middleware uses the access-token cookie to protect SSR/navigation flows
-- Client-side API requests also store access and refresh tokens in
-  `localStorage`
-- This hybrid model works today, but it is more complex than a single-source
-  session design
+- Middleware uses the access-token cookie to protect SSR/navigation flows and
+  redirects through the refresh endpoint when only the refresh cookie remains
+  valid
+- Client-side API requests rely on same-origin httpOnly cookies and retry once
+  through `/api/auth/refresh` after an authenticated `401`
+- Legacy localStorage token keys are only cleared after login/register/logout;
+  they are no longer an authentication source
 
 ### Data model shape
 
@@ -91,7 +94,8 @@ Important implemented tables and models:
 Models that exist but are not yet fully surfaced in the UI:
 
 - `FoodPhoto`
-- `AppSetting`
+- `AppSetting` (only needed for minimal app metadata if a static settings page
+  is insufficient)
 
 ### Score calculation behavior
 
@@ -116,11 +120,11 @@ Models that exist but are not yet fully surfaced in the UI:
 
 ### Documentation vs implementation drift
 
-- PRD and interface docs mention captcha and AI recognition, but current code
-  does not expose those flows
+- Historical product direction included captcha and DeepSeek. Current direction
+  is no captcha and Qwen-based AI recognition.
 - State-machine documentation is more detailed than the actual current UI
   behavior
-- Settings scope in docs is larger than the current page implementation
+- Settings scope should remain small: app version plus publisher `贺俊博`
 
 ### Flow inconsistencies
 
@@ -131,15 +135,21 @@ Models that exist but are not yet fully surfaced in the UI:
 
 ### Quality risks
 
-- There are currently no automated tests in the repo
+- A small Node test suite covers auth request refresh behavior and logout
+  revocation policy
 - As more behavior is added, regression risk will rise quickly
-- The hybrid auth storage model increases the chance of subtle session bugs
+- Broader baseline tests are still needed for validators, nutrition,
+  training, and dashboard aggregation
 
 ## Current Development Assumptions
 
-- The project should continue as a cloud-hosted application with local dev fallback
+- The project should continue as a cloud-hosted application backed by PostgreSQL
+  in both local and production modes
 - The next most valuable work is to close the daily-use loop and complete the Vercel deployment pipeline
 - Manual logging must remain a first-class path even after AI features exist
+- Do not implement captcha unless the product direction changes explicitly
+- Do not prioritize Electron/Tauri desktop packaging in the current roadmap
+- AI food recognition should use Qwen multimodal models through a server-side
+  adapter so the frontend never sees provider API keys
 - Future contributors should update these memory files whenever the real
   product state changes
-

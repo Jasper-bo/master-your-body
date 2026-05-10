@@ -20,7 +20,7 @@ export function UpdatePlanButton({ initialValues }: UpdatePlanButtonProps) {
     await apiRequest("/api/users/me", {
       method: "PATCH",
       body: JSON.stringify(values),
-    });
+    }, { auth: true });
   }
 
   function handleDone() {

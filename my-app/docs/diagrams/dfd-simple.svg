@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" font-family="SimSun, 'Noto Sans SC', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#000"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="1100" fill="#fff"/>
+
+  <!-- 标题 -->
+  <text x="450" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#000">Body Fitness 系统 — 顶层 DFD 图</text>
+
+  <!-- ===== 顶层 ===== -->
+  <!-- 中心系统 -->
+  <rect x="300" y="70" width="300" height="60" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="450" y="100" text-anchor="middle" font-size="14" font-weight="bold" fill="#000">Body Fitness 系统</text>
+  <text x="450" y="118" text-anchor="middle" font-size="11" fill="#000">(Next.js Web 应用)</text>
+
+  <!-- 用户 -->
+  <rect x="100" y="80" width="120" height="40" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="160" y="105" text-anchor="middle" font-size="12" fill="#000">用户</text>
+
+  <!-- 数据库 -->
+  <rect x="680" y="80" width="120" height="40" rx="0" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="740" y="105" text-anchor="middle" font-size="12" fill="#000">PostgreSQL</text>
+
+  <!-- 箭头 -->
+  <line x1="220" y1="100" x2="300" y2="100" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="250" y="93" text-anchor="middle" font-size="10" fill="#000">操作请求</text>
+  <line x1="300" y1="110" x2="220" y2="110" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="250" y="123" text-anchor="middle" font-size="10" fill="#000">响应数据</text>
+
+  <line x1="600" y1="100" x2="680" y2="100" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="640" y="93" text-anchor="middle" font-size="10" fill="#000">读写</text>
+  <line x1="680" y1="110" x2="600" y2="110" stroke="#000" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="640" y="123" text-anchor="middle" font-size="10" fill="#000">返回</text>
+
+  <!-- ===== 第1层 ===== -->
+  <text x="450" y="180" text-anchor="middle" font-size="16" font-weight="bold" fill="#000">第 1 层 DFD 图</text>
+
+  <!-- P1 -->
+  <rect x="60" y="220" width="180" height="60" rx="0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="150" y="248" text-anchor="middle" font-size="12" font-weight="bold" fill="#000">P1 认证处理</text>
+  <text x="150" y="266" text-anchor="middle" font-size="10" fill="#000">注册 / 登录 / 刷新 / 登出</text>
+
+  <!-- P2 -->
+  <rect x="280" y="220" width="180" height="60" rx="0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="370" y="248" text-anchor="middle" font-size="12" font-weight="bold" fill="#000">P2 营养管理</text>
+  <text x="370" y="266" text-anchor="middle" font-size="10" fill="#000">食物分类 / 录入 / 删除 / 查询</text>
+
+  <!-- P3 -->
+  <rect x="500" y="220" width="180" height="60" rx="0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="590" y="248" text-anchor="middle" font-size="12" font-weight="bold" fill="#000">P3 训练管理</text>
+  <text x="590" y="266" text-anchor="middle" font-size="10" fill="#000">动作库 / 快速记录 / 统计</text>
+
+  <!-- P4 -->
+  <rect x="280" y="310" width="180" height="60" rx="0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="370" y="338" text-anchor="middle" font-size="12" font-weight="bold" fill="#000">P4 仪表盘</text>
+  <text x="370" y="356" text-anchor="middle" font-size="10" fill="#000">营养汇总 / 训练汇总 / 健康评分</text>
+
+  <!-- P5 -->
+  <rect x="500" y="310" width="180" height="60" rx="0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="590" y="338" text-anchor="middle" font-size="12" font-weight="bold" fill="#000">P5 用户计划管理</text>
+  <text x="590" y="356" text-anchor="middle" font-size="10" fill="#000">身体数据 / 重算目标</text>
+
+  <!-- 数据存储 -->
+  <!-- D1 -->
+  <path d="M700,195 L860,195 L860,235 L700,235 Z" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <path d="M860,195 Q860,205 860,215" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="780" y="212" text-anchor="middle" font-size="10" fill="#000">D1 users / tokens</text>
+  <text x="780" y="228" text-anchor="middle" font-size="9" fill="#555">用户 & 令牌</text>
+
+  <!-- D2 -->
+  <path d="M700,255 L860,255 L860,295 L700,295 Z" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <path d="M860,255 Q860,265 860,275" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="780" y="272" text-anchor="middle" font-size="10" fill="#000">D2 营养表</text>
+  <text x="780" y="288" text-anchor="middle" font-size="9" fill="#555">食物/餐次/汇总</text>
+
+  <!-- D3 -->
+  <path d="M700,315 L860,315 L860,355 L700,355 Z" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <path d="M860,315 Q860,325 860,335" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="780" y="332" text-anchor="middle" font-size="10" fill="#000">D3 训练表</text>
+  <text x="780" y="348" text-anchor="middle" font-size="9" fill="#555">动作/记录</text>
+
+  <!-- D4 -->
+  <path d="M700,375 L860,375 L860,415 L700,415 Z" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <path d="M860,375 Q860,385 860,395" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="780" y="392" text-anchor="middle" font-size="10" fill="#000">D4 健康表</text>
+  <text x="780" y="408" text-anchor="middle" font-size="9" fill="#555">打卡/评分</text>
+
+  <!-- D5 -->
+  <path d="M700,435 L860,435 L860,465 L700,465 Z" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <path d="M860,435 Q860,445 860,455" fill="#fff" stroke="#000" stroke-width="1.2"/>
+  <text x="780" y="452" text-anchor="middle" font-size="10" fill="#000">D5 用户档案</text>
+  <text x="780" y="464" text-anchor="middle" font-size="9" fill="#555">身体数据</text>
+
+  <!-- 数据流线 -->
+  <line x1="240" y1="250" x2="280" y2="250" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="240" y1="260" x2="700" y2="216" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+  <line x1="460" y1="250" x2="500" y2="250" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="460" y1="260" x2="700" y2="278" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="590" y1="280" x2="700" y2="338" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+  <line x1="370" y1="280" x2="370" y2="310" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="590" y1="280" x2="590" y2="310" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+  <line x1="370" y1="340" x2="700" y2="398" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="590" y1="370" x2="700" y2="452" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+  <!-- ===== 第2层 - 营养 ===== -->
+  <text x="450" y="520" text-anchor="middle" font-size="16" font-weight="bold" fill="#000">第 2 层 DFD — P2 营养管理展开</text>
+
+  <!-- P2.1 -->
+  <rect x="60" y="550" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="150" y="570" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P2.1 获取食物分类</text>
+  <text x="150" y="588" text-anchor="middle" font-size="9" fill="#555">查询 food_categories + items</text>
+
+  <!-- P2.2 -->
+  <rect x="280" y="550" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="370" y="570" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P2.2 录入餐饮</text>
+  <text x="370" y="588" text-anchor="middle" font-size="9" fill="#555">验证 → 计算营养 → 创建 Meal</text>
+
+  <!-- P2.3 -->
+  <rect x="500" y="550" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="590" y="570" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P2.3 重算当日汇总</text>
+  <text x="590" y="588" text-anchor="middle" font-size="9" fill="#555">汇总 meals → upsert DailyNutrition</text>
+
+  <!-- P2.4 -->
+  <rect x="60" y="630" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="150" y="650" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P2.4 查询当日营养</text>
+  <text x="150" y="668" text-anchor="middle" font-size="9" fill="#555">读 profile + daily_nutrition</text>
+
+  <!-- P2.5 -->
+  <rect x="280" y="630" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="370" y="650" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P2.5 删除餐次</text>
+  <text x="370" y="668" text-anchor="middle" font-size="9" fill="#555">删除 meal → 触发 P2.3</text>
+
+  <!-- 数据存储 -->
+  <path d="M680,540 L830,540 L830,575 L680,575 Z" fill="#fff" stroke="#000" stroke-width="1"/>
+  <path d="M830,540 Q830,547 830,555" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="755" y="555" text-anchor="middle" font-size="9" fill="#000">food_categories</text>
+  <text x="755" y="568" text-anchor="middle" font-size="8" fill="#555">+ food_items</text>
+
+  <path d="M680,595 L830,595 L830,635 L680,635 Z" fill="#fff" stroke="#000" stroke-width="1"/>
+  <path d="M830,595 Q830,602 830,610" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="755" y="612" text-anchor="middle" font-size="9" fill="#000">meal_records</text>
+  <text x="755" y="626" text-anchor="middle" font-size="8" fill="#555">+ meal_foods</text>
+
+  <path d="M680,650 L830,650 L830,680 L680,680 Z" fill="#fff" stroke="#000" stroke-width="1"/>
+  <path d="M830,650 Q830,657 830,665" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="755" y="667" text-anchor="middle" font-size="9" fill="#000">daily_nutrition</text>
+
+  <!-- 流线 -->
+  <line x1="240" y1="575" x2="280" y2="575" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="240" y1="655" x2="280" y2="655" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="460" y1="575" x2="500" y2="575" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="370" y1="600" x2="370" y2="630" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+  <line x1="150" y1="575" x2="150" y2="555" stroke="#000" stroke-width="0.6" stroke-dasharray="4,3"/>
+  <line x1="240" y1="563" x2="680" y2="563" stroke="#000" stroke-width="0.6" marker-end="url(#arrow)"/>
+  <line x1="460" y1="568" x2="680" y2="618" stroke="#000" stroke-width="0.6" marker-end="url(#arrow)"/>
+  <line x1="590" y1="580" x2="680" y2="668" stroke="#000" stroke-width="0.6" marker-end="url(#arrow)"/>
+  <line x1="150" y1="660" x2="150" y2="668" stroke="#000" stroke-width="0.6" stroke-dasharray="4,3"/>
+
+  <!-- ===== 第2层 - 训练 ===== -->
+  <text x="450" y="740" text-anchor="middle" font-size="16" font-weight="bold" fill="#000">第 2 层 DFD — P3 训练管理展开</text>
+
+  <rect x="60" y="770" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="150" y="790" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P3.1 动作库查询</text>
+  <text x="150" y="808" text-anchor="middle" font-size="9" fill="#555">分页/筛选/搜索 exercises</text>
+
+  <rect x="280" y="770" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="370" y="790" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P3.2 快速记录训练</text>
+  <text x="370" y="808" text-anchor="middle" font-size="9" fill="#555">验证 → 创建 WorkoutRecord</text>
+
+  <rect x="500" y="770" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="590" y="790" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P3.3 标记运动完成</text>
+  <text x="590" y="808" text-anchor="middle" font-size="9" fill="#555">upsert health_checklist</text>
+
+  <rect x="60" y="850" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="150" y="870" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P3.4 今日训练</text>
+  <text x="150" y="888" text-anchor="middle" font-size="9" fill="#555">查当日 workout_records + 进度</text>
+
+  <rect x="280" y="850" width="180" height="50" rx="0" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="370" y="870" text-anchor="middle" font-size="11" font-weight="bold" fill="#000">P3.5 昨日训练 / 周报</text>
+  <text x="370" y="888" text-anchor="middle" font-size="9" fill="#555">查昨日/本周 completed 记录</text>
+
+  <path d="M680,760 L830,760 L830,795 L680,795 Z" fill="#fff" stroke="#000" stroke-width="1"/>
+  <path d="M830,760 Q830,767 830,775" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="755" y="775" text-anchor="middle" font-size="9" fill="#000">exercise_categories</text>
+  <text x="755" y="788" text-anchor="middle" font-size="8" fill="#555">+ exercises</text>
+
+  <path d="M680,815 L830,815 L830,855 L680,855 Z" fill="#fff" stroke="#000" stroke-width="1"/>
+  <path d="M830,815 Q830,822 830,830" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="755" y="832" text-anchor="middle" font-size="9" fill="#000">workout_records</text>
+  <text x="755" y="846" text-anchor="middle" font-size="8" fill="#555">+ workout_exercises</text>
+
+  <path d="M680,870 L830,870 L830,900 L680,900 Z" fill="#fff" stroke="#000" stroke-width="1"/>
+  <path d="M830,870 Q830,877 830,885" fill="#fff" stroke="#000" stroke-width="1"/>
+  <text x="755" y="887" text-anchor="middle" font-size="9" fill="#000">health_checklist</text>
+
+  <line x1="240" y1="795" x2="280" y2="795" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="460" y1="795" x2="500" y2="795" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="370" y1="820" x2="370" y2="850" stroke="#000" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+  <line x1="240" y1="788" x2="680" y2="783" stroke="#000" stroke-width="0.6" marker-end="url(#arrow)"/>
+  <line x1="370" y1="800" x2="370" y2="835" stroke="#000" stroke-width="0.6" stroke-dasharray="4,3"/>
+  <line x1="460" y1="800" x2="680" y2="838" stroke="#000" stroke-width="0.6" marker-end="url(#arrow)"/>
+  <line x1="590" y1="800" x2="680" y2="888" stroke="#000" stroke-width="0.6" marker-end="url(#arrow)"/>
+  <line x1="150" y1="878" x2="150" y2="888" stroke="#000" stroke-width="0.6" stroke-dasharray="4,3"/>
+</svg>
