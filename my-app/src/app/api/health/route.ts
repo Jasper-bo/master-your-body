@@ -19,7 +19,6 @@ export async function GET() {
     checks: {
       app: "ready",
       database,
-      deepseek: "not_checked",
     },
   });
 }

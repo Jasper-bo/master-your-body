@@ -19,7 +19,7 @@ export default function SettingsPage() {
         <Card>
           <p className="text-sm font-semibold text-muted">部署模式</p>
           <h2 className="mt-2 font-display text-3xl font-bold">数据安全</h2>
-          <p className="mt-2 text-muted">仅食物拍照识别调用 DeepSeek API</p>
+          <p className="mt-2 text-muted">所有用户数据均经过加密处理，确保您的信息安全。</p>
           <div className="mt-6">
             <LogoutButton />
           </div>

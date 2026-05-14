@@ -13,7 +13,7 @@ export default function RegisterPage() {
           注册后生成个性化营养与训练目标。
         </h1>
         <p className="max-w-xl text-lg leading-8 text-muted">
-          首次注册后的计划弹窗不可跳过，后续会按照文档接入后端计算与持久化。
+          完成注册后设置你的身体数据，获取个性化营养与训练建议。
         </p>
       </div>
 
