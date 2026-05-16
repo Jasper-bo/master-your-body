@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; line-height: 1.8; max-width: 900px; margin: 0 auto; padding: 40px; color: #222; }
+  h1 { text-align: center; font-size: 22pt; border-bottom: 3px solid #2563eb; padding-bottom: 12px; margin-bottom: 30px; }
+  h2 { font-size: 16pt; color: #2563eb; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-top: 40px; }
+  h3 { font-size: 13pt; color: #333; margin-top: 28px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 10.5pt; }
+  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+  th { background-color: #f0f4ff; font-weight: bold; }
+  code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 10pt; }
+  pre { background: #f8f8f8; border: 1px solid #e0e0e0; padding: 14px; border-radius: 6px; font-size: 10pt; overflow-x: auto; }
+  ul, ol { margin: 8px 0 16px 20px; }
+  li { margin: 4px 0; }
+  .highlight { background: #fffde7; border-left: 4px solid #f59e0b; padding: 8px 14px; margin: 16px 0; }
+  p { margin: 8px 0; }
+</style>
+</head>
+<body>
+
+<h1>VitalPulse 健康管理系统 — 软件工程课程设计答辩</h1>
+
+<h2>一、项目概述</h2>
+
+<p>VitalPulse 是一个<strong>个人健康管理 Web 应用</strong>，帮助用户记录每日饮食、训练、睡眠和饮水数据，通过健康评分系统给出综合反馈。项目采用前后端一体化架构，基于 <strong>Next.js 15 App Router</strong> 构建，已部署到 <strong>Vercel</strong>，数据库使用 <strong>Supabase 托管的 PostgreSQL</strong>，代码托管在 <strong>GitHub</strong>。</p>
+
+<p>核心功能模块包括四个主要板块：<strong>仪表盘</strong>（Dashboard）汇总当日所有健康数据、<strong>饮食记录</strong>（Nutrition）录入餐食并自动计算营养、<strong>训练记录</strong>（Training）记录力量或有氧训练、<strong>个人设置</strong>（Settings）管理身体档案。外加一套完整的手机号注册/登录认证体系。</p>
+
+<p>项目技术选型如下：</p>
+
+<table>
+<tr><th>层次</th><th>技术栈</th><th>说明</th></tr>
+<tr><td>前端框架</td><td>React 19 + Next.js 15 (App Router)</td><td>基于文件系统路由，支持 RSC</td></tr>
+<tr><td>样式方案</td><td>Tailwind CSS 3.4</td><td>自定义设计 token，无第三方组件库</td></tr>
+<tr><td>编程语言</td><td>TypeScript 5 (strict mode)</td><td>全项目类型安全</td></tr>
+<tr><td>后端运行时</td><td>Next.js API Routes (Node.js)</td><td>Serverless Functions</td></tr>
+<tr><td>ORM</td><td>Prisma 6.19</td><td>类型安全的数据库访问层</td></tr>
+<tr><td>数据库</td><td>PostgreSQL (Supabase)</td><td>PgBouncer 连接池</td></tr>
+<tr><td>认证方案</td><td>JWT 双 Token + httpOnly Cookie</td><td>HS256 签名，access 24h / refresh 7d</td></tr>
+<tr><td>部署平台</td><td>Vercel (新加坡 sin1)</td><td>自动构建 + 部署</td></tr>
+<tr><td>版本管理</td><td>Git + GitHub</td><td>main 分支直推</td></tr>
+</table>
+
+<h2>二、前端设计</h2>
+
+<h3>2.1 页面路由结构</h3>
+
+<p>使用 Next.js App Router 的文件系统路由，通过路由组实现不同布局：</p>
+
+<table>
+<tr><th>路由组</th><th>页面路径</th><th>布局类型</th><th>说明</th></tr>
+<tr><td><code>(auth)</code> — 未登录用户</td><td><code>/login</code></td><td>居中卡片式布局</td><td>登录页</td></tr>
+<tr><td><code>(auth)</code></td><td><code>/register</code></td><td>居中卡片式布局</td><td>注册页（含档案弹窗）</td></tr>
+<tr><td><code>(main)</code> — 已登录用户</td><td><code>/dashboard</code></td><td>顶部导航 + 内容容器</td><td>健康仪表盘</td></tr>
+<tr><td><code>(main)</code></td><td><code>/nutrition</code></td><td>顶部导航 + 内容容器</td><td>饮食记录</td></tr>
+<tr><td><code>(main)</code></td><td><code>/training</code></td><td>顶部导航 + 内容容器</td><td>训练记录</td></tr>
+<tr><td><code>(main)</code></td><td><code>/settings</code></td><td>顶部导航 + 内容容器</td><td>个人设置</td></tr>
+</table>
+
+<p><code>/</code> 根路径自动重定向到 <code>/dashboard</code>。</p>
+
+<p>路由保护通过 Next.js <strong>中间件</strong>（<code>middleware.ts</code>）实现：已登录用户访问 /login 或 /register 时自动重定向到仪表盘；未登录用户访问受保护页面时，若有 refresh token 则尝试无感刷新，否则重定向到登录页并附带 <code>redirect</code> 参数以便登录后回跳。</p>
+
+<h3>2.2 组件架构</h3>
+
+<p>项目不依赖任何第三方 UI 组件库，所有组件自研，共计 <strong>15 个组件</strong>，按功能域组织：</p>
+
+<table>
+<tr><th>分类</th><th>组件文件</th><th>功能</th></tr>
+<tr><td rowspan="3">通用 UI 组件<br>(src/components/ui/)</td><td>Button.tsx</td><td>按钮组件，支持 variant、disabled、loading 状态</td></tr>
+<tr><td>Card.tsx</td><td>卡片容器组件</td></tr>
+<tr><td>ProgressBar.tsx</td><td>进度条组件，用于营养摄入可视化</td></tr>
+<tr><td rowspan="3">认证组件<br>(src/components/auth/)</td><td>LoginForm.tsx</td><td>登录表单，手机号+密码，含表单验证和错误提示</td></tr>
+<tr><td>RegisterForm.tsx</td><td>注册表单，密码确认，注册成功后弹出档案 Modal</td></tr>
+<tr><td>ProfileModal.tsx</td><td>身体档案填写弹窗，注册后强制填写（不可跳过）</td></tr>
+<tr><td rowspan="2">仪表盘组件</td><td>HealthChecklistClient.tsx</td><td>健康打卡交互（饮水/睡眠/运动勾选提交）</td></tr>
+<tr><td>UpdatePlanButton.tsx</td><td>更新健身计划按钮</td></tr>
+<tr><td rowspan="2">饮食组件</td><td>NutritionManualClient.tsx</td><td>手动录入餐食表单（分类→食物→克数→油脂→提交）</td></tr>
+<tr><td>NutritionHistoryClient.tsx</td><td>饮食历史列表，支持分页和餐型筛选</td></tr>
+<tr><td rowspan="2">训练组件</td><td>TrainingClient.tsx</td><td>快速训练录入表单（部位→动作→组数→重量/次数→提交）</td></tr>
+<tr><td>TrainingHistoryClient.tsx</td><td>训练历史列表，支持分页和部位筛选</td></tr>
+<tr><td>设置组件</td><td>LogoutButton.tsx</td><td>退出登录按钮，调用 logout API 并清空状态</td></tr>
+</table>
+
+<h3>2.3 核心交互流程</h3>
+
+<ol>
+<li><strong>注册流程</strong>：填写手机号 + 密码 + 确认密码 → 调用 POST /api/auth/register → 注册成功 → 强制弹出 ProfileModal 档案弹窗（高度、体重、年龄、性别、活动水平、健身目标）→ 提交 PUT /api/users/me/plan → 后端根据公式计算个性化营养目标（BMR × 活动系数 = TDEE，再按增肌/减脂/维持调整热量及三大宏量素配比）→ 跳转仪表盘。</li>
+<li><strong>登录流程</strong>：填写手机号 + 密码 → POST /api/auth/login → 服务端验证后通过 Set-Cookie 下发 JWT 双 token → 前端清理旧状态后跳转。<strong>安全机制</strong>：连续 5 次密码错误锁定账号 15 分钟。</li>
+<li><strong>仪表盘</strong>：GET /api/dashboard → 一次性返回当日健康全貌（营养摄入 vs 目标、身体指标 BMI/BMR/TDEE、健康评分四维小分 + A-D 等级、7 日营养趋势图数据、三项打卡状态），前端渲染为卡片 + 进度条 + 折线图 + 勾选框。</li>
+<li><strong>饮食记录</strong>：选择餐型（早/中/晚/加餐）→ 按分类选食物 → 填克数（主食 10-2000g，肉类/蔬菜 10-1000g）→ 选油脂量（无油/少油/中等/多油）→ POST /api/nutrition/meals → 后端在事务中创建 MealRecord + MealFood 条目 → 自动重算当日 DailyNutrition。</li>
+<li><strong>训练记录</strong>：选部位 → 选动作 → 逐组填重量(0-500kg)和次数(1-100)或时长(1-600min) → POST /api/training/quick-log → 后端自动推算出总时长、总训练量（volume = 重量×次数的累计）→ 在事务中创建 WorkoutRecord + WorkoutExercise 条目 → 自动更新 HealthChecklist.exerciseDone。</li>
+</ol>
+
+<h2>三、后端设计</h2>
+
+<h3>3.1 架构概述</h3>
+
+<p>后端基于 Next.js API Routes，共 <strong>23 个路由文件、25 个 API 端点</strong>。采用服务端函数式架构：API 路由层负责请求校验和响应序列化，核心业务逻辑集中在 <code>src/lib/server/</code> 下的领域模块中。所有 API 返回统一的 JSON 信封格式：</p>
+
+<pre>{
+  success: boolean,    // 请求是否成功
+  data?: T,            // 业务数据（成功时）
+  error?: string,      // 错误信息（失败时）
+  meta?: {             // 分页元数据（列表接口）
+    total: number,
+    page: number,
+    limit: number,
+    totalPages: number,
+    hasNext: boolean,
+    hasPrev: boolean
+  }
+}</pre>
+
+<h3>3.2 API 路由全景图</h3>
+
+<p><strong>认证模块</strong>（4 个路由文件，5 个端点）：</p>
+
+<table>
+<tr><th>方法</th><th>路径</th><th>功能</th></tr>
+<tr><td>POST</td><td>/api/auth/register</td><td>手机号注册 + bcrypt 密码哈希 + 创建 User 与 UserProfile（事务） + 签发双 token</td></tr>
+<tr><td>POST</td><td>/api/auth/login</td><td>手机号登录 + 密码验证 + 账号锁定检查 + 签发双 token</td></tr>
+<tr><td>POST</td><td>/api/auth/logout</td><td>吊销 refresh token + 清除 auth cookies</td></tr>
+<tr><td>POST / GET</td><td>/api/auth/refresh</td><td>Refresh Token Rotation：验证 → 吊销旧 token → 签发新 pair → 更新 cookies（POST 用于 API 调用，GET 用于中间件页面重定向）</td></tr>
+</table>
+
+<p><strong>仪表盘模块</strong>（1 个端点）：</p>
+
+<table>
+<tr><th>方法</th><th>路径</th><th>功能</th></tr>
+<tr><td>GET</td><td>/api/dashboard?date=YYYY-MM-DD</td><td>聚合用户档案、营养、训练、打卡、评分、7日趋势数据</td></tr>
+</table>
+
+<p><strong>饮食模块</strong>（6 个端点）：</p>
+
+<table>
+<tr><th>方法</th><th>路径</th><th>功能</th></tr>
+<tr><td>GET</td><td>/api/nutrition/food-categories</td><td>获取 4 个分类及其预设食物列表（含每 100g 营养值）</td></tr>
+<tr><td>GET</td><td>/api/nutrition/oil-options</td><td>获取油脂用量选项（无油 0g / 少油 5g / 中等 10g / 多油 20g）</td></tr>
+<tr><td>GET</td><td>/api/nutrition/today?date=</td><td>获取指定日期营养汇总（热量+三大宏量素的 current vs target + 剩余热量 + 每餐详情）</td></tr>
+<tr><td>POST</td><td>/api/nutrition/meals</td><td>创建一顿餐食记录（校验 foodId、克数范围、油脂选项后，在事务中创建 MealRecord + MealFood + 重算 DailyNutrition）</td></tr>
+<tr><td>DELETE</td><td>/api/nutrition/meals/[id]</td><td>删除餐食记录（事务中删除 + 重算当日营养 + 刷新仪表盘缓存）</td></tr>
+<tr><td>GET</td><td>/api/nutrition/history?start=&end=&page=&limit=&filter=</td><td>分页查询饮食历史（支持日期范围 + 餐型筛选）</td></tr>
+</table>
+
+<p><strong>训练模块</strong>（7 个端点）：</p>
+
+<table>
+<tr><th>方法</th><th>路径</th><th>功能</th></tr>
+<tr><td>GET</td><td>/api/training/exercises?category=&search=&page=&limit=</td><td>动作库查询（支持部位筛选 + 名称搜索 + 分页，力量/有氧区分）</td></tr>
+<tr><td>GET</td><td>/api/training/today?date=</td><td>当日训练记录（会话列表+完成率+已练部位+总组数+总时长+总训练量）</td></tr>
+<tr><td>GET</td><td>/api/training/yesterday</td><td>昨日训练摘要（简洁版，供仪表盘引用）</td></tr>
+<tr><td>GET</td><td>/api/training/weekly-stats?weekStart=</td><td>周训练统计（7日每日明细+总训练量+与上周环比变化率）</td></tr>
+<tr><td>GET</td><td>/api/training/history?start=&end=&page=&limit=&filter=</td><td>训练历史分页查询（支持日期范围 + 部位筛选）</td></tr>
+<tr><td>POST</td><td>/api/training/quick-log</td><td>快速记录一次训练（校验力量/有氧参数后，在事务中创建 WorkoutRecord + WorkoutExercise + 更新 HealthChecklist）</td></tr>
+<tr><td>DELETE</td><td>/api/training/history/[id]</td><td>删除训练记录（事务中删除 + 判断是否清空 exerciseDone + 刷新仪表盘）</td></tr>
+</table>
+
+<p><strong>用户模块</strong>（2 个端点）：</p>
+
+<table>
+<tr><th>方法</th><th>路径</th><th>功能</th></tr>
+<tr><td>GET / PATCH</td><td>/api/users/me</td><td>GET: 获取当前用户信息及档案；PATCH: 更新身体指标</td></tr>
+<tr><td>PUT</td><td>/api/users/me/plan</td><td>更新完整健身计划（触发 BMR/BMI/TDEE 重算 + 营养目标更新）</td></tr>
+</table>
+
+<p>另有 GET /api/health 健康检查端点（应用状态+数据库可达性），以及 POST /api/checkin/[id] 健康打卡端点。</p>
+
+<h3>3.3 服务端库文件职责</h3>
+
+<table>
+<tr><th>文件</th><th>核心职责</th></tr>
+<tr><td><code>auth.ts</code></td><td>从 Cookie 提取 JWT，校验签名与有效期，返回 AuthContext（userId, phone, accessToken）</td></tr>
+<tr><td><code>jwt.ts</code></td><td>HS256 (HMAC-SHA-256) JWT 签发与验证，<strong>纯 Web Crypto API 实现，零第三方依赖</strong></td></tr>
+<tr><td><code>cookies.ts</code></td><td>httpOnly Cookie 的 set/clear，定义 cookie 名称常量与安全属性</td></tr>
+<tr><td><code>token-store.ts</code></td><td>Refresh token 的 SHA256 哈希存储、查询与吊销</td></tr>
+<tr><td><code>prisma.ts</code></td><td>PrismaClient 单例（利用 globalThis 缓存防 HMR 连接泄漏）</td></tr>
+<tr><td><code>env.ts</code></td><td>环境变量读取、校验与解析（含过期时间字符串解析，如 24h→86400s）</td></tr>
+<tr><td><code>validators.ts</code></td><td>通用输入校验（手机号 8-15 位数字、密码最小长度、健身计划各字段范围）</td></tr>
+<tr><td><code>dashboard.ts</code></td><td>仪表盘数据聚合 + 健康评分四维算法（详见 3.4 节）</td></tr>
+<tr><td><code>nutrition.ts</code></td><td>饮食核心业务逻辑：系统食物库种子初始化、餐食 CRUD、每日营养自动汇总、食物分类查询、油脂选项</td></tr>
+<tr><td><code>training.ts</code></td><td>训练核心业务逻辑：系统动作库种子初始化、训练 CRUD、周统计、昨日摘要、力量/有氧分别校验</td></tr>
+<tr><td><code>checkin.ts</code></td><td>健康打卡逻辑（饮水/睡眠/运动三项）</td></tr>
+</table>
+
+<h3>3.4 健康评分算法（核心业务逻辑）</h3>
+
+<p>健康评分系统位于 <code>dashboard.ts</code> 中的 <code>calculateHealthScore</code> 函数，采用 <strong>4 维度 × 25 分 = 100 分制</strong>，最终映射为 A / B / C / D 等级：</p>
+
+<table>
+<tr><th>维度</th><th>分值范围</th><th>计算方式</th><th>目标来源</th></tr>
+<tr><td>营养</td><td>0-25</td><td>热量达标分 (60%权重) + 三大宏量素均衡分 (40%权重)，热量偏差超 10% 即清零</td><td>用户档案个性化计算</td></tr>
+<tr><td>运动</td><td>0-25</td><td>训练时长 ≥ 30 分钟 → 25 分，否则按比例折算</td><td>固定 30 分钟标准</td></tr>
+<tr><td>睡眠</td><td>0-25</td><td>实际睡眠 / 目标睡眠 × 25，上限 25（允许超额）</td><td>用户档案 sleepTargetHours</td></tr>
+<tr><td>水分</td><td>0-25</td><td>实际饮水 / 目标饮水 × 25，上限 25</td><td>用户档案 waterTargetMl</td></tr>
+</table>
+
+<p>总分 = 营养分 + 运动分 + 睡眠分 + 水分分。等级映射：≥90 → A，≥75 → B，≥60 → C，<60 → D。</p>
+
+<p>评分结果通过 <code>prisma.healthScore.upsert</code> 持久化到 health_scores 表，供后续查询和趋势分析。</p>
+
+<h3>3.5 认证安全机制</h3>
+
+<table>
+<tr><th>安全措施</th><th>实现方式</th></tr>
+<tr><td>密码保护</td><td>bcrypt 12 轮哈希，不存储明文</td></tr>
+<tr><td>JWT 签名</td><td>HMAC-SHA-256，access token (24h) 和 refresh token (7d) 使用不同密钥签名</td></tr>
+<tr><td>防暴力破解</td><td>连续输错 5 次密码 → lockedUntil = now + 15min，锁定期间拒绝登录</td></tr>
+<tr><td>Refresh Token Rotation</td><td>每次使用 refresh token 时吊销旧 token、签发新 token pair，防重放攻击</td></tr>
+<tr><td>Token 安全存储</td><td>Refresh token 数据库中仅存 SHA256 哈希值，即使数据库泄露也无法伪造</td></tr>
+<tr><td>Cookie 安全</td><td>httpOnly (JS 不可读，防 XSS) + SameSite=Lax (防 CSRF) + Secure (HTTPS only, 生产环境)</td></tr>
+<tr><td>输入校验</td><td>所有 API 入参经过 schema 校验（类型、范围、格式），非法输入在到达数据库前被拦截</td></tr>
+<tr><td>数据一致性</td><td>饮食和训练的创建/删除操作均在 Prisma $transaction 中完成，多表更新原子化</td></tr>
+</table>
+
+<h2>四、数据库设计</h2>
+
+<h3>4.1 总览</h3>
+
+<p>采用 <strong>PostgreSQL + Prisma ORM</strong>，共 <strong>17 张表 + 6 个枚举类型</strong>。数据库托管在 Supabase，通过 <strong>PgBouncer 连接池</strong>连接（端口 6543），Prisma schema 迁移走直连（端口 5432）。</p>
+
+<p>六大枚举类型：Gender（男/女/其他）、ActivityLevel（久坐/轻度/中度/高度）、FitnessGoal（减脂/维持/增肌）、MealType（早/中/晚/加餐）、PhotoStatus（处理中/成功/失败）、WorkoutStatus（进行中/已完成/已取消）、SettingValueType（字符串/数字/布尔/JSON）。</p>
+
+<h3>4.2 核心 ER 关系图</h3>
+
+<pre>
+User (用户) ──── 1:1 ──── UserProfile (身体档案)
+   │
+   ├── 1:N ── MealRecord (餐食记录) ── 1:N ── MealFood (餐食-食物关联)
+   │                                              │
+   │                                         FoodItem (食物条目)
+   │                                              │
+   │                                         FoodCategory (食物分类)
+   │
+   ├── 1:N ── DailyNutrition (每日营养汇总, UNIQUE userId+date)
+   │
+   ├── 1:N ── WorkoutRecord (训练记录) ── 1:N ── WorkoutExercise (每组数据)
+   │                                                   │
+   │                                              Exercise (训练动作)
+   │                                                   │
+   │                                              ExerciseCategory (训练分类)
+   │
+   ├── 1:N ── HealthChecklist (健康打卡, UNIQUE userId+date)
+   ├── 1:N ── HealthScore (健康评分, UNIQUE userId+date)
+   ├── 1:N ── RefreshToken (刷新令牌, SHA256 哈希)
+   ├── 1:N ── AppSetting (用户设置键值对)
+   └── 1:N ── FoodPhoto (AI 食物拍照识别)
+
+SystemInfo (系统信息) —— 独立表，无外键关联
+</pre>
+
+<h3>4.3 表结构详解</h3>
+
+<p><strong>用户与认证层（3 表）：</strong></p>
+
+<table>
+<tr><th>表名</th><th>关键字段</th><th>约束</th><th>说明</th></tr>
+<tr><td>users</td><td>id(UUID), phone(unique), passwordHash, isActive, loginFailures, lockedUntil, lastLoginAt</td><td>phone 唯一索引</td><td>用户主表，含登录安全字段</td></tr>
+<tr><td>user_profiles</td><td>id, userId(unique FK), heightCm, weightKg, age, gender, activityLevel, fitnessGoal, dailyCalorieTarget, dailyProteinTargetG, dailyCarbsTargetG, dailyFatTargetG, waterTargetMl, sleepTargetHours</td><td>userId 唯一约束，ON DELETE CASCADE</td><td>1:1 身体档案 + 个性化营养/训练目标</td></tr>
+<tr><td>refresh_tokens</td><td>id, userId(FK), tokenHash(unique), expiresAt, revoked</td><td>tokenHash 唯一索引, expiresAt 索引</td><td>SHA256 哈希存储，支持吊销</td></tr>
+</table>
+
+<p><strong>营养饮食层（6 表）：</strong></p>
+
+<table>
+<tr><th>表名</th><th>关键字段</th><th>约束/索引</th><th>说明</th></tr>
+<tr><td>food_categories</td><td>id, name(unique), sortOrder, icon, isSystem</td><td>name 唯一, sortOrder 索引</td><td>食物分类（主食/肉类/蔬菜/油脂）</td></tr>
+<tr><td>food_items</td><td>id, name, categoryId(FK), caloriesPer100g, proteinPer100g, carbsPer100g, fatPer100g, unit, isSystem, isActive</td><td>categoryId+name+组合索引</td><td>食物条目及每100g营养值，isActive 支持软删除</td></tr>
+<tr><td>meal_records</td><td>id, userId(FK), recordDate, mealType(enum), totalCalories, totalProteinG, totalCarbsG, totalFatG, note</td><td>(userId,recordDate) 联合索引, (userId,recordDate,mealType) 联合索引</td><td>一顿餐食记录，含汇总营养值</td></tr>
+<tr><td>meal_foods</td><td>id, mealRecordId(FK), foodItemId(FK), quantityG, calculatedCalories, calculatedProteinG, calculatedCarbsG, calculatedFatG</td><td>双外键索引</td><td>餐食-食物中间表，含已计算的营养值（冗余存储避免每次重算）</td></tr>
+<tr><td>daily_nutrition</td><td>id, userId(FK), recordDate, totalCalories/ProteinG/CarbsG/FatG + 对应 Target</td><td>(userId,recordDate) 唯一约束</td><td>每日营养汇总，upsert 更新</td></tr>
+<tr><td>food_photos</td><td>id, userId(FK), recognizedFoodName, proteinG/carbsG/fatG, status(enum), errorMessage, completedAt</td><td>(userId,createdAt) 索引</td><td>食物拍照识别记录</td></tr>
+</table>
+
+<p><strong>训练运动层（4 表）：</strong></p>
+
+<table>
+<tr><th>表名</th><th>关键字段</th><th>约束/索引</th><th>说明</th></tr>
+<tr><td>exercise_categories</td><td>id, name(unique), sortOrder, icon, isSystem</td><td>name 唯一, sortOrder 索引</td><td>训练分类（胸/背/肩/腿/有氧）</td></tr>
+<tr><td>exercises</td><td>id, name, categoryId(FK), isCardio, defaultSets, defaultReps, defaultDurationMin, isSystem, isActive</td><td>categoryId+name+isCardio+组合索引</td><td>训练动作条目，区分力量/有氧</td></tr>
+<tr><td>workout_records</td><td>id, userId(FK), workoutDate, startTime, endTime, totalDurationMin, totalExercises, totalSetsCompleted, status(enum)</td><td>(userId,workoutDate) 联合索引, (userId,status) 联合索引</td><td>一次训练记录，含时间与汇总数据</td></tr>
+<tr><td>workout_exercises</td><td>id, workoutRecordId(FK), exerciseId(FK), exerciseOrder, setNumber, weightKg, reps, durationMin, inclinePercent, resistanceLevel, loadSetting, isCompleted</td><td>(workoutRecordId,exerciseOrder,setNumber) 复合索引</td><td>每组训练数据，支持力量（重量+次数）和有氧（时长+坡度+阻力）</td></tr>
+</table>
+
+<p><strong>健康评估层（2 表）：</strong></p>
+
+<table>
+<tr><th>表名</th><th>关键字段</th><th>约束</th><th>说明</th></tr>
+<tr><td>health_checklist</td><td>id, userId(FK), recordDate, waterIntake(bool), sleepQuality(bool), exerciseDone(bool), waterIntakeMl, sleepActualHours</td><td>(userId,recordDate) 唯一约束</td><td>每日三项打卡：水分/睡眠/运动</td></tr>
+<tr><td>health_scores</td><td>id, userId(FK), recordDate, totalScore, grade(A/B/C/D), nutritionScore, exerciseScore, sleepScore, hydrationScore</td><td>(userId,recordDate) 唯一约束</td><td>每日四维评分缓存，dashboard 直接读取</td></tr>
+</table>
+
+<p><strong>系统辅助层（2 表）：</strong></p>
+
+<table>
+<tr><th>表名</th><th>关键字段</th><th>约束</th><th>说明</th></tr>
+<tr><td>app_settings</td><td>id, userId(FK), settingKey, settingValue, valueType(enum)</td><td>(userId,settingKey) 唯一约束</td><td>用户个性化设置键值对</td></tr>
+<tr><td>system_info</td><td>id, appName, appVersion, buildNumber, releaseNotes, privacyPolicyContent, developerName, developerTitle, isCurrent</td><td>isCurrent 索引</td><td>应用版本、隐私政策等系统信息</td></tr>
+</table>
+
+<h3>4.4 数据库设计亮点</h3>
+
+<ul>
+<li><strong>一人一天一行</strong>：DailyNutrition、HealthChecklist、HealthScore 三张表均使用 (userId, recordDate) 唯一约束，通过 upsert 更新，保证数据不会重复</li>
+<li><strong>营养冗余计算</strong>：MealFood 表中存储 calculatedCalories/Protein/Carbs/Fat，避免每次查询时根据克数和食物营养值重复计算</li>
+<li><strong>食物/动作库可扩展</strong>：isSystem 区分系统预设和用户自定义，isActive 支持软删除，种子数据在应用启动时自动初始化</li>
+<li><strong>级联删除</strong>：User 删除时 9 张关联子表通过 ON DELETE CASCADE 自动级联清理，保证数据一致性</li>
+<li><strong>索引覆盖</strong>：所有高频查询字段（userId+date、categoryId、sortOrder、tokenHash、expiresAt、status）均已建立联合索引或单列索引</li>
+</ul>
+
+<h2>五、部署与 DevOps</h2>
+
+<h3>5.1 部署架构</h3>
+
+<pre>
+用户浏览器
+    │  HTTPS
+    ▼
+Vercel Edge Network (新加坡 sin1)
+    │  路由到最近的 Serverless Function
+    ▼
+Next.js API Route (Node.js Runtime)
+    │  Prisma Client → PgBouncer (6543)
+    ▼
+Supabase PostgreSQL 实例
+</pre>
+
+<h3>5.2 Vercel 配置</h3>
+
+<pre>{
+  "framework": "nextjs",
+  "regions": ["sin1"],
+  "buildCommand": "prisma generate && prisma db push && next build",
+  "installCommand": "npm install"
+}</pre>
+
+<p>构建流程：安装依赖 → Prisma 生成类型安全的数据库客户端 → 推送 Schema 到数据库（非破坏性同步）→ Next.js 生产构建（代码分割 + 静态优化）。</p>
+
+<h3>5.3 环境变量关键配置</h3>
+
+<table>
+<tr><th>变量</th><th>用途</th><th>典型值</th></tr>
+<tr><td>DATABASE_URL</td><td>Supabase Pooler 连接 (PgBouncer)</td><td>postgresql://...pooler.supabase.com:6543/postgres?pgbouncer=true</td></tr>
+<tr><td>DIRECT_URL</td><td>Supabase 直连 (Prisma migrate)</td><td>postgresql://...pooler.supabase.com:5432/postgres</td></tr>
+<tr><td>JWT_SECRET</td><td>Access Token 签名密钥</td><td>至少 32 字节随机字符串</td></tr>
+<tr><td>JWT_REFRESH_SECRET</td><td>Refresh Token 签名密钥</td><td>不同于 JWT_SECRET 的随机字符串</td></tr>
+<tr><td>JWT_ACCESS_EXPIRY</td><td>Access Token 有效期</td><td>24h</td></tr>
+<tr><td>JWT_REFRESH_EXPIRY</td><td>Refresh Token 有效期</td><td>7d</td></tr>
+<tr><td>BCRYPT_ROUNDS</td><td>密码哈希强度</td><td>12</td></tr>
+<tr><td>LOGIN_MAX_FAILURES</td><td>触发锁定的失败次数</td><td>5</td></tr>
+<tr><td>LOGIN_LOCKOUT_MINUTES</td><td>锁定持续时间</td><td>15</td></tr>
+</table>
+
+<h2>六、项目总结</h2>
+
+<table>
+<tr><th>维度</th><th>数据</th></tr>
+<tr><td>前端页面</td><td>7 个页面路由</td></tr>
+<tr><td>前端组件</td><td>15 个自研组件（3 个通用 UI + 12 个业务组件）</td></tr>
+<tr><td>API 端点</td><td>25 个（12 GET + 7 POST + 1 PUT + 1 PATCH + 2 DELETE + 2 双方法）</td></tr>
+<tr><td>服务端库文件</td><td>16 个 TypeScript/JavaScript 文件</td></tr>
+<tr><td>数据库表</td><td>17 张表 + 6 个枚举类型</td></tr>
+<tr><td>数据库索引</td><td>20+ 个联合索引与单列索引</td></tr>
+<tr><td>外键关系</td><td>12 条，覆盖所有业务关联</td></tr>
+<tr><td>认证安全</td><td>6 层防护（bcrypt + JWT + 锁定 + Rotation + httpOnly + 输入校验）</td></tr>
+<tr><td>部署</td><td>Vercel (新加坡) + Supabase PostgreSQL</td></tr>
+<tr><td>代码库</td><td>GitHub: Jasper-bo/master-your-body</td></tr>
+</table>
+
+<p><strong>一句话总结</strong>：VitalPulse 是一个前后端一体化的全栈个人健康管理系统，前端 React + TypeScript + Tailwind 自研组件库，后端 Next.js API Routes + JWT 双 Token 认证，数据库 PostgreSQL 17 表完整 ER 设计，部署在 Vercel + Supabase 云基础设施上，具备完整的注册/登录/仪表盘/饮食/训练/健康评分功能链路。</p>
+
+</body>
+</html>

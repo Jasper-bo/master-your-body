@@ -139,39 +139,39 @@ function MetricCard({
 
 const GRADE_CONFIG: Record<
   string,
-  { label: string; color: string; ring: string; bg: string }
+  { label: string; text: string; badge: string; ring: string }
 > = {
   A: {
     label: "优秀",
-    color: "text-emerald-400",
-    ring: "#34d399",
-    bg: "bg-emerald-400/10",
+    text: "text-emerald-700",
+    badge: "bg-emerald-50 text-emerald-700",
+    ring: "#10b981",
   },
   B: {
     label: "良好",
-    color: "text-sky-400",
-    ring: "#38bdf8",
-    bg: "bg-sky-400/10",
+    text: "text-sky-700",
+    badge: "bg-sky-50 text-sky-700",
+    ring: "#0ea5e9",
   },
   C: {
     label: "一般",
-    color: "text-amber-400",
-    ring: "#fbbf24",
-    bg: "bg-amber-400/10",
+    text: "text-amber-700",
+    badge: "bg-amber-50 text-amber-700",
+    ring: "#f59e0b",
   },
   D: {
     label: "需改善",
-    color: "text-red-400",
-    ring: "#f87171",
-    bg: "bg-red-400/10",
+    text: "text-red-700",
+    badge: "bg-red-50 text-red-700",
+    ring: "#ef4444",
   },
 };
 
-const SUB_SCORE_LABELS: Record<string, string> = {
-  nutrition: "营养",
-  exercise: "运动",
-  sleep: "睡眠",
-  hydration: "饮水",
+const SUB_SCORE_CONFIG: Record<string, { label: string; bar: string }> = {
+  nutrition: { label: "营养", bar: "bg-gradient-to-r from-emerald-400 to-[#2ecc71]" },
+  exercise: { label: "运动", bar: "bg-gradient-to-r from-sky-400 to-[#5cb8fd]" },
+  sleep: { label: "睡眠", bar: "bg-gradient-to-r from-violet-400 to-violet-300" },
+  hydration: { label: "饮水", bar: "bg-gradient-to-r from-amber-400 to-[#f8a018]" },
 };
 
 function HealthScoreCard({
@@ -179,26 +179,25 @@ function HealthScoreCard({
 }: {
   score: DashboardData["healthScore"];
 }) {
-  const gradeCfg = GRADE_CONFIG[score.grade] ?? GRADE_CONFIG.C;
+  const gradeCfg = GRADE_CONFIG[score.grade] ?? GRADE_CONFIG.D;
 
   return (
-    <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-[#0a1f1a] via-[#0d2a1f] to-[#0b241b] text-white">
-      {/* Ambient glow */}
-      <div className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-emerald-500/10 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-12 -left-12 size-48 rounded-full bg-sky-500/8 blur-3xl" />
+    <Card className="relative overflow-hidden">
+      {/* Subtle top accent bar */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-sky-400 to-amber-400" />
 
-      <div className="relative space-y-5">
+      <div className="relative space-y-5 pt-0.5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-white/50 uppercase tracking-wider">
-              健康评分
-            </p>
-            <h2 className="mt-1 font-display text-2xl font-bold">今日综合状态</h2>
+            <p className="text-sm font-semibold text-muted">健康评分</p>
+            <h2 className="mt-1 font-display text-2xl font-semibold text-foreground">
+              今日综合状态
+            </h2>
           </div>
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${gradeCfg.bg} ${gradeCfg.color}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${gradeCfg.badge}`}
           >
-            {gradeCfg.label}
+            {score.grade}级 · {gradeCfg.label}
           </span>
         </div>
 
@@ -207,37 +206,32 @@ function HealthScoreCard({
             score={score.totalScore}
             grade={score.grade}
             ringColor={gradeCfg.ring}
+            textColor={gradeCfg.text}
           />
           <div className="flex-1 space-y-3">
-            {Object.entries(score.subScores).map(([key, value]) => (
-              <div key={key}>
-                <div className="mb-1 flex items-center justify-between text-sm">
-                  <span className="text-white/60">
-                    {SUB_SCORE_LABELS[key] ?? key}
-                  </span>
-                  <span className="font-semibold tabular-nums text-white/85">
-                    {value}
-                    <span className="text-xs text-white/40">/25</span>
-                  </span>
+            {Object.entries(score.subScores).map(([key, value]) => {
+              const cfg = SUB_SCORE_CONFIG[key] ?? {
+                label: key,
+                bar: "bg-surface-strong",
+              };
+              return (
+                <div key={key}>
+                  <div className="mb-1.5 flex items-center justify-between text-sm">
+                    <span className="font-medium text-muted">{cfg.label}</span>
+                    <span className="font-semibold tabular-nums text-foreground">
+                      {value}
+                      <span className="text-xs text-muted/60">/25</span>
+                    </span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-surface-muted">
+                    <div
+                      className={`h-full rounded-full ${cfg.bar} transition-[width] duration-700`}
+                      style={{ width: `${(value / 25) * 100}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-                  <div
-                    className="h-full rounded-full transition-[width] duration-700"
-                    style={{
-                      width: `${(value / 25) * 100}%`,
-                      background:
-                        key === "nutrition"
-                          ? "linear-gradient(90deg, #34d399, #2ecc71)"
-                          : key === "exercise"
-                            ? "linear-gradient(90deg, #38bdf8, #5cb8fd)"
-                            : key === "sleep"
-                              ? "linear-gradient(90deg, #a78bfa, #c4b5fd)"
-                              : "linear-gradient(90deg, #fbbf24, #f8a018)",
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -249,10 +243,12 @@ function ScoreRing({
   score,
   grade,
   ringColor,
+  textColor,
 }: {
   score: number;
   grade: string;
   ringColor: string;
+  textColor: string;
 }) {
   return (
     <div className="relative shrink-0">
@@ -263,7 +259,7 @@ function ScoreRing({
           cy="72"
           r="60"
           fill="none"
-          stroke="rgb(255 255 255 / 8%)"
+          stroke="var(--surface-muted)"
           strokeWidth="10"
         />
         {/* Progress arc */}
@@ -280,10 +276,10 @@ function ScoreRing({
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-display text-3xl font-bold tabular-nums">
+        <span className={`font-display text-3xl font-bold tabular-nums ${textColor}`}>
           {score}
         </span>
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-white/40">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted/50">
           {grade} 级
         </span>
       </div>

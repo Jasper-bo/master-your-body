@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VitalPulse 功能模块结构图</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #18212f;
+        --muted: #667085;
+        --line: #d8dee8;
+        --paper: #f7f8fb;
+        --surface: #ffffff;
+        --auth: #2563eb;
+        --plan: #059669;
+        --dash: #7c3aed;
+        --check: #0891b2;
+        --food: #d97706;
+        --train: #dc2626;
+        --settings: #475569;
+        --shadow: 0 16px 40px rgba(24, 33, 47, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          "Microsoft YaHei",
+          sans-serif;
+      }
+
+      main {
+        margin: 0 auto;
+        max-width: 1480px;
+        padding: 40px 28px 56px;
+      }
+
+      .hero {
+        align-items: end;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        gap: 24px;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        padding-bottom: 24px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 32px;
+        font-weight: 760;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.8;
+        margin-top: 10px;
+        max-width: 760px;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      .legend span {
+        align-items: center;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        display: inline-flex;
+        font-size: 13px;
+        gap: 8px;
+        min-height: 34px;
+        padding: 0 12px;
+      }
+
+      .dot {
+        border-radius: 999px;
+        display: inline-block;
+        height: 9px;
+        width: 9px;
+      }
+
+      .root-node {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        margin: 0 auto 34px;
+        max-width: 520px;
+        padding: 20px 24px;
+        position: relative;
+        text-align: center;
+      }
+
+      .root-node::after {
+        background: var(--line);
+        bottom: -34px;
+        content: "";
+        height: 34px;
+        left: 50%;
+        position: absolute;
+        width: 2px;
+      }
+
+      .root-node strong {
+        display: block;
+        font-size: 23px;
+        letter-spacing: 0;
+      }
+
+      .root-node small {
+        color: var(--muted);
+        display: block;
+        margin-top: 8px;
+      }
+
+      .module-grid {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: repeat(7, minmax(160px, 1fr));
+        position: relative;
+      }
+
+      .module-grid::before {
+        background: var(--line);
+        content: "";
+        height: 2px;
+        left: 7%;
+        position: absolute;
+        right: 7%;
+        top: 0;
+      }
+
+      .module {
+        display: grid;
+        gap: 12px;
+        padding-top: 32px;
+        position: relative;
+      }
+
+      .module::before {
+        background: var(--line);
+        content: "";
+        height: 32px;
+        left: 50%;
+        position: absolute;
+        top: 0;
+        width: 2px;
+      }
+
+      .module-head {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-top: 5px solid var(--tone);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        min-height: 118px;
+        padding: 14px;
+      }
+
+      .module-index {
+        color: var(--tone);
+        font-size: 13px;
+        font-weight: 760;
+      }
+
+      .module-title {
+        font-size: 17px;
+        font-weight: 760;
+        line-height: 1.35;
+        margin-top: 8px;
+      }
+
+      .module-note {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+        margin-top: 8px;
+      }
+
+      .group {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .group-title {
+        background: color-mix(in srgb, var(--tone) 10%, white);
+        border-bottom: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 760;
+        line-height: 1.45;
+        padding: 10px 12px;
+      }
+
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 8px 12px 12px;
+      }
+
+      li {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+        padding: 4px 0 4px 12px;
+        position: relative;
+      }
+
+      li::before {
+        background: var(--tone);
+        border-radius: 999px;
+        content: "";
+        height: 5px;
+        left: 0;
+        position: absolute;
+        top: 12px;
+        width: 5px;
+      }
+
+      .flow-section {
+        margin-top: 42px;
+      }
+
+      .section-head {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      h2 {
+        font-size: 22px;
+        font-weight: 760;
+      }
+
+      .flow {
+        align-items: stretch;
+        display: grid;
+        gap: 14px;
+        grid-template-columns: 1.1fr 1fr 1fr 1.2fr 1fr;
+      }
+
+      .flow-node {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-left: 5px solid var(--tone);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        min-height: 108px;
+        padding: 16px;
+        position: relative;
+      }
+
+      .flow-node:not(:last-child)::after {
+        border-bottom: 8px solid transparent;
+        border-left: 10px solid var(--line);
+        border-top: 8px solid transparent;
+        content: "";
+        position: absolute;
+        right: -13px;
+        top: 44px;
+      }
+
+      .flow-node strong {
+        display: block;
+        font-size: 15px;
+      }
+
+      .flow-node span {
+        color: var(--muted);
+        display: block;
+        font-size: 12px;
+        line-height: 1.6;
+        margin-top: 8px;
+      }
+
+      .usecase {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 170px 1fr;
+        margin-top: 24px;
+        padding: 20px;
+      }
+
+      .actor {
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        display: grid;
+        justify-items: center;
+        min-height: 164px;
+        padding: 18px;
+      }
+
+      .actor-symbol {
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        height: 44px;
+        position: relative;
+        width: 44px;
+      }
+
+      .actor-symbol::before,
+      .actor-symbol::after {
+        background: var(--ink);
+        content: "";
+        left: 50%;
+        position: absolute;
+        transform: translateX(-50%);
+      }
+
+      .actor-symbol::before {
+        height: 54px;
+        top: 42px;
+        width: 2px;
+      }
+
+      .actor-symbol::after {
+        height: 2px;
+        top: 64px;
+        width: 64px;
+      }
+
+      .actor strong {
+        margin-top: 58px;
+      }
+
+      .usecase-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(5, minmax(130px, 1fr));
+      }
+
+      .usecase-pill {
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--ink);
+        display: flex;
+        font-size: 13px;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 14px;
+        text-align: center;
+      }
+
+      .auth {
+        --tone: var(--auth);
+      }
+
+      .plan {
+        --tone: var(--plan);
+      }
+
+      .dash {
+        --tone: var(--dash);
+      }
+
+      .check {
+        --tone: var(--check);
+      }
+
+      .food {
+        --tone: var(--food);
+      }
+
+      .train {
+        --tone: var(--train);
+      }
+
+      .settings {
+        --tone: var(--settings);
+      }
+
+      @media (max-width: 1280px) {
+        .module-grid {
+          grid-template-columns: repeat(3, minmax(220px, 1fr));
+        }
+
+        .module-grid::before,
+        .module::before,
+        .root-node::after,
+        .flow-node::after {
+          display: none;
+        }
+
+        .module {
+          padding-top: 0;
+        }
+
+        .flow {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        main {
+          padding: 28px 16px 40px;
+        }
+
+        .hero,
+        .section-head {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .legend {
+          justify-content: flex-start;
+        }
+
+        .module-grid,
+        .flow,
+        .usecase,
+        .usecase-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div>
+          <h1>VitalPulse 健康管理系统功能模块结构图</h1>
+          <p class="subtitle">
+            基于第一版核心闭环整理：用户认证、个性化计划、仪表盘、健康打卡、饮食管理、训练管理与系统设置。
+          </p>
+        </div>
+        <div class="legend" aria-label="模块图例">
+          <span><i class="dot" style="background: var(--auth)"></i>认证</span>
+          <span><i class="dot" style="background: var(--food)"></i>饮食</span>
+          <span><i class="dot" style="background: var(--train)"></i>训练</span>
+          <span><i class="dot" style="background: var(--dash)"></i>评分</span>
+        </div>
+      </section>
+
+      <section class="root-node">
+        <strong>VitalPulse 健康管理系统</strong>
+        <small>第一版功能模块层次结构</small>
+      </section>
+
+      <section class="module-grid" aria-label="功能模块层次方框图">
+        <article class="module auth">
+          <header class="module-head">
+            <div class="module-index">01</div>
+            <h3 class="module-title">用户认证模块</h3>
+            <p class="module-note">负责账户入口、会话保持与退出。</p>
+          </header>
+          <div class="group">
+            <div class="group-title">1.1 用户注册</div>
+            <ul>
+              <li>手机号注册</li>
+              <li>密码设置</li>
+              <li>注册后进入个性化计划填写</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">1.2 用户登录</div>
+            <ul>
+              <li>手机号登录</li>
+              <li>密码校验</li>
+              <li>登录态保持</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">1.3 用户退出</div>
+            <ul>
+              <li>清除登录态</li>
+              <li>返回登录页</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="module plan">
+          <header class="module-head">
+            <div class="module-index">02</div>
+            <h3 class="module-title">个性化计划模块</h3>
+            <p class="module-note">根据身体信息生成每日目标。</p>
+          </header>
+          <div class="group">
+            <div class="group-title">2.1 基础身体信息录入</div>
+            <ul>
+              <li>身高</li>
+              <li>体重</li>
+              <li>年龄</li>
+              <li>性别</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">2.2 健身目标设置</div>
+            <ul>
+              <li>减脂</li>
+              <li>增肌</li>
+              <li>维持</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">2.3 每日目标生成</div>
+            <ul>
+              <li>热量目标</li>
+              <li>蛋白质目标</li>
+              <li>碳水目标</li>
+              <li>脂肪目标</li>
+              <li>饮水目标</li>
+              <li>睡眠目标</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="module dash">
+          <header class="module-head">
+            <div class="module-index">03</div>
+            <h3 class="module-title">仪表盘模块</h3>
+            <p class="module-note">集中展示指标、进度、评分与趋势。</p>
+          </header>
+          <div class="group">
+            <div class="group-title">3.1 身体指标展示</div>
+            <ul>
+              <li>BMI</li>
+              <li>BMR</li>
+              <li>TDEE</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">3.2 今日营养进度</div>
+            <ul>
+              <li>热量摄入进度</li>
+              <li>蛋白质摄入进度</li>
+              <li>碳水摄入进度</li>
+              <li>脂肪摄入进度</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">3.3 健康评分展示</div>
+            <ul>
+              <li>总分</li>
+              <li>营养得分</li>
+              <li>运动得分</li>
+              <li>睡眠得分</li>
+              <li>饮水得分</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">3.4 趋势展示</div>
+            <ul>
+              <li>近 7 日营养趋势</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="module check">
+          <header class="module-head">
+            <div class="module-index">04</div>
+            <h3 class="module-title">健康打卡模块</h3>
+            <p class="module-note">记录饮水、睡眠和运动完成情况。</p>
+          </header>
+          <div class="group">
+            <div class="group-title">4.1 饮水打卡</div>
+            <ul>
+              <li>输入饮水量</li>
+              <li>判断是否达到目标</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">4.2 睡眠打卡</div>
+            <ul>
+              <li>输入睡眠时长</li>
+              <li>判断是否达到目标</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">4.3 运动打卡</div>
+            <ul>
+              <li>由训练记录自动完成</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="module food">
+          <header class="module-head">
+            <div class="module-index">05</div>
+            <h3 class="module-title">饮食管理模块</h3>
+            <p class="module-note">完成餐食录入、汇总与历史维护。</p>
+          </header>
+          <div class="group">
+            <div class="group-title">5.1 手动饮食记录</div>
+            <ul>
+              <li>选择食物分类</li>
+              <li>选择具体食物</li>
+              <li>输入克数</li>
+              <li>选择油脂用量</li>
+              <li>保存餐食记录</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">5.2 今日饮食汇总</div>
+            <ul>
+              <li>今日总热量</li>
+              <li>今日蛋白质</li>
+              <li>今日碳水</li>
+              <li>今日脂肪</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">5.3 饮食历史管理</div>
+            <ul>
+              <li>按日期范围查看历史餐食</li>
+              <li>按餐别筛选</li>
+              <li>查看食物明细</li>
+              <li>删除误录餐食</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="module train">
+          <header class="module-head">
+            <div class="module-index">06</div>
+            <h3 class="module-title">训练管理模块</h3>
+            <p class="module-note">围绕动作库、训练记录和历史回顾。</p>
+          </header>
+          <div class="group">
+            <div class="group-title">6.1 动作库浏览</div>
+            <ul>
+              <li>胸部动作</li>
+              <li>背部动作</li>
+              <li>肩部动作</li>
+              <li>腿部动作</li>
+              <li>有氧动作</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">6.2 快速训练记录</div>
+            <ul>
+              <li>选择训练动作</li>
+              <li>设置重量</li>
+              <li>设置组数</li>
+              <li>设置次数</li>
+              <li>设置有氧时长</li>
+              <li>保存训练记录</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">6.3 训练统计</div>
+            <ul>
+              <li>今日训练完成情况</li>
+              <li>昨日训练回顾</li>
+              <li>本周训练统计</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">6.4 训练历史管理</div>
+            <ul>
+              <li>按日期范围查看历史训练</li>
+              <li>按训练部位筛选</li>
+              <li>查看动作和组数明细</li>
+              <li>删除误录训练</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="module settings">
+          <header class="module-head">
+            <div class="module-index">07</div>
+            <h3 class="module-title">系统设置模块</h3>
+            <p class="module-note">展示应用元信息和会话退出入口。</p>
+          </header>
+          <div class="group">
+            <div class="group-title">7.1 应用信息展示</div>
+            <ul>
+              <li>应用名称</li>
+              <li>当前版本号</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">7.2 发布者信息展示</div>
+            <ul>
+              <li>发布者：贺俊博</li>
+            </ul>
+          </div>
+          <div class="group">
+            <div class="group-title">7.3 退出登录</div>
+            <ul>
+              <li>清除当前会话并返回登录页</li>
+            </ul>
+          </div>
+        </article>
+      </section>
+
+      <section class="flow-section">
+        <div class="section-head">
+          <h2>第一版核心活动流程</h2>
+          <p class="subtitle">从账户进入到日常记录，再回到仪表盘查看评分。</p>
+        </div>
+        <div class="flow">
+          <div class="flow-node auth">
+            <strong>注册 / 登录</strong>
+            <span>手机号和密码进入系统，服务端维持登录态。</span>
+          </div>
+          <div class="flow-node plan">
+            <strong>生成个性化计划</strong>
+            <span>录入身体信息和健身目标，生成每日营养、饮水和睡眠目标。</span>
+          </div>
+          <div class="flow-node food">
+            <strong>记录饮食</strong>
+            <span>按食物分类选择条目，输入克数，形成今日营养汇总。</span>
+          </div>
+          <div class="flow-node train">
+            <strong>记录训练与打卡</strong>
+            <span>从动作库保存训练，运动打卡自动完成；饮水和睡眠手动输入。</span>
+          </div>
+          <div class="flow-node dash">
+            <strong>查看仪表盘</strong>
+            <span>汇总身体指标、营养进度、健康评分和近 7 日趋势。</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="flow-section">
+        <div class="section-head">
+          <h2>用户用例概览</h2>
+          <p class="subtitle">一个普通用户在第一版中可以完成的主要操作。</p>
+        </div>
+        <div class="usecase">
+          <div class="actor">
+            <div class="actor-symbol" aria-hidden="true"></div>
+            <strong>用户</strong>
+          </div>
+          <div class="usecase-grid">
+            <div class="usecase-pill">注册账号</div>
+            <div class="usecase-pill">登录系统</div>
+            <div class="usecase-pill">填写个性化计划</div>
+            <div class="usecase-pill">查看仪表盘</div>
+            <div class="usecase-pill">记录饮食</div>
+            <div class="usecase-pill">管理饮食历史</div>
+            <div class="usecase-pill">记录训练</div>
+            <div class="usecase-pill">管理训练历史</div>
+            <div class="usecase-pill">记录饮水和睡眠</div>
+            <div class="usecase-pill">查看健康评分</div>
+            <div class="usecase-pill">查看版本和发布者</div>
+            <div class="usecase-pill">退出登录</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
