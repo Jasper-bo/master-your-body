@@ -33,23 +33,10 @@ enum MealType {
   snack
 }
 
-enum PhotoStatus {
-  pending
-  success
-  failed
-}
-
 enum WorkoutStatus {
   in_progress
   completed
   cancelled
-}
-
-enum SettingValueType {
-  string
-  number
-  boolean
-  json
 }
 
 model User {
@@ -66,11 +53,9 @@ model User {
   profile         UserProfile?
   dailyNutrition  DailyNutrition[]
   mealRecords     MealRecord[]
-  foodPhotos      FoodPhoto[]
   healthChecklist HealthChecklist[]
   healthScores    HealthScore[]
   workoutRecords  WorkoutRecord[]
-  appSettings     AppSetting[]
   refreshTokens   RefreshToken[]
 
   @@index([phone], map: "idx_users_phone")
@@ -199,24 +184,6 @@ model MealFood {
   @@map("meal_foods")
 }
 
-model FoodPhoto {
-  id                 String      @id @default(uuid())
-  userId             String      @map("user_id")
-  recognizedFoodName String?     @map("recognized_food_name")
-  proteinG           Decimal?    @map("protein_g")
-  carbsG             Decimal?    @map("carbs_g")
-  fatG               Decimal?    @map("fat_g")
-  status             PhotoStatus @default(pending)
-  errorMessage       String?     @map("error_message")
-  createdAt          DateTime    @default(now()) @map("created_at")
-  completedAt        DateTime?   @map("completed_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt], map: "idx_food_photos_user")
-  @@map("food_photos")
-}
-
 model HealthChecklist {
   id               String   @id @default(uuid())
   userId           String   @map("user_id")
@@ -337,38 +304,6 @@ model WorkoutExercise {
   @@index([workoutRecordId, exerciseOrder, setNumber], map: "idx_workout_exercises_workout")
   @@index([exerciseId], map: "idx_workout_exercises_exercise")
   @@map("workout_exercises")
-}
-
-model AppSetting {
-  id           String           @id @default(uuid())
-  userId       String           @map("user_id")
-  settingKey   String           @map("setting_key")
-  settingValue String           @map("setting_value")
-  valueType    SettingValueType @default(string) @map("value_type")
-  createdAt    DateTime         @default(now()) @map("created_at")
-  updatedAt    DateTime         @updatedAt @map("updated_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, settingKey])
-  @@index([userId, settingKey], map: "idx_app_settings_user_key")
-  @@map("app_settings")
-}
-
-model SystemInfo {
-  id                   String   @id @default(uuid())
-  appName              String   @map("app_name")
-  appVersion           String   @map("app_version")
-  buildNumber          String?  @map("build_number")
-  releaseNotes         String?  @map("release_notes")
-  privacyPolicyContent String?  @map("privacy_policy_content")
-  developerName        String?  @map("developer_name")
-  developerTitle       String?  @map("developer_title")
-  isCurrent            Boolean  @default(false) @map("is_current")
-  createdAt            DateTime @default(now()) @map("created_at")
-
-  @@index([isCurrent], map: "idx_system_info_current")
-  @@map("system_info")
 }
 
 model RefreshToken {
