@@ -182,11 +182,7 @@ function HealthScoreCard({
   const gradeCfg = GRADE_CONFIG[score.grade] ?? GRADE_CONFIG.D;
 
   return (
-    <Card className="relative overflow-hidden">
-      {/* Subtle top accent bar */}
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-sky-400 to-amber-400" />
-
-      <div className="relative space-y-5 pt-0.5">
+    <Card className="space-y-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold text-muted">健康评分</p>
@@ -234,7 +230,6 @@ function HealthScoreCard({
             })}
           </div>
         </div>
-      </div>
     </Card>
   );
 }
